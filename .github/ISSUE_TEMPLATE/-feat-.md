@@ -1,6 +1,6 @@
 ---
-name: Feature request
-about: Suggest an idea for this project
+name: "[Feat]"
+about: feature issue template
 title: ''
 labels: ''
 assignees: ''
