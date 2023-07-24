@@ -113,9 +113,13 @@ export default function Home({ navigation }: { navigation: any }) {
       <View style={layoutStyles.VStackContainer}>
         <UserInfoHeader />
         <View style={[layoutStyles.VStackContainer]}>
-          <MenuTitle text='Today’s Lesson' onPress={() => {}} />
+          <MenuTitle text='Today’s Lesson' onPress={() => {
+            navigation.navigate('LessonsList');
+          }} />
           <CarouselList gap={8} offset={12} pages={todayLessons} pageWidth={screenWidth - (8 + 12) * 2} />
-          <MenuTitle text='Review' onPress={() => {}} />
+          <MenuTitle text='Review' onPress={() => {
+            navigation.navigate('LessonsList');
+          }} />
           <View style={[layoutStyles.VStackContainer, { marginTop: 4 }]}>
             {todayLessons.slice(0, 2).map((lesson, index) => (
               <ListCell

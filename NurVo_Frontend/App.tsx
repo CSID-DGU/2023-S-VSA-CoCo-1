@@ -14,6 +14,10 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import Colors from './src/utilities/Color';
 import Home from './src/pages/Home';
+import LessonFirst from './src/pages/LessonFirst';
+import LessonsList from './src/pages/LessonsList';
+import LessonSecond from './src/pages/LessonSecond';
+import LessonThird from './src/pages/LessonThird';
 
 const Tab = createBottomTabNavigator();
 function BottomTabs() {
@@ -56,6 +60,10 @@ const HomeStackScreen = () => {
       }}
     >
       <HomeStack.Screen name="HomeScreen" component={Home} options={{ headerShown: false }} />
+      <HomeStack.Screen name="LessonsList" component={LessonsList}/>
+      <HomeStack.Screen name="LessonFirstScreen" component={LessonFirst} />
+      <HomeStack.Screen name="LessonSecondScreen" component={LessonSecond} />
+      <HomeStack.Screen name="LessonThirdScreen" component={LessonThird} />
     </HomeStack.Navigator>
   );
 }

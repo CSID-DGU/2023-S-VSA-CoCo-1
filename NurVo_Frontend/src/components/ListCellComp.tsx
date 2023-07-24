@@ -25,7 +25,9 @@ export function ListCell({ item, checked, style }: ListCellProps) {
     const navigation = useNavigation<HomeScreenNavigationProp>();
 
     return (
-        <TouchableOpacity style={[listStyles.listCell, style]}>
+        <TouchableOpacity style={[listStyles.listCell, style]} onPress={() => {
+            navigation.navigate('LessonFirstScreen');
+        }}>
             <View style={[layoutStyles.VStackContainer, style, { paddingHorizontal: 20, paddingVertical: 12, marginTop: 28 }]}>
                 <Subtitle011 text={item.title} color={Colors.GRAY03} numberOfLines={1} ellipsizeMode={'tail'} />
                 <Body023 text={item.subtitle} color={Colors.GRAY05} numberOfLines={1} ellipsizeMode={'tail'} />
