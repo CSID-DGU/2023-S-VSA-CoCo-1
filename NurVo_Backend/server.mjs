@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import cors from 'cors';
 import { router as listRouter } from './controllers/list.mjs';
 import { router as dialoguesRouter } from './controllers/dialogues.mjs';
+import { router as bookmarkRouter} from './controllers/bookmark.mjs'
 
 const app = express();
 app.use(bodyParser.json());
@@ -18,5 +19,6 @@ app.listen(5000, () => {
 
 app.use('/api/dialogues/:thema', listRouter);
 app.use('/api/dialogues', dialoguesRouter);
+app.use('/api/bookmark', bookmarkRouter);
 
 
