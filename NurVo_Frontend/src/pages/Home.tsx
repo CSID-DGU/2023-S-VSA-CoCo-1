@@ -65,7 +65,7 @@ function UserInfoHeader() {
 
   const DaysRow = () => {
     return (
-      <View style={[layoutStyles.HStackContainer, { width: screenWidth - 40 }]}>
+      <View style={[layoutStyles.HStackContainer, { width: screenWidth - 40, paddingTop: 12 }]}>
         {days.map(day => (
           <CircleText key={day} text={day} backgroundColor={Colors.WHITE} />
         ))}
@@ -75,10 +75,10 @@ function UserInfoHeader() {
 
   return (
     <View style={styles.headerBackground}>
-      <View style={[layoutStyles.VStackContainer, { paddingHorizontal: 20, paddingVertical: 16 }]}>
+      <View style={[layoutStyles.VStackContainer, { paddingHorizontal: 20, paddingVertical: 16, marginTop: 20}]}>
         <View style={[layoutStyles.HStackContainer, { flex: 1 }]}>
           <View style={layoutStyles.VStackContainer}>
-            <View style={styles.headerText}>
+            <View style={[styles.headerText]}>
               <Title01 text="Hi," color={Colors.BLACK} />
               <Title02 text="Jimin" color={Colors.BLACK} />
             </View>
