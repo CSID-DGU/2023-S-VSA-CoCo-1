@@ -80,59 +80,5 @@ export const allMessages: Message[] = [
         dialogue: "I see. By the way, you can call me Kevin.",
         second_step: "",
         korean: "알겠어요. 그런데, 당신은 저를 케빈이라고 불러도 돼요."
-    },
-    {
-        chapter_id: 1,
-        conversation_id: 1,
-
-        speaker: "Mr. Baker",
-        dialogue: "Am I going to stay in this room?",
-        second_step: "",
-        korean: "저는 이 방에 계속 있어야 하나요?"
-    },
-    {
-        chapter_id: 1,
-        conversation_id: 1,
-
-        speaker: "Nurse",
-        dialogue: "Yes, Mr. Baker. You are going to stay here for the next few days.",
-        second_step: "for the next few days",
-        korean: "네, 베이커씨. 당신은 다음 몇 일 동안 여기에 계실 거예요."
-    },
-    {
-        chapter_id: 1,
-        conversation_id: 1,
-
-        speaker: "Mr. Baker",
-        dialogue: "I see. By the way, you can call me Kevin.",
-        second_step: "",
-        korean: "알겠어요. 그런데, 당신은 저를 케빈이라고 불러도 돼요."
-    },
-    {
-        chapter_id: 1,
-        conversation_id: 1,
-
-        speaker: "Mr. Baker",
-        dialogue: "Am I going to stay in this room?",
-        second_step: "",
-        korean: "저는 이 방에 계속 있어야 하나요?"
-    },
-    {
-        chapter_id: 1,
-        conversation_id: 1,
-
-        speaker: "Nurse",
-        dialogue: "Yes, Mr. Baker. You are going to stay here for the next few days.",
-        second_step: "for the next few days",
-        korean: "네, 베이커씨. 당신은 다음 몇 일 동안 여기에 계실 거예요."
-    },
-    {
-        chapter_id: 1,
-        conversation_id: 1,
-
-        speaker: "Mr. Baker",
-        dialogue: "I see. By the way, you can call me Kevin.",
-        second_step: "",
-        korean: "알겠어요. 그런데, 당신은 저를 케빈이라고 불러도 돼요."
     }
 ];
