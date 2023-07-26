@@ -10,10 +10,10 @@ import {
     Keyboard,
 } from 'react-native';
 
-import Colors from '../utilities/Color';
-import { Message, allMessages } from '../utilities/LessonExample';
-import { ChatBubbleInputWord } from '../components/ChatBubble';
-import CustomAlert from '../components/Alert';
+import Colors from '../../utilities/Color';
+import { Message, allMessages } from '../../utilities/LessonExample';
+import { ChatBubbleInputWord } from '../../components/ChatBubble';
+import CustomAlert from '../../components/Alert';
 
 const { StatusBarManager } = NativeModules;
 

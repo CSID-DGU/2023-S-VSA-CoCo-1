@@ -14,10 +14,10 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import Colors from './src/utilities/Color';
 import Home from './src/pages/Home';
-import LessonFirst from './src/pages/LessonFirst';
 import LessonsList from './src/pages/LessonsList';
-import LessonSecond from './src/pages/LessonSecond';
-import LessonThird from './src/pages/LessonThird';
+import LessonFirst from './src/pages/ChapterStudy/LessonFirst';
+import LessonSecond from './src/pages/ChapterStudy/LessonSecond';
+import LessonThird from './src/pages/ChapterStudy/LessonThird';
 import SelectText from './src/pages/SelectText';
 import StudyPage from './src/pages/StudyPage';
 
@@ -45,7 +45,7 @@ function BottomTabs() {
       })}
     >
       <Tab.Screen name="Home" component={HomeStackScreen} options={{ headerShown: false }} />
-      <Tab.Screen name="Library" component={LibraryStackScreen} options={{ headerShown: false }} />
+      <Tab.Screen name="Library" component={LibraryStackScreen} />
     </Tab.Navigator>
   );
 }

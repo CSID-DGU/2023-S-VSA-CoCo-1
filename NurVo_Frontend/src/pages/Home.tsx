@@ -120,13 +120,13 @@ export default function Home({ navigation }: { navigation: any }) {
           <MenuTitle text='Review' onPress={() => {
             navigation.navigate('LessonsList');
           }} />
-          <View style={[layoutStyles.VStackContainer, { marginTop: 4, marginBottom:28 }]}>
+          <View style={[layoutStyles.VStackContainer, { marginTop: 4, marginBottom:28, paddingHorizontal: 20 }]}>
             {todayLessons.slice(0, 2).map((lesson, index) => (
               <ListCell
                 key={index}
                 item={lesson}
                 checked={true}
-                style={{ width: screenWidth - 20 * 2, marginHorizontal: 20, marginVertical: 4 }}
+                style={{ width: screenWidth - 20 * 2, marginVertical: 4 }}
               />
             ))}
           </View>
@@ -142,7 +142,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'flex-start',
-    backgroundColor: 'red',
   },
 
   headerText: {
