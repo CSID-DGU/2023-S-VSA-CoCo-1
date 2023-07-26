@@ -1,9 +1,11 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { View, Dimensions, Text, TouchableOpacity, StyleSheet, Alert, ImageBackground } from 'react-native';
+import { View, Dimensions, Text, TouchableOpacity, StyleSheet, Alert, ImageBackground, ViewStyle } from 'react-native';
 import Tts from 'react-native-tts';
 import Swiper from 'react-native-swiper';
-import rightArow from './asset/images/rightArow.png';
-import leftArow from './asset/images/leftArow.png';
+import { DataProps } from './SelectText';
+import leftArrow from '../assets/images/leftArow.png';
+import rightArow from '../assets/images/rightArow.png'
+import { StudyPageProps } from '../utilities/NavigationTypes';
 
 let screenWidth = Dimensions.get('window').width;
 let screenHeight = Dimensions.get('window').height;
@@ -11,11 +13,11 @@ let screenHeight = Dimensions.get('window').height;
 let cardWidth = screenWidth * 0.8;
 let cardHeight = screenHeight * 0.6;
 
-const StudyPage = ({ navigation, route }) => {
+const StudyPage: React.FC<StudyPageProps> = ({ navigation, route }) => {
   // 전달 받은 데이터(suffle)
   const Data = route.params.data.map(c => {
     return { id: c.id, chapter: c.chapter, english: c.english, korean: c.korean, order: Math.random() }
-  }).sort((l, r) => {
+  }).sort((l: { order: number; }, r: { order: number; }) => {
     return l.order - r.order;
   });
   // 
@@ -23,16 +25,17 @@ const StudyPage = ({ navigation, route }) => {
   // 진행도
   const [progress, setProgress] = useState(0);
   // 현 단계 문장 저장
-  const [textArray, setTextArray] = useState(Data);
+  const [textArray, setTextArray] = useState<DataProps[]>(Data);
   // 다음 단계 문장 저장
-  const [nextTextArray, setNextTextArray] = useState([]);
+  const [nextTextArray, setNextTextArray] = useState<DataProps[]>([]);
   // 카드 앞면, 뒷면
   const [change, setChange] = useState(new Array(textArray.length).fill(false));
   // 다음 단계 넘어가기
   const [isDisabled, setIsDisabled] = useState(false);
   // 현재 카드 번호
   const [currentIndex, setCurrentIndex] = useState(0);
-  const swiperRef = useRef(null);
+  // const swiperRef = useRef(null);
+  const swiperRef = useRef<Swiper>(null);
 
   useEffect(() => {
     if (isDisabled) {
@@ -65,7 +68,7 @@ const StudyPage = ({ navigation, route }) => {
   };
 
   // 카드 뒤집기
-  const turnCard = (index) => {
+  const turnCard = (index: number) => {
     const updatedChange = [...change];
     updatedChange[index] = !updatedChange[index];
     setChange(updatedChange);
@@ -73,17 +76,21 @@ const StudyPage = ({ navigation, route }) => {
 
   // 화면 전환
   const roof = () => {
-    const totalSlides = swiperRef.current.state.total;
-    if (currentIndex === totalSlides - 1) {
-      if (swiperRef.current) {
-        swiperRef.current.scrollTo(0, false);
-        setIsDisabled(true);
-      }
-    } else {
-      if (swiperRef.current) {
-        swiperRef.current.scrollBy(1, true);
-      }
-    };
+    if (swiperRef.current) {
+      const swiperState = (swiperRef.current as any).state;
+      const totalSlides = swiperState.total;
+
+      if (currentIndex === totalSlides - 1) {
+        if (swiperRef.current) {
+          swiperRef.current.scrollTo(0, false);
+          setIsDisabled(true);
+        }
+      } else {
+        if (swiperRef.current) {
+          swiperRef.current.scrollBy(1, true);
+        }
+      };
+    }
   };
 
   // 다음 단계 문장 제거
@@ -111,19 +118,19 @@ const StudyPage = ({ navigation, route }) => {
   };
 
   // TTS 실행
-  const Speaker = (sample) => {
-    Tts.speak(sample, { language: 'en', rate: 1, volume: 1 });
+  const Speaker = (sample: string) => {
+    Tts.speak(sample);
   };
 
   // 진행바 스타일
-  const progressStyle = {
+  const progressStyle: ViewStyle = {
     width: `${(progress / Data.length) * 100}%`,
     height: '100%',
     backgroundColor: 'rgba(98, 196, 150, 1)',
   };
 
   // 100% 진행시 Aler창이 뜨고 저장 문장 페이지로 이동
-  if (count == -1 && textArray == 0) {
+  if (count == -1 && textArray.length == 0) {
     showAlert();
     setTextArray([]);
     setNextTextArray([]);
@@ -171,7 +178,7 @@ const StudyPage = ({ navigation, route }) => {
             <TouchableOpacity onPress={removeBtn}>
               <View style={styles.btn1}>
                 <ImageBackground
-                  source={leftArow}
+                  source={leftArrow}
                   style={styles.img}
                   resizeMode="contain"
                 />
@@ -203,7 +210,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     height: '100%',
-    backgroundColor: 'white',
   },
   progressBar: {
     width: '100%',
@@ -253,7 +259,8 @@ const styles = StyleSheet.create({
     gap: 80,
     alignItems: 'center',
     width: '100%',
-    height: 200,
+    height: 100,
+    marginVertical: 20
   },
   btn1: {
     position: 'relative',

@@ -1,9 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, ScrollView, Animated } from 'react-native';
+import Colors from '../utilities/Color';
 
+export interface DataProps {
+  id: string;
+  chapter: string;
+  english: string;
+  korean: string;
+}
 // 북마크된 문장
 const Data = [
-  { id: '1', chapter: 'Initial Meeting with the Patient.', english: '1I am the nurse who will be in charge of the patient today.', korean: '한국어1' },
+  { id: '1' , chapter: 'Initial Meeting with the Patient.', english: '1I am the nurse who will be in charge of the patient today.', korean: '한국어1' },
   { id: '2', chapter: 'Initial Meeting with the Patient.', english: '2I am the nurse who will be in charge of the patient today.', korean: '한국어2' },
   { id: '3', chapter: 'Initial Meeting with the Patient.', english: '3I am the nurse who will be in charge of the patient today.', korean: '한국어3' },
   { id: '4', chapter: 'Initial Meeting with the Patient.', english: '4I am the nurse who will be in charge of the patient today.', korean: '한국어4' },
@@ -15,12 +22,16 @@ const Data = [
   { id: '10', chapter: 'Initial Meeting with the Patient.', english: '10I am the nurse who will be in charge of the patient today.', korean: '한국어10' },
   { id: '11', chapter: 'Initial Meeting with the Patient.', english: '11I am the nurse who will be in charge of the patient today.', korean: '한국어11' },
   { id: '12', chapter: 'Initial Meeting with the Patient.', english: '12I am the nurse who will be in charge of the patient today.', korean: '한국어12' },
-  { id: '13', chapter: 'Initial Meeting with the Patient.', english: '13I am the nurse who will be in charge of the patient today.', korean: '한국어13' },
+  { 
+    id: '13', 
+    chapter: 'Initial Meeting with the Patient.', 
+    english: '13I am the nurse who will be in charge of the patient today.', 
+    korean: '한국어13' 
+  },
 
 ];
 
-
-const SelectText = ({ navigation }) => {
+const SelectText = ({ navigation }: { navigation: any }) => {
 
   const unitNumber = Data.length;
   // 체크된 개수
@@ -28,17 +39,18 @@ const SelectText = ({ navigation }) => {
   // 전체 선택 클릭 유무
   const [checkAllTure, setCheckAllTure] = useState(false);
   // 체크된 상태
-  const [checkBox, setCheckBox] = useState(Array(unitNumber).fill(false));
+  const [checkBox, setCheckBox] = useState<boolean[]>(Array(unitNumber).fill(false));
   // 체크된 박스 정보
-  const [selectBoxInf, setSelectBoxInf] = useState([]);
+  const [selectBoxInf, setSelectBoxInf] = useState<DataProps[]>([]);
+
   // 체크 확인바 보여줄 것인지 안 보여줄 것인지
   const [animationValue] = useState(new Animated.Value(0));
 
   // 낱개 개수 확인
-  const checkedTureCount = (array) => {
-    setTrueCount(array.filter(item => item === true).length);
+  const checkedTureCount = (array: any[]) => {
+    setTrueCount(array.filter((item: boolean) => item === true).length);
     // 하나하나 선택됐을 때 전체 선택이 됐는지 안됐는지 확인
-    const isAllTrue = array.every(item => item === true);
+    const isAllTrue = array.every((item: boolean) => item === true);
     if (isAllTrue) {
       setCheckAllTure(true);
     } else {
@@ -47,7 +59,7 @@ const SelectText = ({ navigation }) => {
   };
 
   // 하나하나 선택시
-  const toggleDropdown = (index) => {
+  const toggleDropdown = (index: number) => {
     const newArray = [...checkBox];
     newArray[index] = !newArray[index];
     if (newArray[index]) { // 클릭했을 때 ture일 경우
@@ -117,7 +129,7 @@ const SelectText = ({ navigation }) => {
   });
 
   return (
-    <>
+    <View style={{paddingHorizontal: 20, alignItems: 'center'}}>
       <ScrollView style={styles.container}>
         <Animated.View style={[styles.menuBar, { transform: [{ translateY }] }]}>
           <Text style={styles.menuText}>✓ {trueCount}개 선택됨</Text>
@@ -145,7 +157,7 @@ const SelectText = ({ navigation }) => {
       <TouchableOpacity style={styles.btn} onPress={studyPageLoad}>
         {trueCount === 0 ? <Text style={styles.btnText}>전체 학습하기</Text> : <Text style={styles.btnText}>선택 문장 학습하기</Text>}
       </TouchableOpacity>
-    </>
+    </View>
   );
 }
 
@@ -174,11 +186,8 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-start',
-    marginLeft: 20,
-    marginRight: 10,
     marginTop: 2,
     marginBottom: 7,
-    width: 345,
     backgroundColor: 'white',
     borderRadius: 10,
   },
@@ -205,14 +214,15 @@ const styles = StyleSheet.create({
   },
   btn: {
     position: 'absolute',
-    top: 675,
-    left: 20,
-    width: 345,
+    bottom: 0,
     height: 40,
+    width: '100%',
+    marginVertical: 10,
+
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
-    backgroundColor: 'rgba(98, 196, 150, 1)',
+    backgroundColor: Colors.MAINGREEN,
   },
   btnText: {
     color: 'white',

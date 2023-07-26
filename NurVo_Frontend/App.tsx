@@ -18,6 +18,8 @@ import LessonFirst from './src/pages/LessonFirst';
 import LessonsList from './src/pages/LessonsList';
 import LessonSecond from './src/pages/LessonSecond';
 import LessonThird from './src/pages/LessonThird';
+import SelectText from './src/pages/SelectText';
+import StudyPage from './src/pages/StudyPage';
 
 const Tab = createBottomTabNavigator();
 function BottomTabs() {
@@ -43,7 +45,7 @@ function BottomTabs() {
       })}
     >
       <Tab.Screen name="Home" component={HomeStackScreen} options={{ headerShown: false }} />
-      <Tab.Screen name="Library" component={LibraryStackScreen} />
+      <Tab.Screen name="Library" component={LibraryStackScreen} options={{ headerShown: false }} />
     </Tab.Navigator>
   );
 }
@@ -77,7 +79,8 @@ const LibraryStackScreen = () => {
         headerBackTitleVisible: false,
       }}
     >
-      <LibraryStack.Screen name="LibraryScreen" component={Library} options={{ headerShown: false }} />
+      <LibraryStack.Screen name="SelectText" component={SelectText} options={{ headerShown: false }}/>
+      <LibraryStack.Screen name="StudyPage" component={StudyPage} />
     </LibraryStack.Navigator>
   );
 }
@@ -89,13 +92,5 @@ function App(): JSX.Element {
     </NavigationContainer>
   );
 }
-
-const Library = () => {
-  return (
-    <SafeAreaView>
-      <Text>Library!</Text>
-    </SafeAreaView>
-  )
-};
 
 export default App;
