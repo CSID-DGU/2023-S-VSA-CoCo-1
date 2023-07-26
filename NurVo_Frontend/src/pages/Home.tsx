@@ -120,7 +120,7 @@ export default function Home({ navigation }: { navigation: any }) {
           <MenuTitle text='Review' onPress={() => {
             navigation.navigate('LessonsList');
           }} />
-          <View style={[layoutStyles.VStackContainer, { marginTop: 4 }]}>
+          <View style={[layoutStyles.VStackContainer, { marginTop: 4, marginBottom:28 }]}>
             {todayLessons.slice(0, 2).map((lesson, index) => (
               <ListCell
                 key={index}
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
 
     width: '100%',
-    height: 280,
+    height: 250,
 
     borderBottomLeftRadius: 12,
     borderBottomRightRadius: 12,
