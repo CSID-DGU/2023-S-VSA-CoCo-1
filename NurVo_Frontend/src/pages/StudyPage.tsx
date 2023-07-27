@@ -40,6 +40,7 @@ const StudyPage: React.FC<StudyPageProps> = ({ navigation, route }) => {
       setCurrentIndex(-1);
       setNextTextArray([]);
       setIsDisabled(false);
+      change.fill(false);
     }
   }, [isDisabled]);
 
@@ -141,9 +142,9 @@ const StudyPage: React.FC<StudyPageProps> = ({ navigation, route }) => {
             <TouchableOpacity onPress={() => turnCard(index)}>
               <View style={[styles.textCard, change[index] ? styles.turnTextCard : null]}>
                 {!change[index] ? (
-                  <Text style={styles.cardText}>{text.english}</Text>
+                  <Text style={styles.cardText}>{textArray[count === -1 || count === textArray.length? textArray.length-1 : count].english}</Text>
                 ) : (
-                  <Text style={styles.cardText}>{text.korean}</Text>
+                  <Text style={styles.cardText}>{textArray[count === -1 || count === textArray.length? textArray.length-1 : count].korean}</Text>
                 )}
               </View>
               <TouchableOpacity style={styles.speakerButton} onPress={() => Speaker(text.english)}>
@@ -153,7 +154,7 @@ const StudyPage: React.FC<StudyPageProps> = ({ navigation, route }) => {
           </View>
         ))}
       </Swiper>
-      {count == -1 & currentIndex == -1 ?
+      {currentIndex === -1 ?
         (
           <View style={styles.btnBar}>
             <TouchableOpacity onPress={keepBtn}>
