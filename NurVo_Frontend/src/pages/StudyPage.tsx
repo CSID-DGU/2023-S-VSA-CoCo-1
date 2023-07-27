@@ -15,11 +15,7 @@ let cardHeight = screenHeight * 0.6;
 
 const StudyPage: React.FC<StudyPageProps> = ({ navigation, route }) => {
   // 전달 받은 데이터(suffle)
-  const Data = route.params.data.map(c => {
-    return { id: c.id, chapter: c.chapter, english: c.english, korean: c.korean, order: Math.random() }
-  }).sort((l: { order: number; }, r: { order: number; }) => {
-    return l.order - r.order;
-  });
+  const Data = route.params.data;
   // 
   const [count, setCount] = useState(0);
   // 진행도
@@ -39,21 +35,14 @@ const StudyPage: React.FC<StudyPageProps> = ({ navigation, route }) => {
 
   useEffect(() => {
     if (isDisabled) {
-      setTextArray([...nextTextArray]);
+      setTextArray(nextTextArray);
       setCount(-1);
       setCurrentIndex(-1);
       setNextTextArray([]);
       setIsDisabled(false);
+      change.fill(false);
     }
-  }, [isDisabled, textArray]);
-
-  useEffect(() => {
-    console.log(nextTextArray);
-    console.log(textArray);
-    console.log(textArray.length);
-    console.log(count);
-    console.log(currentIndex);
-  }, [count, textArray]);
+  }, [isDisabled]);
 
   // alert 창
   const showAlert = () => {
@@ -79,7 +68,6 @@ const StudyPage: React.FC<StudyPageProps> = ({ navigation, route }) => {
     if (swiperRef.current) {
       const swiperState = (swiperRef.current as any).state;
       const totalSlides = swiperState.total;
-
       if (currentIndex === totalSlides - 1) {
         if (swiperRef.current) {
           swiperRef.current.scrollTo(0, false);
@@ -150,13 +138,13 @@ const StudyPage: React.FC<StudyPageProps> = ({ navigation, route }) => {
         height={screenHeight * 0.8}
         scrollEnabled={false} >
         {textArray.map((text, index) => (
-          <View style={styles.contentContainer}>
-            <TouchableOpacity key={index} onPress={() => turnCard(index)}>
+          <View key={index} style={styles.contentContainer}>
+            <TouchableOpacity onPress={() => turnCard(index)}>
               <View style={[styles.textCard, change[index] ? styles.turnTextCard : null]}>
                 {!change[index] ? (
-                  <Text style={styles.cardText}>{text.english}</Text>
+                  <Text style={styles.cardText}>{textArray[count === -1 || count === textArray.length? textArray.length-1 : count].english}</Text>
                 ) : (
-                  <Text style={styles.cardText}>{text.korean}</Text>
+                  <Text style={styles.cardText}>{textArray[count === -1 || count === textArray.length? textArray.length-1 : count].korean}</Text>
                 )}
               </View>
               <TouchableOpacity style={styles.speakerButton} onPress={() => Speaker(text.english)}>
@@ -166,7 +154,7 @@ const StudyPage: React.FC<StudyPageProps> = ({ navigation, route }) => {
           </View>
         ))}
       </Swiper>
-      {count == -1 ?
+      {currentIndex === -1 ?
         (
           <View style={styles.btnBar}>
             <TouchableOpacity onPress={keepBtn}>
