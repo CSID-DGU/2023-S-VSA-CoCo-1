@@ -18,7 +18,7 @@ import LessonsList from './src/pages/LessonsList';
 import LessonFirst from './src/pages/ChapterStudy/LessonFirst';
 import LessonSecond from './src/pages/ChapterStudy/LessonSecond';
 import LessonThird from './src/pages/ChapterStudy/LessonThird';
-import SelectText from './src/pages/SelectText';
+import Library from './src/pages/Library';
 import StudyPage from './src/pages/StudyPage';
 
 const Tab = createBottomTabNavigator();
@@ -79,7 +79,7 @@ const LibraryStackScreen = () => {
         headerBackTitleVisible: false,
       }}
     >
-      <LibraryStack.Screen name="SelectText" component={SelectText} options={{ headerShown: false }}/>
+      <LibraryStack.Screen name="SelectText" component={Library} options={{ headerShown: false }}/>
       <LibraryStack.Screen name="StudyPage" component={StudyPage} />
     </LibraryStack.Navigator>
   );
