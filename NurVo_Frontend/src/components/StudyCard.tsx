@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import color from '../utilities/Color';
 
 interface StudyCardProps {
   context1: string;
   context2: string;
+  style: number
 }
 
 // React.forwardRef로 감싼 StudyCard 컴포넌트를 정의합니다.
-const StudyCard: React.FC<StudyCardProps> = ({ context1, context2 }) => {
+const StudyCard: React.FC<StudyCardProps> = ({ context1, context2, style }) => {
   // 카드 뒤집기
   const [cardTurn, setCardTurn] = useState(false);
 
@@ -17,11 +19,12 @@ const StudyCard: React.FC<StudyCardProps> = ({ context1, context2 }) => {
 
   return (
     <TouchableOpacity onPress={turnCard}>
-      <View style={[styles.textCard, cardTurn ? styles.turnTextCard : null]}>
+      <View
+        style={[styles.textCard, style, cardTurn ? styles.turnTextCard : null]}>
         {!cardTurn ? (
-          <Text style={styles.cardText}>{context1}</Text>
+          <Text style={[styles.cardText, styles.cardText_en, color.BLACK]}>{context1}</Text>
         ) : (
-          <Text style={styles.cardText}>{context2}</Text>
+          <Text style={[styles.cardText, styles.cardText_ko, color.BLACK]}>{context2}</Text>
         )}
       </View>
     </TouchableOpacity>
@@ -30,7 +33,7 @@ const StudyCard: React.FC<StudyCardProps> = ({ context1, context2 }) => {
 
 const styles = StyleSheet.create({
   textCard: {
-    marginHorizontal: 5,
+    marginHorizontal: 10,
     marginVerticala: 10,
     height: '100%',
     justifyContent: 'center',
@@ -44,10 +47,16 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(98, 196, 150, 1)',
   },
   cardText: {
-    marginHorizontal: 10,
-    color: 'rgba(0, 0, 0, 1)',
+    marginHorizontal: 40,
     fontSize: 20,
+    fontWeight: 'bold',
     textAlign: 'left',
+  },
+  cardText_en: {
+    fontFamily: 'Pretendard Variable',
+  },
+  cardText_ko: {
+    fontFamily: '함초롱바탕',
   },
 });
 

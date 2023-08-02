@@ -1,7 +1,7 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import Swiper from 'react-native-swiper';
+import { useRef, useEffect, useState } from 'react';
+import { View, StyleSheet, FlatList } from 'react-native';
 import StudyCard from './StudyCard';
+import { Text } from 'react-native-svg';
 
 interface CardSwiperProps {
   data: {
@@ -11,16 +11,17 @@ interface CardSwiperProps {
     korean: string;
   }[];
   action: string;
+  pageWidth: number;
   nextaction: (count: string) => void;
   alertOpen: (value: boolean) => void;
 }
 
-const CardSwiper = ({ data, action, nextaction, alertOpen }: CardSwiperProps) => {
+const CardSwiper = ({ data, action, pageWidth, nextaction, alertOpen }: CardSwiperProps) => {
   const [first, setFirst] = useState(true);
   const [prescount, setPresCount] = useState(0);
   const [dataArray, setDataArray] = useState(data);
   const [nextDataArray, setNextDataArray] = useState([]);
-  const swiperRef = useRef<Swiper>(null);
+  const flatListRef = useRef<FlatList>(null);
 
   useEffect(() => {
     // 저장
@@ -43,13 +44,12 @@ const CardSwiper = ({ data, action, nextaction, alertOpen }: CardSwiperProps) =>
   useEffect(() => {
     if (prescount < dataArray.length) {
       if (prescount === 0 && first || dataArray.length === 0) {
-        swiperRef.current?.scrollTo(0);
         setFirst(false);
       } else {
-        swiperRef.current?.scrollBy(1, true); // 스와이프 진행
+        flatListRef.current?.scrollToIndex({ animated: true, index: prescount });
       }
     } else {
-      if (nextDataArray.length != 0) {
+      if (nextDataArray.length !== 0) {
         setDataArray(nextDataArray);
         setNextDataArray([]);
         setPresCount(0);
@@ -57,34 +57,38 @@ const CardSwiper = ({ data, action, nextaction, alertOpen }: CardSwiperProps) =>
         alertOpen(true);
       }
     }
-    console.log(nextDataArray);
-    console.log(prescount);
   }, [prescount]);
 
+  const renderItem = ({ item }: { item: any }) => (
+    <View>
+      <StudyCard
+        context1={item.english}
+        context2={item.korean}
+        style={{ width: pageWidth }}
+      />
+    </View>
+  );
 
   return (
-    <View style={styles.constainer}>
-      <Swiper
-        ref={swiperRef}
-        autoplay={false}
-        showsPagination={false}
-        scrollEnabled={false}
-        loop={true}>
-        {dataArray.map((item, index) => (
-          <View key={index}>
-            <StudyCard context1={item.english} context2={item.korean} />
-          </View>
-        ))}
-      </Swiper>
+    <View style={styles.container}>
+      <FlatList
+        ref={flatListRef}
+        data={dataArray}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        horizontal={true}
+        pagingEnabled={true}
+        showsHorizontalScrollIndicator={false}
+      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  constainer: {
+  container: {
     flex: 1,
     marginHorizontal: 10,
-    marginVertical: 5,
+    marginVertical: 30,
     paddingHorizontal: 20,
     paddingVertical: 10,
     justifyContent: 'center',
@@ -93,4 +97,3 @@ const styles = StyleSheet.create({
 });
 
 export default CardSwiper;
-
