@@ -9,11 +9,13 @@ import {
   TextInput,
   Keyboard,
 } from 'react-native';
+import Voice from '@react-native-voice/voice'
 
 import Colors from '../../utilities/Color';
 import { Message, allMessages } from '../../utilities/LessonExample';
 import ChatBubble, { ChatBubbleInputAll, ChatBubbleInputWord } from '../../components/ChatBubble';
 import CustomAlert from '../../components/Alert';
+import VoiceTest from '../../components/VoiceTestFuncComp';
 
 const { StatusBarManager } = NativeModules;
 
@@ -27,6 +29,7 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
   const [statusBarHeight, setStatusBarHeight] = useState(0);
   const [showNextAlert, setShowNextAlert] = useState(false);
   const [showCheckAlert, setShowCheckAlert] = useState(false);
+  const [inputMode, setInputMode] = useState<'keyboard' | 'voice'> ('keyboard');
 
   useEffect(() => {
     if (!showCheckAlert && messages[messages.length - 1].speaker === 'Nurse') {
@@ -116,6 +119,7 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
           </TouchableOpacity>
         )}
       />
+      <VoiceTest/>
       {showNextAlert &&
         <CustomAlert
           onCancle={handleCancle}

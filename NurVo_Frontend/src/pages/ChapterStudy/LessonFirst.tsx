@@ -31,7 +31,7 @@ export default function LessonFirst({ navigation }: { navigation: any }) {
 
     const handleNext = () => {
         navigation.pop();
-        navigation.navigate("LessonSecondScreen");
+        navigation.navigate("LessonThirdScreen");
     };
 
     const handleCancle = () => {
