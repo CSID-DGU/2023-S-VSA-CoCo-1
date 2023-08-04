@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { View, Image, TouchableOpacity, StyleSheet } from 'react-native';
-import { screenWidth } from '../utilities/Layout';
 import CardSwiper from '../components/CardSwiper';
 import ProgressBar from '../components/ProgressBar';
 import CustomAlert from '../components/Alert';
+import { screenWidth } from '../utilities/Layout';
 import rightArrow from '../assets/images/rightArrow.png';
 import leftArrow from '../assets/images/leftArrow.png';
 
-function StudyPage({ navigation, route }): React.JSX.Element {
+const StudyPage = ({ navigation, route }) => {
 
   const data = route.params.data;
   const data_length = data.length;
@@ -15,7 +15,7 @@ function StudyPage({ navigation, route }): React.JSX.Element {
   const [action, setAction] = useState('');
   const [alertOpen, setAlertOpen] = useState(false);
 
-  const handleChangeAction = (value: React.SetStateAction<string>) => {
+  const handleChangeAction = (value: String) => {
     setAction(value);
   };
 
@@ -32,7 +32,7 @@ function StudyPage({ navigation, route }): React.JSX.Element {
 
   // Library로 이동
   const handlePage = () => {
-    navigation.popToTop();
+    navigation.navigate('Library');
   }
 
   return (

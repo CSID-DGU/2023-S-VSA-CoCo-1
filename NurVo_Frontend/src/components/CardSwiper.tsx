@@ -1,7 +1,6 @@
 import { useRef, useEffect, useState } from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
 import StudyCard from './StudyCard';
-import { Text } from 'react-native-svg';
 
 interface CardSwiperProps {
   data: {

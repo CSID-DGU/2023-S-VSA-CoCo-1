@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import color from '../utilities/Color';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import Colors from '../utilities/Color';
+import { Title01_1 } from '../utilities/Fonts';
 
 interface StudyCardProps {
   context1: string;
@@ -18,45 +19,40 @@ const StudyCard: React.FC<StudyCardProps> = ({ context1, context2, style }) => {
   }
 
   return (
-    <TouchableOpacity onPress={turnCard}>
-      <View
-        style={[styles.textCard, style, cardTurn ? styles.turnTextCard : null]}>
-        {!cardTurn ? (
-          <Text style={[styles.cardText, styles.cardText_en, color.BLACK]}>{context1}</Text>
-        ) : (
-          <Text style={[styles.cardText, styles.cardText_ko, color.BLACK]}>{context2}</Text>
-        )}
-      </View>
-    </TouchableOpacity>
+    <View style={styles.container}>
+      <TouchableOpacity onPress={turnCard}>
+        <View
+          style={[styles.textCard, style, cardTurn ? styles.turnTextCard : null]}>
+          {!cardTurn ? (
+            <Title01_1 text={context1} color={Colors.BLACK} />
+          ) : (
+            <Title01_1 text={context2} color={Colors.BLACK} />
+          )}
+        </View>
+      </TouchableOpacity>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignContent: 'center',
+  },
   textCard: {
     marginHorizontal: 10,
     marginVerticala: 10,
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(98, 196, 150, 0.5)',
+    backgroundColor: Colors.MAINLIGHTGREEN,
     borderRadius: 15,
   },
   turnTextCard: {
-    backgroundColor: 'rgba(255, 255, 255, 1)',
+    backgroundColor: Colors.WHITE,
     borderWidth: 2,
-    borderColor: 'rgba(98, 196, 150, 1)',
-  },
-  cardText: {
-    marginHorizontal: 40,
-    fontSize: 20,
-    fontWeight: 'bold',
-    textAlign: 'left',
-  },
-  cardText_en: {
-    fontFamily: 'Pretendard Variable',
-  },
-  cardText_ko: {
-    fontFamily: '함초롱바탕',
+    borderColor: Colors.MAINGREEN,
   },
 });
 

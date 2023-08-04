@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { View, ViewStyle, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import Colors from '../utilities/Color';
 
 interface ProgressBarProps {
   length: number;
@@ -11,7 +12,7 @@ const ProgressBar = ({ length, progress }: ProgressBarProps) => {
   const progressStyle: ViewStyle = {
     width: `${(progress / length) * 100}%`,
     paddingVertical: 10,
-    backgroundColor: 'rgba(98, 196, 150, 1)',
+    backgroundColor: Colors.MAINGREEN,
   };
 
   return (
@@ -25,7 +26,7 @@ const styles = StyleSheet.create({
   progressBar: {
     marginVertical: 0,
     marginHorizontal: 0,
-    backgroundColor: 'rgba(98, 196, 150, 0.2)',
+    backgroundColor: Colors.MAINLIGHTGREEN,
   },
 })
 
