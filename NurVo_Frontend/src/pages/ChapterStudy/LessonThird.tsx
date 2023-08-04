@@ -7,15 +7,16 @@ import {
   NativeModules,
   TouchableOpacity,
   TextInput,
+  View,
   Keyboard,
+  Animated,
 } from 'react-native';
-import Voice from '@react-native-voice/voice'
 
 import Colors from '../../utilities/Color';
 import { Message, allMessages } from '../../utilities/LessonExample';
-import ChatBubble, { ChatBubbleInputAll, ChatBubbleInputWord } from '../../components/ChatBubble';
+import ChatBubble, { ChatBubbleInputAll } from '../../components/ChatBubble';
 import CustomAlert from '../../components/Alert';
-import VoiceTest from '../../components/VoiceTestFuncComp';
+import VoiceRecordButton from '../../components/VoiceFuncComp';
 
 const { StatusBarManager } = NativeModules;
 
@@ -26,21 +27,23 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
   const [messages, setMessages] = useState<Message[]>([allMessages[0]]);
   const [inputText, setInputText] = useState('');
   const [correctPercent, setCorrectPercent] = useState('');
-  const [statusBarHeight, setStatusBarHeight] = useState(0);
+  const [keyboardHeight, setkeyboardHeight] = useState(0);
   const [showNextAlert, setShowNextAlert] = useState(false);
   const [showCheckAlert, setShowCheckAlert] = useState(false);
-  const [inputMode, setInputMode] = useState<'keyboard' | 'voice'> ('keyboard');
+  const [isVoiceMode, setIsVoiceMode] = useState(true);
 
   useEffect(() => {
     if (!showCheckAlert && messages[messages.length - 1].speaker === 'Nurse') {
       inputRef.current?.focus();
     }
   }, [showCheckAlert]);
+  
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
-      () => {
-        flatListRef.current?.scrollToEnd({ animated: true });
+      (event) => {
+        setkeyboardHeight(event.endCoordinates.height);
+        setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100)
       }
     );
     return () => {
@@ -48,6 +51,31 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
     };
   }, []);
 
+  useEffect(() => {
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      (event) => {
+        setkeyboardHeight(event.endCoordinates.height);
+        console.log(keyboardHeight);
+      }
+    );
+    return () => {
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isVoiceMode) {
+      Keyboard.dismiss();
+      inputRef.current?.focus();
+    } else {
+      inputRef.current?.focus();
+    }
+  }, [isVoiceMode]);
+
+  const handleSetInputText = (text: string) => {
+    setInputText(text);
+  };
   const handlePress = () => {
     if (messages.length < allMessages.length) {
       if (messages[messages.length - 1].speaker === 'Nurse' && messages[messages.length - 1].second_step) {
@@ -67,17 +95,12 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
       setShowNextAlert(true);
     }
   };
-
   const handleSend = () => {
-    // setInputText('');
     handlePress();
     flatListRef.current?.scrollToEnd({ animated: true });
-    // console.log(inputText);
   };
-
   const handleNext = () => {
     navigation.popToTop();
-    // navigation.navigate("LessonThirdScreen");
   };
   const handleCancle = () => {
     setShowNextAlert(false);
@@ -92,34 +115,57 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
     setShowCheckAlert(false);
   };
 
+  const hasInputText = messages.some(
+    (item) => item.speaker === 'Nurse' && item.second_step
+  );
+  const [buttonTranslateY] = useState(new Animated.Value(100));
+
+
+  useEffect(() => {
+    Animated.timing(buttonTranslateY, {
+      toValue: hasInputText ? 0 : 100,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  }, [hasInputText]);
+
   return (
     <KeyboardAvoidingView
-      style={styles.container}
+      style={[styles.container, { paddingBottom: keyboardHeight - 50 }]}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       keyboardVerticalOffset={Platform.OS === 'ios' ? StatusBarManager.HEIGHT + 44 : undefined}
     >
       <FlatList
-        style={{ flex: 1, paddingHorizontal: 20 }}
+        style={{ flex: 1, paddingHorizontal: 20, marginBottom: isVoiceMode ? 0 : 50 }}
         ref={flatListRef}
         data={messages}
         keyExtractor={(_, index) => index.toString()}
-        renderItem={({ item }) => (
+        renderItem={({ item, index }) => (
           <TouchableOpacity onPress={handlePress} activeOpacity={1}>
-            {item.speaker === 'Nurse' && item.second_step ? (
+            {hasInputText ? (
               <ChatBubbleInputAll
                 item={item}
                 isBookmarked={false}
                 onEnterValue={handleSend}
-                onChagneText={setInputText}
-                inputRef={inputRef} />
+                onChagneText={handleSetInputText}
+                inputRef={inputRef}
+                input={inputText}
+                isVoiceMode={isVoiceMode}
+                isLastItem={index === messages.length - 1}
+              />
             ) : (
               <ChatBubble item={item} isBookmarked={false} />
             )}
-              
           </TouchableOpacity>
         )}
       />
-      <VoiceTest/>
+      <Animated.View style={{ transform: [{ translateY: buttonTranslateY }] }}>
+        <VoiceRecordButton
+          setInputText={setInputText}
+          setIsVoiceMode={setIsVoiceMode}
+          isVoiceMode={isVoiceMode}
+        />
+      </Animated.View>
       {showNextAlert &&
         <CustomAlert
           onCancle={handleCancle}

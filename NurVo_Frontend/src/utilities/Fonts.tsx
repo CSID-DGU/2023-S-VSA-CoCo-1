@@ -37,6 +37,12 @@ export function Body012({ text, color, numberOfLines, ellipsizeMode }: FontProps
     )
 }
 
+export function Body013({ text, color, numberOfLines, ellipsizeMode }: FontProps) {
+    return(
+        <Text style={[fonts.body01_3, { color: color }]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
+    )
+}
+
 export function Body022({ text, color, numberOfLines, ellipsizeMode }: FontProps) {
     return(
         <Text style={[fonts.body02_2, { color: color }]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
@@ -114,6 +120,14 @@ const fonts = StyleSheet.create({
         fontWeight: '500',
         lineHeight: 22,
     },
+    body01_3: {
+        fontFamily: 'Pretendard Variable',
+        fontSize: 17,
+        fontStyle: 'normal',
+        fontWeight: '300',
+        lineHeight: 22,
+    },
+
     body02_2: {
         fontFamily: 'Pretendard Variable',
         fontSize: 15,

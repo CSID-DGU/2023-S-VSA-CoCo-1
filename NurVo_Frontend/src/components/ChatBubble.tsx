@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import { Message } from "../utilities/LessonExample";
-import { Body012 } from "../utilities/Fonts";
+import { Body012, Body013, Body023, Body024, Subtext013 } from "../utilities/Fonts";
 import { layoutStyles, screenWidth } from "../utilities/Layout";
 import Colors from "../utilities/Color";
 
@@ -12,6 +12,9 @@ interface ChatBubbleProps {
     item: Message;
     isBookmarked: boolean;
     inputRef?: React.RefObject<TextInput>;
+    input?: string;
+    isVoiceMode?: boolean;
+    isLastItem?: boolean;
     onEnterValue?: () => void;
     onChagneText?: (text: string) => void;
 }
@@ -48,8 +51,10 @@ export default function ChatBubble({ item, isBookmarked }: ChatBubbleProps) {
                 bubbleStyles.bubble,
                 item.speaker === 'Nurse' ? bubbleStyles.bubbleRight : bubbleStyles.bubbleLeft
             ]}>
-                <Body012 text={item.dialogue} color={item.speaker === 'Nurse' ? Colors.WHITE : Colors.BLACK} />
-                {isShowTranslation && <Body012 text={item.korean} color={item.speaker === 'Nurse' ? Colors.WHITE : Colors.BLACK} />}
+                {item.speaker === 'Nurse' ?
+                    <Body012 text={item.dialogue} color={Colors.WHITE} /> :
+                    <Body013 text={item.dialogue} color={Colors.BLACK} />}
+                {isShowTranslation && <Subtext013 text={item.korean} color={item.speaker === 'Nurse' ? Colors.WHITE : Colors.BLACK} />}
                 <View style={[
                     layoutStyles.HStackContainer,
                     {
@@ -74,7 +79,7 @@ export default function ChatBubble({ item, isBookmarked }: ChatBubbleProps) {
     );
 }
 
-export function ChatBubbleInputWord({ item, isBookmarked, onEnterValue, onChagneText, inputRef }: ChatBubbleProps) {
+export function ChatBubbleInputWord({ item, isBookmarked, onEnterValue, onChagneText, inputRef, input, isVoiceMode, isLastItem }: ChatBubbleProps) {
     useEffect(() => {
         setIsBookmark(isBookmarked);
     }, [isBookmarked]);
@@ -111,22 +116,38 @@ export function ChatBubbleInputWord({ item, isBookmarked, onEnterValue, onChagne
                 item.speaker === 'Nurse' ? bubbleStyles.bubbleRight : bubbleStyles.bubbleLeft,
                 { flexDirection: 'row', flexWrap: 'wrap' }
             ]}>
+
                 <View style={[layoutStyles.VStackContainer]}>
                     {textWithInputs.map((segment, index) => {
                         if (typeof segment === 'string') {
-                            return <Body012 key={index} text={segment} color={item.speaker === 'Nurse' ? Colors.WHITE : Colors.BLACK} />;
+                            return (
+                                <Body012
+                                    key={index}
+                                    text={segment}
+                                    color={item.speaker === 'Nurse' ? Colors.WHITE : Colors.BLACK}
+                                />
+                            );
                         } else {
-                            return <TextInput
-                                key={index}
-                                style={[inputBubbleStyles.input, { color: Colors.WHITE, marginVertical: 4 }]}
-                                ref={inputRef}
-                                onSubmitEditing={onEnterValue}
-                                onChangeText={onChagneText}
-                            />;
+                            return isLastItem ? (
+                                <TextInput
+                                    key={index}
+                                    style={[
+                                        inputBubbleStyles.input,
+                                        { color: Colors.WHITE, marginVertical: 4 },
+                                    ]}
+                                    value={input}
+                                    ref={inputRef}
+                                    onSubmitEditing={onEnterValue}
+                                    onChangeText={onChagneText}
+                                    showSoftInputOnFocus={!isVoiceMode}
+                                />
+                            ) : (
+                                input && checkInputWord(input, item.second_step)
+                            )
                         }
                     })}
                 </View>
-                {isShowTranslation && <Body012 text={item.korean} color={item.speaker === 'Nurse' ? Colors.WHITE : Colors.BLACK} />}
+                {isShowTranslation && <Subtext013 text={item.korean} color={item.speaker === 'Nurse' ? Colors.WHITE : Colors.BLACK} />}
                 <View style={[
                     layoutStyles.HStackContainer,
                     {
@@ -151,7 +172,7 @@ export function ChatBubbleInputWord({ item, isBookmarked, onEnterValue, onChagne
     );
 }
 
-export function ChatBubbleInputAll({ item, isBookmarked, onEnterValue, onChagneText, inputRef }: ChatBubbleProps) {
+export function ChatBubbleInputAll({ item, isBookmarked, onEnterValue, onChagneText, inputRef, input, isVoiceMode, isLastItem }: ChatBubbleProps) {
     useEffect(() => {
         setIsBookmark(isBookmarked);
     }, [isBookmarked]);
@@ -186,16 +207,26 @@ export function ChatBubbleInputAll({ item, isBookmarked, onEnterValue, onChagneT
                 item.speaker === 'Nurse' ? bubbleStyles.bubbleRight : bubbleStyles.bubbleLeft,
                 { flexDirection: 'row', flexWrap: 'wrap' }
             ]}>
-                <View style={[layoutStyles.VStackContainer, {width: '100%'}]}>
+                <View style={[layoutStyles.VStackContainer, { width: '100%' }]}>
                     {item.speaker === 'Nurse' ?
-                        (<TextInput
-                            style={[inputBubbleStyles.input, { color: Colors.WHITE, marginVertical: 4 }]}
-                            ref={inputRef}
-                            onSubmitEditing={onEnterValue}
-                            onChangeText={onChagneText}
-                        />) :
+                        (isLastItem ?
+                            <TextInput
+                                style={[inputBubbleStyles.input, { color: Colors.WHITE, marginVertical: 4 }]}
+                                ref={inputRef}
+                                value={input}
+                                onSubmitEditing={onEnterValue}
+                                onChangeText={(text) => {
+                                    if (onChagneText) {
+                                        onChagneText(text);
+                                    }
+                                }}
+                                showSoftInputOnFocus={!isVoiceMode}
+                                multiline={true}
+                            /> :
+                            checkInputWord("input", item.second_step)
+                        ) :
                         (<Body012 text={item.dialogue} color={item.speaker === 'Nurse' ? Colors.WHITE : Colors.BLACK} />)}
-                    {isShowTranslation && <Body012 text={item.korean} color={item.speaker === 'Nurse' ? Colors.WHITE : Colors.BLACK} />}
+                    {isShowTranslation && <Subtext013 text={item.korean} color={item.speaker === 'Nurse' ? Colors.WHITE : Colors.BLACK} />}
                     <View style={[
                         layoutStyles.HStackContainer,
                         {
@@ -238,6 +269,16 @@ function replaceWithInput(text: string, textToReplace: string) {
         return result;
     }
 }
+
+function checkInputWord(input: string, second_step: string) {
+    return (
+        <View style={[layoutStyles.VStackContainer]}>
+            <Body012 text={input} color={Colors.WHITE} />
+            <Body023 text={second_step} color={Colors.WHITE} />
+        </View>
+    )
+}
+
 const bubbleStyles = StyleSheet.create({
 
     messageContainerRight: {
