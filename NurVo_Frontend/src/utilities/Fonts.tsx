@@ -58,6 +58,25 @@ export function Subtext013({ text, color, numberOfLines, ellipsizeMode }: FontPr
     )
 }
 
+
+export function Title01_1({ text, color, numberOfLines, ellipsizeMode }: FontProps) {
+    return(
+        <Text style={[fonts.title01_1, { color: color }]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
+    )
+}
+
+export function Body017({ text, color, numberOfLines, ellipsizeMode }: FontProps) {
+    return(
+        <Text style={[fonts.body01_7, { color: color }]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
+    )
+}
+
+export function Subtext012({ text, color, numberOfLines, ellipsizeMode }: FontProps) {
+    return(
+        <Text style={[fonts.subtext01_2, { color: color }]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
+    )
+}
+
 const fonts = StyleSheet.create({
     title01: {
         fontFamily: 'Pretendard Variable',
@@ -121,6 +140,32 @@ const fonts = StyleSheet.create({
         fontSize: 13,
         fontStyle: 'normal',
         fontWeight: '400',
+        lineHeight: 18,
+    },
+    title01_1: {
+        paddingHorizontal: 30,
+        fontFamily: 'Pretendard Variable',
+        fontSize: 26,
+        fontStyle: 'normal',
+        fontWeight: '800',
+        lineHeight: 38,
+    },
+    body01_7: {
+        paddingHorizontal: 10,
+        paddingTop: 10,
+        fontFamily: 'Pretendard Variable',
+        fontSize: 17,
+        fontStyle: 'normal',
+        fontWeight: '700',
+        lineHeight: 22,
+    },
+    subtext01_2: {
+        paddingHorizontal: 10,
+        paddingVertical: 10,
+        fontFamily: 'Pretendard Variable',
+        fontSize: 13,
+        fontStyle: 'normal',
+        fontWeight: '500',
         lineHeight: 18,
     },
 });
