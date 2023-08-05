@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useReducer } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import {
   FlatList,
   KeyboardAvoidingView,
@@ -21,12 +21,27 @@ const { StatusBarManager } = NativeModules;
 
 export default function LessonSecond({ navigation }: { navigation: any }) {
 
-  //키보드 높이 계산
+  const flatListRef = useRef<FlatList>(null);
+  const inputRef = useRef<TextInput>(null);
+  const [messages, setMessages] = useState<Message[]>([allMessages[0]]);
+  const [inputText, setInputText] = useState('');
+  const [correctPercent, setCorrectPercent] = useState('');
+  const [keyboardHeight, setkeyboardHeight] = useState(0);
+  const [showNextAlert, setShowNextAlert] = useState(false);
+  const [showCheckAlert, setShowCheckAlert] = useState(false);
+  const [isVoiceMode, setIsVoiceMode] = useState(true);
+
+  useEffect(() => {
+    if (!showCheckAlert && messages[messages.length - 1].speaker === 'Nurse') {
+      inputRef.current?.focus();
+    }
+  }, [showCheckAlert]);
+
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
       (event) => {
-        dispatch({ type: 'SET_KEYBOARD_HEIGHT', payload: event.endCoordinates.height });
+        setkeyboardHeight(event.endCoordinates.height);
         flatListRef.current?.scrollToEnd({ animated: true });
       }
     );
@@ -38,7 +53,7 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
     const keyboardDidHideListener = Keyboard.addListener(
       'keyboardDidHide',
       (event) => {
-        dispatch({ type: 'SET_KEYBOARD_HEIGHT', payload: event.endCoordinates.height });
+        setkeyboardHeight(event.endCoordinates.height);
         console.log(keyboardHeight);
       }
     );
@@ -47,114 +62,74 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
     };
   }, []);
 
-//SECTION - useState
-  const initialState = {
-    messages: [allMessages[0]],
-    inputText: '',
-    correctPercent: '',
-    keyboardHeight: 0,
-    showNextAlert: false,
-    showCheckAlert: false,
-    isVoiceMode: true,
-  };
-  function reducer(state: any, action: any) {
-    switch (action.type) {
-      case 'SET_MESSAGES':
-        return { ...state, messages: action.payload };
-      case 'SET_INPUT_TEXT':
-        return { ...state, inputText: action.payload };
-      case 'SET_CORRECT_PERCENT':
-        return { ...state, correctPercent: action.payload };
-      case 'SET_KEYBOARD_HEIGHT':
-        return { ...state, keyboardHeight: action.payload };
-      case 'SET_SHOW_NEXT_ALERT':
-        return { ...state, showNextAlert: action.payload };
-      case 'SET_SHOW_CHECK_ALERT':
-        return { ...state, showCheckAlert: action.payload };
-      case 'SET_IS_VOICE_MODE':
-        return { ...state, isVoiceMode: action.payload };
-      default:
-        throw new Error();
-    }
-  }
-  const [state, dispatch] = useReducer(reducer, initialState);
-  const { messages, inputText, correctPercent, keyboardHeight, showNextAlert, showCheckAlert, isVoiceMode } = state;
-  const flatListRef = useRef<FlatList>(null);
-  const inputRef = useRef<TextInput>(null);
-
-//SECTION - 입력 관련 함수
-  //현재 마지막 문장이 입력창을 가지고 있는지 계산
-  const hasInputText = messages[messages.length - 1].speaker === 'Nurse' &&
-    messages[messages.length - 1].second_step;
-  //입력 모드에 따라 하단 버튼 나타나는 애니메이션
-  const [buttonTranslateY] = useState(new Animated.Value(115));
-  //입력창이 존재하면 버튼이 올라오고, 입력창이 없으면 내려가는 애니메이션
-  useEffect(() => {
-    Animated.timing(buttonTranslateY, {
-      toValue: hasInputText ? 0 : 115,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-  }, [hasInputText]);
-
-  //음성모드일 때 입력창에 포커스
   useEffect(() => {
     if (isVoiceMode) {
       Keyboard.dismiss();
       inputRef.current?.focus();
+    } else {
+      inputRef.current?.focus();
     }
   }, [isVoiceMode]);
 
-  //입력창에 입력된 텍스트를 state에 저장하는 함수 -> ChatBubbleInputAll로 전달하기 위해 함수형으로 구현
-  const handleSetInputText = (text: string) => dispatch({ type: 'SET_INPUT_TEXT', payload: text });
+  const handleSetInputText = (text: string) => {
+    setInputText(text);
+  };
 
-  //다음문장으로 넘어가는 함수 -> 입력창 X
   const handlePress = () => {
     if (messages.length < allMessages.length) {
       if (messages[messages.length - 1].speaker === 'Nurse' && messages[messages.length - 1].second_step) {
+
         if (inputText.trim().length === 0) {
           inputRef.current?.focus();
           return;
         } else {
           console.log(inputText);
-          dispatch({ type: 'SET_SHOW_CHECK_ALERT', payload: true });
+          setShowCheckAlert(true);
         }
       } else {
-        dispatch({ type: 'SET_MESSAGES', payload: allMessages.slice(0, messages.length + 1) });
+        setMessages(allMessages.slice(0, messages.length + 1));
         setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100);
       }
     } else {
-      dispatch({ type: 'SET_SHOW_NEXT_ALERT', payload: true });
+      setShowNextAlert(true);
     }
   };
-  //다음 문장으로 넘어가는 함수 -> 입력창 O
+
   const handleSend = () => {
     handlePress();
     flatListRef.current?.scrollToEnd({ animated: true });
   };
 
-//SECTION - Alert
-  useEffect(() => {
-    if (!showCheckAlert && messages[messages.length - 1].speaker === 'Nurse') {
-      inputRef.current?.focus();
-    }
-  }, [showCheckAlert]);
-  //다음 화면으로 넘어가는 함수 (알림창 확인 버튼)
   const handleNext = () => {
     navigation.pop();
     navigation.navigate("LessonThirdScreen");
   };
-  //학습 완료 알림창 취소 버튼
-  const handleCancle = () => dispatch({ type: 'SET_SHOW_NEXT_ALERT', payload: false });
-  //입력 완료 알림창 확인 버튼
+  const handleCancle = () => {
+    setShowNextAlert(false);
+  };
   const handleCheckNext = () => {
-    dispatch({ type: 'SET_INPUT_TEXT', payload: '' });
-    dispatch({ type: 'SET_SHOW_CHECK_ALERT', payload: false });
-    dispatch({ type: 'SET_MESSAGES', payload: allMessages.slice(0, messages.length + 1) });
+    setInputText('');
+    setShowCheckAlert(false);
+    setMessages(allMessages.slice(0, messages.length + 1));
     setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100);
   };
-  //입력 완료 알림창 취소 버튼
-  const handleCheckCancle = () => dispatch({ type: 'SET_SHOW_CHECK_ALERT', payload: false });
+  const handleCheckCancle = () => {
+    setShowCheckAlert(false);
+  };
+  const hasInputText = messages[messages.length - 1].speaker === 'Nurse' &&
+    messages[messages.length - 1].second_step;
+
+  const [buttonTranslateY] = useState(new Animated.Value(100));
+
+
+  useEffect(() => {
+    Animated.timing(buttonTranslateY, {
+      toValue: hasInputText ? 0 : 100,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  }, [hasInputText]);
+
 
   return (
     <KeyboardAvoidingView
@@ -184,7 +159,8 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
       />
       <Animated.View style={{ transform: [{ translateY: buttonTranslateY }] }}>
         <VoiceRecordButton
-          dispatch={dispatch}
+          setInputText={setInputText}
+          setIsVoiceMode={setIsVoiceMode}
           isVoiceMode={isVoiceMode}
         />
       </Animated.View>

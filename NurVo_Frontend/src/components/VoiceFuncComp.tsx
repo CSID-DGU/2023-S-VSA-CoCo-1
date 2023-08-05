@@ -1,8 +1,9 @@
-import React, { Component, Dispatch } from 'react';
+import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
   TouchableOpacity,
+  Text
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Voice, {
@@ -14,13 +15,10 @@ import { Subtext013 } from '../utilities/Fonts';
 import Colors from '../utilities/Color';
 
 type Props = {
-  dispatch: Dispatch<Action>;
+  setInputText: (voiceText: string) => void;
+  setIsVoiceMode: (isVoiceMode: boolean) => void;
   isVoiceMode: boolean;
 };
-type Action =
-  | { type: 'SET_INPUT_TEXT'; payload: string }
-  | { type: 'SET_IS_VOICE_MODE'; payload: boolean };
-
 
 type State = {
   recognized: string;
@@ -66,16 +64,16 @@ class VoiceRecordButton extends Component<Props, State> {
   componentWillUnmount() {
     Voice.destroy().then(Voice.removeAllListeners);
   }
-  
   handleInputTextChange = (text: string) => {
-    this.props.dispatch({ type: 'SET_INPUT_TEXT', payload: text });
+    // setInputText prop을 통해 전달된 setInputText 함수 호출
+    this.props.setInputText(text);
   };
 
-  handleInputMode = () => {
+  onClickInputMode = () => {
     this.setState({ isVoiceMode: !this.state.isVoiceMode }, () => {
-      this.props.dispatch({ type: 'SET_IS_VOICE_MODE', payload: this.state.isVoiceMode });
+      this.props.setIsVoiceMode(this.state.isVoiceMode);
     });
-  };
+  }
   onSpeechStart = (e: any) => {
     console.log('onSpeechStart: ', e);
     this.setState({
@@ -195,7 +193,7 @@ class VoiceRecordButton extends Component<Props, State> {
             </View>
           </TouchableOpacity>
         )}
-        <TouchableOpacity style={voiceStyle.sideButton} onPress={this.handleInputMode}>
+        <TouchableOpacity style={voiceStyle.sideButton} onPress={this.onClickInputMode}>
           <Ionicons name={this.state.isVoiceMode ? 'keypad' : 'mic'} size={30} color={Colors.MAINGREEN} />
           <Subtext013 text={this.state.isVoiceMode ? "키보드 모드" : "음성 모드"} color={Colors.MAINGREEN} />
         </TouchableOpacity>
@@ -235,7 +233,6 @@ const voiceStyle = StyleSheet.create({
     shadowOpacity: 1,
     shadowRadius: 10,
     elevation: 10,
-
     marginBottom: 10,
   },
   innerButton: {
@@ -260,5 +257,40 @@ const voiceStyle = StyleSheet.create({
     marginRight: 30,
   }
 });
+
+const styles = StyleSheet.create({
+  button: {
+    width: 50,
+    height: 50,
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+  },
+  welcome: {
+    fontSize: 20,
+    textAlign: 'center',
+    margin: 10,
+  },
+  action: {
+    textAlign: 'center',
+    color: '#0000FF',
+    marginVertical: 5,
+    fontWeight: 'bold',
+  },
+  instructions: {
+    textAlign: 'center',
+    color: '#333333',
+    marginBottom: 5,
+  },
+  stat: {
+    textAlign: 'center',
+    color: '#B0171F',
+    marginBottom: 1,
+  },
+});
+
 
 export default VoiceRecordButton;
