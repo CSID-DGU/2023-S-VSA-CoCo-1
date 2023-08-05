@@ -6,11 +6,11 @@ import { Title01_1 } from '../utilities/Fonts';
 interface StudyCardProps {
   context1: string;
   context2: string;
-  style: number
+  style?: {};
 }
 
 // React.forwardRef로 감싼 StudyCard 컴포넌트를 정의합니다.
-const StudyCard: React.FC<StudyCardProps> = ({ context1, context2, style }) => {
+const StudyCard = ({ context1, context2, style }: StudyCardProps) => {
   // 카드 뒤집기
   const [cardTurn, setCardTurn] = useState(false);
 

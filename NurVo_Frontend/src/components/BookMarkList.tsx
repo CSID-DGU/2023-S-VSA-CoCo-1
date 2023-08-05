@@ -1,23 +1,21 @@
-import React, { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, ScrollView, Animated, FlatList } from 'react-native';
-import { Body017, Subtext012 } from '../utilities/Fonts';
 import BookMark from './BookMark';
 import Colors from '../utilities/Color.js';
 import { screenWidth } from '../utilities/Layout';
 
 interface BookMarkProps {
   dataArray: {
-    id: string;
+    dialogue: string;
     chapter: string;
-    english: string;
+    date: string;
     korean: string;
   }[];
-  allSelet: boolean;
   trueCount: (value: number) => void;
   seletedBookMarkList: (value: {
-    id: string;
+    dialogue: string;
     chapter: string;
-    english: string;
+    date: string;
     korean: string;
   }[]) => void;
 }
@@ -29,15 +27,15 @@ const BookMarkList = ({ dataArray, trueCount, seletedBookMarkList }: BookMarkPro
   const [seletedList, setseletedList] = useState([]);
   const [isActionAll, setIsActionAll] = useState(false);
 
-  useEffect(()=>{
-    if (isActionAll){
+  useEffect(() => {
+    if (isActionAll) {
       setseletedList(dataArray);
       setCount(dataArray.length);
     } else {
       setseletedList([]);
       setCount(0);
     }
-  },[isActionAll]);
+  }, [isActionAll]);
 
   useEffect(() => {
     seletedBookMarkList(seletedList);
@@ -45,24 +43,23 @@ const BookMarkList = ({ dataArray, trueCount, seletedBookMarkList }: BookMarkPro
   }, [seletedList, count]);
 
   useEffect(() => {
-    // trueCount 상태가 변경될 때 애니메이션 실행
     Animated.timing(animationValue, {
       toValue: count >= 1 ? 1 : 0,
-      duration: 500, // 애니메이션 지속 시간 (0.5초)
-      useNativeDriver: false, // true일 경우, 네이티브 런타임에 애니메이션을 실행하도록 설정
+      duration: 500,
+      useNativeDriver: false,
     }).start();
   }, [count, animationValue]);
 
   const translateY = animationValue.interpolate({
     inputRange: [0, 1],
-    outputRange: [-100, 0], // 0과 1의 값에 대한 translateY의 변화량
+    outputRange: [-100, 0],
   });
 
   const handleSelectedID = (value: string) => {
     const newArray = [...seletedList];
-    const idx = seletedList.findIndex((item) => value === item.id);
+    const idx = seletedList.findIndex((item) => value === item.date);
     if (idx === -1) {
-      const index = dataArray.findIndex((item) => value === item.id);
+      const index = dataArray.findIndex((item) => value === item.date);
       newArray.push(dataArray[index]);
       setseletedList(newArray);
       setCount((prev) => prev + 1);
@@ -82,8 +79,8 @@ const BookMarkList = ({ dataArray, trueCount, seletedBookMarkList }: BookMarkPro
 
     return (
       <BookMark
-        id={item.id}
-        context={item.english}
+        id={item.date}
+        context={item.dialogue}
         chapter={item.chapter}
         isLastItem={isLastItem}
         actionAll={isActionAll}

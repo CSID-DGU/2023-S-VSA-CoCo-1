@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, ScrollView, Animated } from 'react-native';
+import { useState, useEffect } from 'react';
+import { StyleSheet, View, TouchableOpacity, } from 'react-native';
 import Colors from '../utilities/Color.js';
 import { Body017, Subtext012 } from '../utilities/Fonts';
 
@@ -11,7 +11,7 @@ interface BookMarkProps {
   actionAll?: boolean;
   count: number;
   length: number;
-  seletedBookMark: (value: number) => void;
+  seletedBookMark: (value: string) => void;
 }
 
 const BookMark = ({ id, context, chapter, isLastItem, actionAll, count, length, seletedBookMark }: BookMarkProps) => {
@@ -42,15 +42,15 @@ const BookMark = ({ id, context, chapter, isLastItem, actionAll, count, length, 
   return (
     <TouchableOpacity
       style={[
-        styles.item, 
+        styles.item,
         isLastItem ? styles.lastItem : null,
         select ? styles.seletedItem : null,
         unSeletedBookMark ? styles.unSeletedItem : null,
       ]}
       onPress={seleted}>
       <View style={styles.contents}>
-        <Body017 text={context} color={Colors.BLACK} numberOfLines={1} ellipsizeMode='tail' />
-        <Subtext012 text={chapter} color={Colors.GRAY05} numberOfLines={1} ellipsizeMode='tail' />
+        <Body017 text={context} color={Colors.BLACK} numberOfLines={1} ellipsizeMode='tail'/>
+        <Subtext012 text={chapter} color={Colors.GRAY05} numberOfLines={1} ellipsizeMode='tail'/>
       </View>
     </TouchableOpacity>
 
