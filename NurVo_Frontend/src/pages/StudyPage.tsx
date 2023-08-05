@@ -32,7 +32,7 @@ const StudyPage = ({ navigation, route }) => {
 
   // Library로 이동
   const handlePage = () => {
-    navigation.navigate('Library');
+    navigation.popToTop();
   }
 
   return (
