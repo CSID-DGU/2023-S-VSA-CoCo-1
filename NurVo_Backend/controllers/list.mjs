@@ -1,13 +1,11 @@
 import express from 'express';
 import { FilterDialogues, FilterNurse, FilterNurse_ThirdStep, Accuracy } from '../services/dialogue.mjs';
 import { getDialogueOfBookemark } from '../services/bookmark.mjs';
-import { saveBookemark } from '../db/db.mjs';
 
 export const router = express.Router();
 router.get('/:list', getDialogues);
 router.get('/:list/step2', getSecondStep);
 router.get('/:list/step3', getThirdStep);
-router.post('/:list', saveBookemarkForDB);
 router.post('/:list/step2', checkAnswerSecondStep);
 router.post('/:list/step3',checkAnswerThirdStep)
 
@@ -62,13 +60,3 @@ async function checkAnswerThirdStep(req, res) {
   }
 }
 
-async function saveBookemarkForDB(req, res) {
-  try {
-    const conversation_id = req.body.conversation_id;
-    console.log(conversation_id);
-    await saveBookemark(conversation_id);
-    res.status(200).send({"message":"save"});
-  } catch (err) {
-    console.error(err);
-  };
-};

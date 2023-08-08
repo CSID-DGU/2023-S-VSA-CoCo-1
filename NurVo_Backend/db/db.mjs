@@ -151,3 +151,16 @@ export const getBookmark = async (user) => {
     client.release();
   };
 };
+
+export const deleteBookmark = async (dialogue_id, user) => {
+  const user_id = user || "coco1234";
+  const client = await pool.connect();
+  try {
+    await client.query('delete from bookmark where user_id = $1 and conversation_id = $2', [user_id, dialogue_id]);
+    console.log("북마크 삭제 완료");
+  } catch (err) {
+    console.error(err);
+  } finally {
+    client.release();
+  };
+};
