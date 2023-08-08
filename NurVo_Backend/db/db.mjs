@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+//데이터베이스 연결 정보 
 const DB_HOST = process.env.DB_HOST;
 const DB_USER = process.env.DB_USER;
 const DB_PASSWORD = process.env.DB_PASSWORD;
@@ -14,6 +15,38 @@ const pool = new pg.Pool({
   database : "postgres",
   password : DB_PASSWORD,
 });
+
+//사용자 정보 불러오기
+export const getUser = async (id) => {
+  const client = await pool.connect();
+  try {
+    if(id){ //id가 있으면 해당 id의 유저 정보만 가지고 옴
+      const user = await client.query('SELECT * FROM public.user WHERE id = $1', [id]);
+      return user.rows[0];
+    }else{ //id가 없으면 모든 유저 정보를 가지고 옴
+      const user = await client.query('SELECT * FROM public.user');
+      return user.rows;
+    }
+    
+  } catch (err) {
+    console.error(err);
+  } finally {
+    client.release();
+  };
+};
+
+//사용자 정보 저장하기
+export const saveUser = async (userInfo) => { //userInfo는 id, name, password, email, phone_number를 가지고 있음  
+  const client = await pool.connect();
+  try { //회원정보 저장
+    const user = await client.query('INSERT INTO public.user (id, name, email, phone_number, password) VALUES ($1, $2, $3, $4, $5)', [userInfo.id, userInfo.name, userInfo.phone_number, userInfo.email, userInfo.password]);
+    return user.rows[0];
+  } catch (err) {
+    console.error(err);
+  } finally {
+    client.release();
+  };
+};
 
 //topic 가지고 오는 함수
 export const getTopic = async () => {
