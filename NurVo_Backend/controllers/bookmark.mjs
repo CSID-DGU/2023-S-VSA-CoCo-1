@@ -1,5 +1,6 @@
 import express from 'express';
-import { getDialogueOfBookemark, saveBookemark } from '../services/bookmark.mjs';
+import { getDialogueOfBookemark } from '../services/bookmark.mjs';
+import { saveBookemark, deleteBookmark } from '../db/db.mjs';
 
 export const router = express.Router();
 
@@ -35,8 +36,12 @@ async function addBookmark(req, res) {
 async function deleteBookmark(req, res) {
   try {
     const conversationIds = req.body;
-    console.log(conversationIds);
-    res.send({"message":"delete"});
+    conversationIds.forEach(async (conversationId) => {
+      await deleteBookmark(conversationId);
+    });
+
+    const bookmark = await getDialogueOfBookemark();
+    res.status(200).send(bookmark);
   } catch (err) {
     console.error(err);
   };
