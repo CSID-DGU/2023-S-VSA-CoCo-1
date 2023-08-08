@@ -1,19 +1,22 @@
-import bcrpt from "bcrpt"
+import bcrypt from "bcrypt"
 import express from 'express';
 import { getUser, saveUser } from '../db/db.mjs';
 import dotenv from 'dotenv';
-import coolsms from 'coolsms-node-sdk';
 import { generateRandomSixDigitNumber } from "../services/signup.mjs";
+import coolsms from "coolsms-node-sdk";
 
 dotenv.config();
 
 export const router = express.Router();
 
+const coolsmsMessageService = coolsms.default;
+
 //sms를 보내기 위한 api 키 및 시크릿 키
 const IDENTIFY_API_KEY = process.env.IDENTIFY_API_KEY;
 const IDENTIFY_API_SECRET = process.env.IDENTIFY_API_SECRET;
-const messageService = new coolsms({IDENTIFY_API_KEY, IDENTIFY_API_SECRET});
+const messageService = new coolsmsMessageService(IDENTIFY_API_KEY, IDENTIFY_API_SECRET);
 
+let randomSixDigitNumber;
 
 router.post('/', signup);
 router.get('/:id', checkId); //겹치는 id 있나 확인하는 엔드포인트
@@ -30,7 +33,7 @@ async function signup(req, res) {
         break;
       }
     }
-    const hashedPassword = await bcrpt.hash(password, 10); //비밀번호 해시화
+    const hashedPassword = await bcrypt.hash(password, 10); //비밀번호 해시화
     const userInfo = {
       id: id,
       name: name,
@@ -65,7 +68,7 @@ async function identify(req, res) { //사용자 인증번호 발송
   const { phone_number, Certification } = req.body;
   try {
 
-    const randomSixDigitNumber = generateRandomSixDigitNumber();
+    
     const params = {
       to: phone_number,
       from: process.env.SMS_FROM,
@@ -80,7 +83,8 @@ async function identify(req, res) { //사용자 인증번호 발송
         res.send({"message":"인증번호가 일치하지 않습니다."});
       }
     }else {
-    const response = await messageService.send(params);
+    randomSixDigitNumber = generateRandomSixDigitNumber();
+    const response = await messageService.sendOne(params);
     res.send({ "Message": "발송되었습니다" });
   }
 
