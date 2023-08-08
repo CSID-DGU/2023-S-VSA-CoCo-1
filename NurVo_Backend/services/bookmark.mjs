@@ -14,6 +14,7 @@ export async function getDialogueOfBookemark (user_id) {
     const chpaterInfo = chapter.find((element) => element.id === dialogueInfo.chapter_id);
 
     return {
+      conversation_id: dialogueInfo.id,
       dialogue: dialogueInfo.dialogue || '',
       korean: dialogueInfo.korean || '',
       date: bm.date || '',
