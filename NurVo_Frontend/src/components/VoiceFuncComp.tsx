@@ -75,28 +75,24 @@ class VoiceRecordButton extends Component<Props, State> {
     });
   }
   onSpeechStart = (e: any) => {
-    console.log('onSpeechStart: ', e);
     this.setState({
       started: '√',
     });
   };
 
   onSpeechRecognized = (e: SpeechRecognizedEvent) => {
-    console.log('onSpeechRecognized: ', e);
     this.setState({
       recognized: '√',
     });
   };
 
   onSpeechEnd = (e: any) => {
-    console.log('onSpeechEnd: ', e);
     this.setState({
       end: '√',
     });
   };
 
   onSpeechError = (e: SpeechErrorEvent) => {
-    console.log('onSpeechError: ', e);
     this.setState({
       error: JSON.stringify(e.error),
     });
@@ -104,7 +100,6 @@ class VoiceRecordButton extends Component<Props, State> {
 
   onSpeechResults = (e: SpeechResultsEvent) => {
     if (e.value) {
-      console.log('onSpeechResults: ', e);
       this.setState({
         results: e.value,
       });
@@ -115,7 +110,6 @@ class VoiceRecordButton extends Component<Props, State> {
 
   onSpeechPartialResults = (e: SpeechResultsEvent) => {
     if (e.value) {
-      console.log('onSpeechPartialResults: ', e);
       this.setState({
         partialResults: e.value,
       });
@@ -123,7 +117,6 @@ class VoiceRecordButton extends Component<Props, State> {
   };
 
   onSpeechVolumeChanged = (e: any) => {
-    console.log('onSpeechVolumeChanged: ', e);
     this.setState({
       pitch: e.value,
     });

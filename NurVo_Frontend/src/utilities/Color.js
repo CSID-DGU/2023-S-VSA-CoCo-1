@@ -1,6 +1,6 @@
 const Colors = 
 {
-    MAINGREEN: '#62C496',
+    MAINGREEN: '#007D74',
     MAINLIGHTGREEN: 'rgba(98, 196, 150, 0.5)',
     WHITE: '#FFFFFF',
     BLACK: '#2B2B2B',
@@ -11,5 +11,7 @@ const Colors =
     GRAY09: '#EAEAEA',
     BACKGROUND: '#F7F7F7',
     SHADOW: '#BFBFBF',
+    NAVY: '#042940',
+    YELLOW: '#FFB30D',
 }
 export default Colors;

@@ -25,6 +25,7 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
   const inputRef = useRef<TextInput>(null);
   const [messages, setMessages] = useState<Message[]>([allMessages[0]]);
   const [inputText, setInputText] = useState('');
+  const [inputValues, setInputValues] = useState({});
   const [correctPercent, setCorrectPercent] = useState('');
   const [keyboardHeight, setkeyboardHeight] = useState(0);
   const [showNextAlert, setShowNextAlert] = useState(false);
@@ -55,7 +56,6 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
       'keyboardDidHide',
       (event) => {
         setkeyboardHeight(event.endCoordinates.height);
-        console.log(keyboardHeight);
       }
     );
     return () => {
@@ -70,6 +70,7 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
     } else {
       inputRef.current?.focus();
     }
+    setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100)
   }, [isVoiceMode]);
 
   const handleSetInputText = (text: string) => {
@@ -84,7 +85,6 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
             inputRef.current?.focus();
             return;
           } else {
-            console.log(inputText);
             setShowCheckAlert(true);
           }
         } else {
@@ -116,6 +116,7 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
     setShowNextAlert(false);
   };
   const handleCheckNext = () => {
+    handleInputValues(inputText);
     setInputText('');
     setShowCheckAlert(false);
     setMessages(allMessages.slice(0, messages.length + 1));
@@ -124,12 +125,14 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
   const handleCheckCancle = () => {
     setShowCheckAlert(false);
   };
+  const handleInputValues = (text: string) => {
+    setInputValues((prevState: {}) => ({ ...prevState, [messages[messages.length - 1].id]: text }));
+  };
   const hasInputText = messages[messages.length - 1].speaker === 'Nurse' &&
     messages[messages.length - 1].second_step;
 
+  //하단 키보드 버튼 애니메이션
   const [buttonTranslateY] = useState(new Animated.Value(100));
-
-
   useEffect(() => {
     Animated.timing(buttonTranslateY, {
       toValue: hasInputText ? 0 : 100,
@@ -137,7 +140,6 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
       useNativeDriver: true,
     }).start();
   }, [hasInputText]);
-
 
   return (
     <KeyboardAvoidingView
@@ -151,7 +153,7 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
         data={messages}
         keyExtractor={(_, index) => index.toString()}
         renderItem={({ item, index }) => (
-          <TouchableOpacity onPress={handlePress} activeOpacity={1}>
+          <TouchableOpacity key={index} onPress={handlePress} activeOpacity={1}>
             <ChatBubbleInputWord
               item={item}
               isBookmarked={false}
@@ -159,6 +161,7 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
               onChagneText={handleSetInputText}
               inputRef={inputRef}
               input={inputText}
+              inputValues={inputValues}
               isVoiceMode={isVoiceMode}
               isLastItem={index === messages.length - 1}
               isSpeaking={isSpeaking[index]}

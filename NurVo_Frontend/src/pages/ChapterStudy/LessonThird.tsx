@@ -26,6 +26,7 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
   const inputRef = useRef<TextInput>(null);
   const [messages, setMessages] = useState<Message[]>([allMessages[0]]);
   const [inputText, setInputText] = useState('');
+  const [inputValues, setInputValues] = useState({});
   const [correctPercent, setCorrectPercent] = useState('');
   const [keyboardHeight, setkeyboardHeight] = useState(0);
   const [showNextAlert, setShowNextAlert] = useState(false);
@@ -57,7 +58,6 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
       'keyboardDidHide',
       (event) => {
         setkeyboardHeight(event.endCoordinates.height);
-        console.log(keyboardHeight);
       }
     );
     return () => {
@@ -72,6 +72,7 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
     } else {
       inputRef.current?.focus();
     }
+    setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100)
   }, [isVoiceMode]);
 
   const handleSetInputText = (text: string) => {
@@ -80,12 +81,10 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
   const handlePress = () => {
     if (messages.length < allMessages.length) {
       if (messages[messages.length - 1].speaker === 'Nurse' && messages[messages.length - 1].second_step) {
-
         if (inputText.trim().length === 0) {
           inputRef.current?.focus();
           return;
         } else {
-          console.log(inputText);
           setShowCheckAlert(true);
         }
       } else {
@@ -113,6 +112,7 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
     setShowNextAlert(false);
   };
   const handleCheckNext = () => {
+    handleInputValues(inputText);
     setInputText('');
     setShowCheckAlert(false);
     setMessages(allMessages.slice(0, messages.length + 1));
@@ -120,6 +120,10 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
   };
   const handleCheckCancle = () => {
     setShowCheckAlert(false);
+  };
+
+  const handleInputValues = (text: string) => {
+    setInputValues((prevState: {}) => ({ ...prevState, [messages[messages.length - 1].id]: text }));
   };
 
   const hasInputText = messages.some(
@@ -151,17 +155,19 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
           <TouchableOpacity onPress={handlePress} activeOpacity={1}>
             {hasInputText ? (
               <ChatBubbleInputAll
+                key={index}
                 item={item}
                 isBookmarked={false}
                 onEnterValue={handleSend}
                 onChagneText={handleSetInputText}
                 inputRef={inputRef}
                 input={inputText}
+                inputValues={inputValues}
                 isVoiceMode={isVoiceMode}
                 isLastItem={index === messages.length - 1}
                 isSpeaking={isSpeaking[index]}
                 speakingList={isSpeaking}
-                onIsClickSpeakChange={(isSpeaking) => setIsSpeakingByIndex(index, isSpeaking)}
+                onIsClickSpeakChange={(isSpeaking: boolean) => setIsSpeakingByIndex(index, isSpeaking)}
               />
             ) : (
               <ChatBubble

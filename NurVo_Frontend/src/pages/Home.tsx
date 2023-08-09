@@ -11,7 +11,6 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Colors from '../utilities/Color';
 import { Title01, Title02, Subtitle011, Subtext013, Body022, Body023, Body024 } from '../utilities/Fonts';
 import { layoutStyles, screenWidth } from '../utilities/Layout';
-
 import { CarouselList } from '../components/CarouselListComp';
 import { ListCell } from '../components/ListCellComp';
 
@@ -34,8 +33,6 @@ const todayLessons = [
   }
 ]
 
-
-
 const MenuTitle = ({ text, onPress }: { text: string, onPress: () => void }) => {
   return (
     <View style={[layoutStyles.HStackContainer, { marginTop: 20, paddingTop: 12, paddingHorizontal: 20 }]}>
@@ -47,7 +44,6 @@ const MenuTitle = ({ text, onPress }: { text: string, onPress: () => void }) => 
     </View>
   );
 }
-
 
 function UserInfoHeader() {
   interface CircleTextProps {
@@ -75,7 +71,7 @@ function UserInfoHeader() {
 
   return (
     <View style={styles.headerBackground}>
-      <View style={[layoutStyles.VStackContainer, { paddingHorizontal: 20, paddingVertical: 16, marginTop: 20}]}>
+      <View style={[layoutStyles.VStackContainer, { paddingHorizontal: 20, paddingVertical: 16, marginTop: 20 }]}>
         <View style={[layoutStyles.HStackContainer, { flex: 1 }]}>
           <View style={layoutStyles.VStackContainer}>
             <View style={[styles.headerText]}>
@@ -108,6 +104,7 @@ function UserInfoHeader() {
 
 
 export default function Home({ navigation }: { navigation: any }) {
+
   return (
     <ScrollView>
       <View style={layoutStyles.VStackContainer}>
@@ -120,7 +117,7 @@ export default function Home({ navigation }: { navigation: any }) {
           <MenuTitle text='Review' onPress={() => {
             navigation.navigate('LessonsList');
           }} />
-          <View style={[layoutStyles.VStackContainer, { marginTop: 4, marginBottom:28, paddingHorizontal: 20 }]}>
+          <View style={[layoutStyles.VStackContainer, { marginTop: 4, marginBottom: 28, paddingHorizontal: 20 }]}>
             {todayLessons.slice(0, 2).map((lesson, index) => (
               <ListCell
                 key={index}
