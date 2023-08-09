@@ -30,6 +30,7 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
   const [showNextAlert, setShowNextAlert] = useState(false);
   const [showCheckAlert, setShowCheckAlert] = useState(false);
   const [isVoiceMode, setIsVoiceMode] = useState(true);
+  const [isSpeaking, setIsSpeaking] = useState<boolean[]>([]);
 
   useEffect(() => {
     if (!showCheckAlert && messages[messages.length - 1].speaker === 'Nurse') {
@@ -76,23 +77,30 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
   };
 
   const handlePress = () => {
-    if (messages.length < allMessages.length) {
-      if (messages[messages.length - 1].speaker === 'Nurse' && messages[messages.length - 1].second_step) {
-
-        if (inputText.trim().length === 0) {
-          inputRef.current?.focus();
-          return;
+    if (!(isSpeaking.some(value => value))) {
+      if (messages.length < allMessages.length) {
+        if (messages[messages.length - 1].speaker === 'Nurse' && messages[messages.length - 1].second_step) {
+          if (inputText.trim().length === 0) {
+            inputRef.current?.focus();
+            return;
+          } else {
+            console.log(inputText);
+            setShowCheckAlert(true);
+          }
         } else {
-          console.log(inputText);
-          setShowCheckAlert(true);
+          setMessages(allMessages.slice(0, messages.length + 1));
+          setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100);
         }
       } else {
-        setMessages(allMessages.slice(0, messages.length + 1));
-        setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100);
+        setShowNextAlert(true);
       }
-    } else {
-      setShowNextAlert(true);
     }
+  };
+
+  const setIsSpeakingByIndex = (index: number, bool: boolean) => {
+    const speakingList: boolean[] = [...isSpeaking];
+    speakingList[index] = bool;
+    setIsSpeaking(speakingList);
   };
 
   const handleSend = () => {
@@ -153,6 +161,9 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
               input={inputText}
               isVoiceMode={isVoiceMode}
               isLastItem={index === messages.length - 1}
+              isSpeaking={isSpeaking[index]}
+              speakingList={isSpeaking}
+              onIsClickSpeakChange={(isSpeaking) => setIsSpeakingByIndex(index, isSpeaking)}
             />
           </TouchableOpacity>
         )}

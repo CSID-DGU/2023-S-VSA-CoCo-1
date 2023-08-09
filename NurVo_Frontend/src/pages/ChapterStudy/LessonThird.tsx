@@ -31,13 +31,14 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
   const [showNextAlert, setShowNextAlert] = useState(false);
   const [showCheckAlert, setShowCheckAlert] = useState(false);
   const [isVoiceMode, setIsVoiceMode] = useState(true);
+  const [isSpeaking, setIsSpeaking] = useState<boolean[]>([]);
 
   useEffect(() => {
     if (!showCheckAlert && messages[messages.length - 1].speaker === 'Nurse') {
       inputRef.current?.focus();
     }
   }, [showCheckAlert]);
-  
+
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
@@ -95,6 +96,12 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
       setShowNextAlert(true);
     }
   };
+  const setIsSpeakingByIndex = (index: number, bool: boolean) => {
+    const speakingList: boolean[] = [...isSpeaking];
+    speakingList[index] = bool;
+    setIsSpeaking(speakingList);
+  };
+
   const handleSend = () => {
     handlePress();
     flatListRef.current?.scrollToEnd({ animated: true });
@@ -152,9 +159,18 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
                 input={inputText}
                 isVoiceMode={isVoiceMode}
                 isLastItem={index === messages.length - 1}
+                isSpeaking={isSpeaking[index]}
+                speakingList={isSpeaking}
+                onIsClickSpeakChange={(isSpeaking) => setIsSpeakingByIndex(index, isSpeaking)}
               />
             ) : (
-              <ChatBubble item={item} isBookmarked={false} />
+              <ChatBubble
+                item={item}
+                isBookmarked={false}
+                isSpeaking={isSpeaking[index]}
+                speakingList={isSpeaking}
+                onIsClickSpeakChange={(isSpeaking) => setIsSpeakingByIndex(index, isSpeaking)}
+              />
             )}
           </TouchableOpacity>
         )}

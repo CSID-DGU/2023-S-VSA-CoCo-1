@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import {
     FlatList,
     KeyboardAvoidingView,
@@ -6,27 +6,58 @@ import {
     StyleSheet,
     NativeModules,
     TouchableOpacity,
+    LogBox,
 } from 'react-native';
 
 import Colors from '../../utilities/Color';
 import { Message, allMessages } from '../../utilities/LessonExample';
 import ChatBubble from '../../components/ChatBubble';
 import CustomAlert from '../../components/Alert';
+import { speech } from '../../utilities/TextToSpeech';
 
 const { StatusBarManager } = NativeModules;
+LogBox.ignoreLogs(['new NativeEventEmitter']);
 
 export default function LessonFirst({ navigation }: { navigation: any }) {
     const flatListRef = useRef<FlatList>(null);
     const [messages, setMessages] = useState<Message[]>([allMessages[0]]);
     const [showAlert, setShowAlert] = useState(false);
+    const [isSpeaking, setIsSpeaking] = useState<boolean[]>([]);
+
+    useEffect(() => {
+        setIsSpeakingByIndex(0, true);
+        speech(
+            allMessages[0].dialogue,
+            allMessages[0].chapter_id,
+            allMessages[0].id,
+            () => setIsSpeakingByIndex(0, false));    //speech함수가 끝나면 setIsSpeaking(false)로 바꿔줌
+    }, []);
 
     const handlePress = () => {
-        if (messages.length < allMessages.length) {
-            setMessages(allMessages.slice(0, messages.length + 1));
-            setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100);
+        if (isSpeaking.some(value => value)) {
+            return;
         } else {
-            setShowAlert(true);
+            if (messages.length < allMessages.length) {
+                setMessages(allMessages.slice(0, messages.length + 1));
+                setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100);
+    
+                setIsSpeakingByIndex(messages.length, true);
+    
+                speech(
+                    allMessages[messages.length].dialogue,
+                    allMessages[messages.length].chapter_id,
+                    allMessages[messages.length].id,
+                    () => setIsSpeakingByIndex(messages.length, false));    //speech함수가 끝나면 setIsSpeaking(false)로 바꿔줌
+            } else {
+                setShowAlert(true);
+            }
         }
+    };
+
+    const setIsSpeakingByIndex = (index: number, bool: boolean) => {
+        const speakingList: boolean[] = [...isSpeaking];
+        speakingList[index] = bool;
+        setIsSpeaking(speakingList);
     };
 
     const handleNext = () => {
@@ -37,6 +68,10 @@ export default function LessonFirst({ navigation }: { navigation: any }) {
     const handleCancle = () => {
         setShowAlert(false);
     };
+
+    useEffect(() => {
+        console.log(isSpeaking);
+    }, [isSpeaking]);
 
     return (
         <KeyboardAvoidingView
@@ -49,9 +84,14 @@ export default function LessonFirst({ navigation }: { navigation: any }) {
                 ref={flatListRef}
                 data={messages}
                 keyExtractor={(_, index) => index.toString()}
-                renderItem={({ item }) => (
+                renderItem={({ item, index }) => (
                     <TouchableOpacity onPress={handlePress} activeOpacity={1}>
-                        <ChatBubble item={item} isBookmarked={false} />
+                        <ChatBubble
+                            item={item}
+                            isBookmarked={false}
+                            isSpeaking={isSpeaking[index]}
+                            speakingList={isSpeaking}
+                            onIsClickSpeakChange={(isSpeaking) => setIsSpeakingByIndex(index, isSpeaking)} />
                     </TouchableOpacity>
                 )}
             />

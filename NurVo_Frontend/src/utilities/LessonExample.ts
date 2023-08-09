@@ -1,6 +1,6 @@
 export interface Message {
     chapter_id: number;
-    conversation_id: number;
+    id: number;
     
     speaker: string;
     dialogue: string;
@@ -11,7 +11,7 @@ export interface Message {
 export const allMessages: Message[] = [
     {
         chapter_id: 1,
-        conversation_id: 1,
+        id: 1,
 
         speaker: "Nurse",
         dialogue: "Hello, Mr. Baker. How are you doing?",
@@ -20,7 +20,7 @@ export const allMessages: Message[] = [
     },
     {
         chapter_id: 1,
-        conversation_id: 1,
+        id: 1,
 
         speaker: "Mr. Baker",
         dialogue: "I feel great. How about you?",
@@ -29,7 +29,7 @@ export const allMessages: Message[] = [
     },
     {
         chapter_id: 1,
-        conversation_id: 1,
+        id: 1,
 
         speaker: "Nurse",
         dialogue: "I'm doing great as well. My name is Rachel, and I will be your nurse today.",
@@ -38,7 +38,7 @@ export const allMessages: Message[] = [
     },
     {
         chapter_id: 1,
-        conversation_id: 1,
+        id: 1,
 
         speaker: "Mr. Baker",
         dialogue: "Okay, Rachel. Can I ask you where I am?",
@@ -47,7 +47,7 @@ export const allMessages: Message[] = [
     },
     {
         chapter_id: 1,
-        conversation_id: 1,
+        id: 1,
 
         speaker: "Nurse",
         dialogue: "You are in the medical unit at Hope Regional Hospital.",
@@ -56,7 +56,7 @@ export const allMessages: Message[] = [
     },
     {
         chapter_id: 1,
-        conversation_id: 1,
+        id: 1,
 
         speaker: "Mr. Baker",
         dialogue: "Am I going to stay in this room?",
@@ -65,7 +65,7 @@ export const allMessages: Message[] = [
     },
     {
         chapter_id: 1,
-        conversation_id: 1,
+        id: 1,
         
         speaker: "Nurse",
         dialogue: "Yes, Mr. Baker. You are going to stay here for the next few days.",
@@ -74,7 +74,7 @@ export const allMessages: Message[] = [
     },
     {
         chapter_id: 1,
-        conversation_id: 1,
+        id: 1,
 
         speaker: "Mr. Baker",
         dialogue: "I see. By the way, you can call me Kevin.",
