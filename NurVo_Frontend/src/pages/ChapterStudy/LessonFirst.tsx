@@ -30,6 +30,7 @@ export default function LessonFirst({ navigation }: { navigation: any }) {
             allMessages[0].dialogue,
             allMessages[0].chapter_id,
             allMessages[0].id,
+            allMessages[0].speaker === 'Nurse',
             () => setIsSpeakingByIndex(0, false));    //speech함수가 끝나면 setIsSpeaking(false)로 바꿔줌
     }, []);
 
@@ -47,6 +48,7 @@ export default function LessonFirst({ navigation }: { navigation: any }) {
                     allMessages[messages.length].dialogue,
                     allMessages[messages.length].chapter_id,
                     allMessages[messages.length].id,
+                    allMessages[messages.length].speaker === 'Nurse',
                     () => setIsSpeakingByIndex(messages.length, false));    //speech함수가 끝나면 setIsSpeaking(false)로 바꿔줌
             } else {
                 setShowAlert(true);
