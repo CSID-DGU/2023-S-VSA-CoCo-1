@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useReducer } from 'react'
 import {
   FlatList,
   KeyboardAvoidingView,
@@ -24,15 +24,68 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
 
   const flatListRef = useRef<FlatList>(null);
   const inputRef = useRef<TextInput>(null);
-  const [messages, setMessages] = useState<Message[]>([allMessages[0]]);
-  const [inputText, setInputText] = useState('');
-  const [inputValues, setInputValues] = useState({});
-  const [correctPercent, setCorrectPercent] = useState('');
-  const [keyboardHeight, setkeyboardHeight] = useState(0);
-  const [showNextAlert, setShowNextAlert] = useState(false);
-  const [showCheckAlert, setShowCheckAlert] = useState(false);
-  const [isVoiceMode, setIsVoiceMode] = useState(true);
-  const [isSpeaking, setIsSpeaking] = useState<boolean[]>([]);
+
+  type State = {
+    messages: Message[];
+    inputText: string;
+    inputValues: Record<string, any>;
+    correctPercent: string;
+    keyboardHeight: number;
+    showNextAlert: boolean;
+    showCheckAlert: boolean;
+    isVoiceMode: boolean;
+    isSpeaking: boolean[];
+  };
+
+  const initialState: State = {
+    messages: [allMessages[0]],
+    inputText: '',
+    inputValues: {},
+    correctPercent: '',
+    keyboardHeight: 0,
+    showNextAlert: false,
+    showCheckAlert: false,
+    isVoiceMode: true,
+    isSpeaking: [],
+  };
+
+  const reducer = (state: typeof initialState, action: { type: string; payload?: any }) => {
+    switch (action.type) {
+      case 'SET_MESSAGES':
+        return { ...state, messages: action.payload };
+      case 'SET_INPUT_TEXT':
+        return { ...state, inputText: action.payload };
+      case 'SET_INPUT_VALUES':
+        return { ...state, inputValues: action.payload };
+      case 'SET_CORRECT_PERCENT':
+        return { ...state, correctPercent: action.payload };
+      case 'SET_KEYBOARD_HEIGHT':
+        return { ...state, keyboardHeight: action.payload };
+      case 'SET_SHOW_NEXT_ALERT':
+        return { ...state, showNextAlert: action.payload };
+      case 'SET_SHOW_CHECK_ALERT':
+        return { ...state, showCheckAlert: action.payload };
+      case 'SET_IS_VOICE_MODE':
+        return { ...state, isVoiceMode: action.payload };
+      case 'SET_IS_SPEAKING':
+        return { ...state, isSpeaking: action.payload };
+      default:
+        return state;
+    }
+  };
+
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const {
+    messages,
+    inputText,
+    inputValues,
+    correctPercent,
+    keyboardHeight,
+    showNextAlert,
+    showCheckAlert,
+    isVoiceMode,
+    isSpeaking,
+  } = state;
 
   useEffect(() => {
     return () => {
@@ -50,7 +103,7 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
       (event) => {
-        setkeyboardHeight(event.endCoordinates.height);
+        dispatch({ type: 'SET_KEYBOARD_HEIGHT', payload: event.endCoordinates.height });
         flatListRef.current?.scrollToEnd({ animated: true });
       }
     );
@@ -62,7 +115,7 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
     const keyboardDidHideListener = Keyboard.addListener(
       'keyboardDidHide',
       (event) => {
-        setkeyboardHeight(event.endCoordinates.height);
+        dispatch({ type: 'SET_KEYBOARD_HEIGHT', payload: event.endCoordinates.height });
       }
     );
     return () => {
@@ -81,25 +134,25 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
   }, [isVoiceMode]);
 
   const handleSetInputText = (text: string) => {
-    setInputText(text);
+    dispatch({ type: 'SET_INPUT_TEXT', payload: text });
   };
 
   const handlePress = () => {
-    if (!(isSpeaking.some(value => value))) {
+    if (!(isSpeaking.some((value: boolean) => value))) {
       if (messages.length < allMessages.length) {
         if (messages[messages.length - 1].speaker === 'Nurse' && messages[messages.length - 1].second_step) {
           if (inputText.trim().length === 0) {
             inputRef.current?.focus();
             return;
           } else {
-            setShowCheckAlert(true);
+            dispatch({ type: 'SET_SHOW_CHECK_ALERT', payload: true });
           }
         } else {
-          setMessages(allMessages.slice(0, messages.length + 1));
+          dispatch({ type: 'SET_MESSAGES', payload: allMessages.slice(0, messages.length + 1) });
           setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100);
         }
       } else {
-        setShowNextAlert(true);
+        dispatch({ type: 'SET_SHOW_NEXT_ALERT', payload: true });
       }
     }
   };
@@ -107,7 +160,7 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
   const setIsSpeakingByIndex = (index: number, bool: boolean) => {
     const speakingList: boolean[] = [...isSpeaking];
     speakingList[index] = bool;
-    setIsSpeaking(speakingList);
+    dispatch({ type: 'SET_IS_SPEAKING', payload: speakingList });
   };
 
   const handleSend = () => {
@@ -120,21 +173,20 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
     navigation.navigate("LessonThirdScreen");
   };
   const handleCancle = () => {
-    setShowNextAlert(false);
+    dispatch({ type: 'SET_SHOW_NEXT_ALERT', payload: false });
   };
   const handleCheckNext = () => {
-    handleInputValues(inputText);
-    setInputText('');
-    setShowCheckAlert(false);
-    setMessages(allMessages.slice(0, messages.length + 1));
+    const newInputValues = { ...inputValues, [messages[messages.length - 1].id]: inputText };
+    dispatch({ type: 'SET_INPUT_VALUES', payload: newInputValues });
+    dispatch({ type: 'SET_INPUT_TEXT', payload: '' });
+    dispatch({ type: 'SET_SHOW_CHECK_ALERT', payload: false });
+    dispatch({ type: 'SET_MESSAGES', payload: allMessages.slice(0, messages.length + 1) });
     setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100);
   };
   const handleCheckCancle = () => {
-    setShowCheckAlert(false);
+    dispatch({ type: 'SET_SHOW_CHECK_ALERT', payload: false });
   };
-  const handleInputValues = (text: string) => {
-    setInputValues((prevState: {}) => ({ ...prevState, [messages[messages.length - 1].id]: text }));
-  };
+
   const hasInputText = messages[messages.length - 1].speaker === 'Nurse' &&
     messages[messages.length - 1].second_step;
 
@@ -160,8 +212,10 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
         data={messages}
         keyExtractor={(_, index) => index.toString()}
         renderItem={({ item, index }) => (
-          <TouchableOpacity key={index} onPress={handlePress} activeOpacity={1}>
+          <TouchableOpacity key={index.toString()} onPress={handlePress} activeOpacity={1}>
             <ChatBubbleInputWord
+              key={index.toString()}
+              index={index}
               item={item}
               isBookmarked={false}
               onEnterValue={handleSend}
@@ -180,8 +234,7 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
       />
       <Animated.View style={{ transform: [{ translateY: buttonTranslateY }] }}>
         <VoiceRecordButton
-          setInputText={setInputText}
-          setIsVoiceMode={setIsVoiceMode}
+          dispatch={dispatch}
           isVoiceMode={isVoiceMode}
         />
       </Animated.View>

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Dispatch } from 'react';
 import {
   StyleSheet,
   View,
@@ -15,10 +15,13 @@ import { Subtext013 } from '../utilities/Fonts';
 import Colors from '../utilities/Color';
 
 type Props = {
-  setInputText: (voiceText: string) => void;
-  setIsVoiceMode: (isVoiceMode: boolean) => void;
+  dispatch: Dispatch<Action>;
   isVoiceMode: boolean;
 };
+
+type Action =
+  | { type: 'SET_INPUT_TEXT'; payload: string }
+  | { type: 'SET_IS_VOICE_MODE'; payload: boolean };
 
 type State = {
   recognized: string;
@@ -66,12 +69,12 @@ class VoiceRecordButton extends Component<Props, State> {
   }
   handleInputTextChange = (text: string) => {
     // setInputText prop을 통해 전달된 setInputText 함수 호출
-    this.props.setInputText(text);
+    this.props.dispatch({ type: 'SET_INPUT_TEXT', payload: text });
   };
 
   onClickInputMode = () => {
     this.setState({ isVoiceMode: !this.state.isVoiceMode }, () => {
-      this.props.setIsVoiceMode(this.state.isVoiceMode);
+      this.props.dispatch({ type: 'SET_IS_VOICE_MODE', payload: this.state.isVoiceMode });
     });
   }
   onSpeechStart = (e: any) => {

@@ -91,6 +91,7 @@ export default function LessonFirst({ navigation }: { navigation: any }) {
                 renderItem={({ item, index }) => (
                     <TouchableOpacity onPress={handlePress} activeOpacity={1}>
                         <ChatBubble
+                            index={index}
                             item={item}
                             isBookmarked={false}
                             isSpeaking={isSpeaking[index]}

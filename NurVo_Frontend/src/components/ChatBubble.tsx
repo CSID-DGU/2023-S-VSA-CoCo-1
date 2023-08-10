@@ -10,6 +10,7 @@ import { speech } from "../utilities/TextToSpeech";
 
 
 interface ChatBubbleProps {
+  index: number;
   item: Message;
   isBookmarked: boolean;
   inputRef?: React.RefObject<TextInput>;
@@ -24,7 +25,7 @@ interface ChatBubbleProps {
   onIsClickSpeakChange?: (isSpeaking: boolean) => void;
 }
 
-export default function ChatBubble({ item, isBookmarked, isSpeaking, speakingList, onIsClickSpeakChange }: ChatBubbleProps) {
+export default function ChatBubble({ index, item, isBookmarked, isSpeaking, speakingList, onIsClickSpeakChange }: ChatBubbleProps) {
   useEffect(() => {
     setIsBookmark(isBookmarked);
   }, [isBookmarked]);
@@ -41,12 +42,11 @@ export default function ChatBubble({ item, isBookmarked, isSpeaking, speakingLis
   const handleSpeak = () => {
     if (!(speakingList.some(value => value)) && onIsClickSpeakChange) {
       onIsClickSpeakChange(true);
-      speech(item.dialogue, item.chapter_id, item.id, () => { onIsClickSpeakChange(false) });
+      speech(item.dialogue, item.chapter_id, item.id, item.speaker === 'Nurse', () => { onIsClickSpeakChange(false) });
     }
   }
-
   return (
-    <View style={[
+    <View key={item.id} style={[
       item.speaker === 'Nurse' ? bubbleStyles.messageContainerRight : bubbleStyles.messageContainerLeft
     ]}>
       <View style={[
@@ -81,7 +81,7 @@ export default function ChatBubble({ item, isBookmarked, isSpeaking, speakingLis
   );
 }
 
-export function ChatBubbleInputWord({ item, isBookmarked, onEnterValue, onChagneText, inputRef, input, inputValues, isVoiceMode, isLastItem, isSpeaking, speakingList, onIsClickSpeakChange }: ChatBubbleProps) {
+export function ChatBubbleInputWord({ index, item, isBookmarked, onEnterValue, onChagneText, inputRef, input, inputValues, isVoiceMode, isLastItem, isSpeaking, speakingList, onIsClickSpeakChange }: ChatBubbleProps) {
   useEffect(() => {
     setIsBookmark(isBookmarked);
   }, [isBookmarked]);
@@ -94,14 +94,14 @@ export function ChatBubbleInputWord({ item, isBookmarked, onEnterValue, onChagne
   const handleSpeak = () => {
     if (!(speakingList.some(value => value)) && onIsClickSpeakChange) {
       onIsClickSpeakChange(true);
-      speech(item.dialogue, item.chapter_id, item.id, () => { onIsClickSpeakChange(false) });
+      speech(item.dialogue, item.chapter_id, item.id, item.speaker === 'Nurse', () => { onIsClickSpeakChange(false) });
     }
   }
 
   const textWithInputs = replaceWithInput(item.dialogue, item.second_step);
 
   return (
-    <View style={[
+    <View key={item.id} style={[
       item.speaker === 'Nurse' ? bubbleStyles.messageContainerRight : bubbleStyles.messageContainerLeft
     ]}>
       <View style={[
@@ -135,7 +135,7 @@ export function ChatBubbleInputWord({ item, isBookmarked, onEnterValue, onChagne
                   showSoftInputOnFocus={!isVoiceMode}
                 />
               ) : (
-                inputValues && checkInputWord(inputValues[item.id], item.second_step)
+                inputValues && checkInputWord(index, inputValues[item.id], item.second_step)
               )
             }
           })}
@@ -165,7 +165,7 @@ export function ChatBubbleInputWord({ item, isBookmarked, onEnterValue, onChagne
   );
 }
 
-export function ChatBubbleInputAll({ item, isBookmarked, onEnterValue, onChagneText, inputRef, input, inputValues, isVoiceMode, isLastItem, isSpeaking, speakingList, onIsClickSpeakChange }: ChatBubbleProps) {
+export function ChatBubbleInputAll({ index, item, isBookmarked, onEnterValue, onChagneText, inputRef, input, inputValues, isVoiceMode, isLastItem, isSpeaking, speakingList, onIsClickSpeakChange }: ChatBubbleProps) {
   useEffect(() => {
     setIsBookmark(isBookmarked);
   }, [isBookmarked]);
@@ -182,12 +182,12 @@ export function ChatBubbleInputAll({ item, isBookmarked, onEnterValue, onChagneT
   const handleSpeak = () => {
     if (!(speakingList.some(value => value)) && onIsClickSpeakChange) {
       onIsClickSpeakChange(true);
-      speech(item.dialogue, item.chapter_id, item.id, () => { onIsClickSpeakChange(false) });
+      speech(item.dialogue, item.chapter_id, item.id, item.speaker === 'Nurse', () => { onIsClickSpeakChange(false) });
     }
   }
 
   return (
-    <View style={[
+    <View key={item.id} style={[
       item.speaker === 'Nurse' ? bubbleStyles.messageContainerRight : bubbleStyles.messageContainerLeft
     ]}>
       <View style={[
@@ -212,9 +212,9 @@ export function ChatBubbleInputAll({ item, isBookmarked, onEnterValue, onChagneT
                 showSoftInputOnFocus={!isVoiceMode}
                 multiline={true}
               /> :
-              inputValues && checkInputWord(inputValues[item.id], item.second_step)
+              inputValues && checkInputWord(index, inputValues[item.id], item.second_step)
             ) :
-            (<Body012 text={item.dialogue} color={item.speaker === 'Nurse' ? Colors.WHITE : Colors.BLACK} />)}
+            (<Body012 key={index} text={item.dialogue} color={item.speaker === 'Nurse' ? Colors.WHITE : Colors.BLACK} />)}
           {isShowTranslation && <Subtext013 text={item.korean} color={item.speaker === 'Nurse' ? Colors.WHITE : Colors.BLACK} />}
           <View style={[
             layoutStyles.HStackContainer,
@@ -257,9 +257,9 @@ function replaceWithInput(text: string, textToReplace: string) {
   }
 }
 
-function checkInputWord(input: string, second_step: string) {
+function checkInputWord(index: number, input: string, second_step: string) {
   return (
-    <View style={[layoutStyles.VStackContainer, { paddingVertical: 10 }]}>
+    <View key={index} style={[layoutStyles.VStackContainer, { paddingVertical: 10 }]}>
       <Body011 text={input} color={Colors.NAVY} />
       <Body013 text={`( ${second_step} )`} color={Colors.GRAY07} />
     </View>
