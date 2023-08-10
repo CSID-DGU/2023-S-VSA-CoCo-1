@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useReducer } from 'react'
+import React, { useRef, useEffect, useReducer } from 'react'
 import {
   FlatList,
   KeyboardAvoidingView,

@@ -7,7 +7,6 @@ import {
   NativeModules,
   TouchableOpacity,
   TextInput,
-  View,
   Keyboard,
   Animated,
 } from 'react-native';
@@ -25,15 +24,6 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
 
   const flatListRef = useRef<FlatList>(null);
   const inputRef = useRef<TextInput>(null);
-  // const [messages, setMessages] = useState<Message[]>([allMessages[0]]);
-  // const [inputText, setInputText] = useState('');
-  // const [inputValues, setInputValues] = useState({});
-  // const [correctPercent, setCorrectPercent] = useState('');
-  // const [keyboardHeight, setkeyboardHeight] = useState(0);
-  // const [showNextAlert, setShowNextAlert] = useState(false);
-  // const [showCheckAlert, setShowCheckAlert] = useState(false);
-  // const [isVoiceMode, setIsVoiceMode] = useState(true);
-  // const [isSpeaking, setIsSpeaking] = useState<boolean[]>([]);
 
   const initialState = {
     messages: [allMessages[0]],

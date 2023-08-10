@@ -147,7 +147,6 @@ export function ChatBubbleInputWord({ index, item, isBookmarked, onEnterValue, o
             width: '100%',
             flexWrap: 'wrap',
             justifyContent: item.speaker === 'Nurse' ? 'flex-start' : 'flex-end',
-            // alignSelf: item.speaker === 'Nurse' ? 'flex-start' : 'flex-end',
             marginTop: 16,
           }
         ]}>
