@@ -100,12 +100,6 @@ export function Body017({ text, color, numberOfLines, ellipsizeMode }: FontProps
     )
 }
 
-export function Subtext012({ text, color, numberOfLines, ellipsizeMode }: FontProps) {
-    return(
-        <Text style={[fonts.subtext01_2, { color: color }]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
-    )
-}
-
 const fonts = StyleSheet.create({
     title01: {
         fontFamily: 'Pretendard Variable',
@@ -199,13 +193,6 @@ const fonts = StyleSheet.create({
         fontSize: 13,
         fontStyle: 'normal',
         fontWeight: '700',
-        lineHeight: 18,
-    },
-    subtext01_2: {
-        fontFamily: 'Pretendard Variable',
-        fontSize: 13,
-        fontStyle: 'normal',
-        fontWeight: '500',
         lineHeight: 18,
     },
     subtext01_3: {

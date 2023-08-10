@@ -52,8 +52,8 @@ export const playSound = (path: string, onDone: () => void): Sound => {
 let play: Sound | null = null;
 //speech('hello world')와 같은 형식으로 사용하면 됩니다.
 export const speech = async (text: string, unitID: number, chapterID: number, isNurse: boolean, onDone: () => void) => {
-    const key_ios = SPEECH_KEY_ANDROID;
-    const key_android = SPEECH_KEY_IOS;
+    const key_ios = SPEECH_KEY_IOS;
+    const key_android = SPEECH_KEY_ANDROID;
 
     const voice = isNurse ? 'en-US-Wavenet-H' : 'en-AU-Neural2-B'
     const key = Platform.OS === 'ios' ? key_ios : key_android
