@@ -1,11 +1,10 @@
 import { SPEECH_KEY_ANDROID, SPEECH_KEY_IOS } from "@env";
-import { useState } from "react";
 import { Platform } from "react-native";
 import RNFS from 'react-native-fs';
 import Sound from "react-native-sound";
 import SOUND from 'react-native-sound';
 
-const createSpeechRequest = (text: string, voice: string, isFemale: boolean ) => ({
+const createSpeechRequest = (text: string, voice: string, isFemale: boolean) => ({
     headers: {
         'Content-Type': 'application/json'
     },
@@ -13,7 +12,7 @@ const createSpeechRequest = (text: string, voice: string, isFemale: boolean ) =>
     method: 'POST'
 })
 
-const body = (text: string, voice: string, isFemale: boolean ) => ({
+const body = (text: string, voice: string, isFemale: boolean) => ({
     input: { text },
     voice: {
         languageCode: 'en-AU',
@@ -34,7 +33,7 @@ const createFile = async (path: string, data: string) => {
     return null
 }
 
-const playSound = (path: string, onDone: () => void) => {
+export const playSound = (path: string, onDone: () => void): Sound => {
     const speech = new SOUND(path, '', (e) => {
         if (e) {
             console.warn('sound failed to load the sound', e)
@@ -48,8 +47,9 @@ const playSound = (path: string, onDone: () => void) => {
         })
         return null
     })
+    return speech;
 }
-
+let play: Sound | null = null;
 //speech('hello world')와 같은 형식으로 사용하면 됩니다.
 export const speech = async (text: string, unitID: number, chapterID: number, isNurse: boolean, onDone: () => void) => {
     const key_ios = SPEECH_KEY_ANDROID;
@@ -65,11 +65,19 @@ export const speech = async (text: string, unitID: number, chapterID: number, is
         const result = await response.json()
         if (result.audioContent) {
             await createFile(path, result.audioContent);
-            const sound = playSound(path, onDone);
+            play = playSound(path, onDone);
         } else {
             console.warn('speech', result);
         }
     } catch (e) {
         console.warn('speech', e)
+    }
+}
+
+export function stopSpeech() {
+    if (play) {
+        play.stop();
+        play.release();
+        play = null;
     }
 }

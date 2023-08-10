@@ -17,6 +17,7 @@ import { Message, allMessages } from '../../utilities/LessonExample';
 import ChatBubble, { ChatBubbleInputAll } from '../../components/ChatBubble';
 import CustomAlert from '../../components/Alert';
 import VoiceRecordButton from '../../components/VoiceFuncComp';
+import { stopSpeech } from '../../utilities/TextToSpeech';
 
 const { StatusBarManager } = NativeModules;
 
@@ -33,6 +34,12 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
   const [showCheckAlert, setShowCheckAlert] = useState(false);
   const [isVoiceMode, setIsVoiceMode] = useState(true);
   const [isSpeaking, setIsSpeaking] = useState<boolean[]>([]);
+
+  useEffect(() => {
+    return () => {
+      stopSpeech();
+    };
+  }, []);
 
   useEffect(() => {
     if (!showCheckAlert && messages[messages.length - 1].speaker === 'Nurse') {

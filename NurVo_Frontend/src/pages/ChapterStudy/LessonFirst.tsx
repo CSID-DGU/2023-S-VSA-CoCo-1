@@ -13,7 +13,7 @@ import Colors from '../../utilities/Color';
 import { Message, allMessages } from '../../utilities/LessonExample';
 import ChatBubble from '../../components/ChatBubble';
 import CustomAlert from '../../components/Alert';
-import { speech } from '../../utilities/TextToSpeech';
+import { speech, stopSpeech } from '../../utilities/TextToSpeech';
 
 const { StatusBarManager } = NativeModules;
 LogBox.ignoreLogs(['new NativeEventEmitter']);
@@ -23,6 +23,12 @@ export default function LessonFirst({ navigation }: { navigation: any }) {
     const [messages, setMessages] = useState<Message[]>([allMessages[0]]);
     const [showAlert, setShowAlert] = useState(false);
     const [isSpeaking, setIsSpeaking] = useState<boolean[]>([]);
+
+    useEffect(() => {
+        return () => {
+            stopSpeech();
+        };
+    },[]);
 
     useEffect(() => {
         setIsSpeakingByIndex(0, true);
@@ -41,9 +47,9 @@ export default function LessonFirst({ navigation }: { navigation: any }) {
             if (messages.length < allMessages.length) {
                 setMessages(allMessages.slice(0, messages.length + 1));
                 setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100);
-    
+
                 setIsSpeakingByIndex(messages.length, true);
-    
+
                 speech(
                     allMessages[messages.length].dialogue,
                     allMessages[messages.length].chapter_id,
@@ -70,10 +76,6 @@ export default function LessonFirst({ navigation }: { navigation: any }) {
     const handleCancle = () => {
         setShowAlert(false);
     };
-
-    useEffect(() => {
-        console.log(isSpeaking);
-    }, [isSpeaking]);
 
     return (
         <KeyboardAvoidingView
