@@ -191,10 +191,10 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
     messages[messages.length - 1].second_step;
 
   //하단 키보드 버튼 애니메이션
-  const [buttonTranslateY] = useState(new Animated.Value(100));
+  const [buttonTranslateY] = useState(new Animated.Value(140));
   useEffect(() => {
     Animated.timing(buttonTranslateY, {
-      toValue: hasInputText ? 0 : 100,
+      toValue: hasInputText ? 0 : 140,
       duration: 300,
       useNativeDriver: true,
     }).start();
