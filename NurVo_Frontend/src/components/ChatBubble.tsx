@@ -66,9 +66,9 @@ export default function ChatBubble({ index, item, isBookmarked, isSpeaking, spea
             marginTop: 16,
           }
         ]}>
-          <TouchableOpacity onPress={handleBookmark}>
+          {item.speaker === 'Nurse' && <TouchableOpacity onPress={handleBookmark}>
             <Ionicons name={isBookmark ? "bookmark" : "bookmark-outline"} size={20} color={item.speaker === 'Nurse' ? Colors.WHITE : Colors.BLACK} />
-          </TouchableOpacity>
+          </TouchableOpacity>}
           <TouchableOpacity onPress={handleBook}>
             <Ionicons name={isShowTranslation ? "book" : "book-outline"} size={20} color={item.speaker === 'Nurse' ? Colors.WHITE : Colors.BLACK} style={{ marginHorizontal: 16 }} />
           </TouchableOpacity>
@@ -144,15 +144,16 @@ export function ChatBubbleInputWord({ index, item, isBookmarked, onEnterValue, o
         <View style={[
           layoutStyles.HStackContainer,
           {
+            width: '100%',
             flexWrap: 'wrap',
-            justifyContent: 'space-evenly',
-            alignSelf: item.speaker === 'Nurse' ? 'flex-start' : 'flex-end',
+            justifyContent: item.speaker === 'Nurse' ? 'flex-start' : 'flex-end',
+            // alignSelf: item.speaker === 'Nurse' ? 'flex-start' : 'flex-end',
             marginTop: 16,
           }
         ]}>
-          <TouchableOpacity onPress={handleBookmark}>
+          {item.speaker === 'Nurse' && <TouchableOpacity onPress={handleBookmark}>
             <Ionicons name={isBookmark ? "bookmark" : "bookmark-outline"} size={20} color={item.speaker === 'Nurse' ? Colors.WHITE : Colors.BLACK} />
-          </TouchableOpacity>
+          </TouchableOpacity>}
           <TouchableOpacity onPress={handleBook}>
             <Ionicons name={isShowTranslation ? "book" : "book-outline"} size={20} color={item.speaker === 'Nurse' ? Colors.WHITE : Colors.BLACK} style={{ marginHorizontal: 16 }} />
           </TouchableOpacity>
@@ -220,14 +221,13 @@ export function ChatBubbleInputAll({ index, item, isBookmarked, onEnterValue, on
             layoutStyles.HStackContainer,
             {
               flexWrap: 'wrap',
-              justifyContent: 'space-evenly',
-              alignSelf: item.speaker === 'Nurse' ? 'flex-start' : 'flex-end',
+              justifyContent: item.speaker === 'Nurse' ? 'flex-start' : 'flex-end',
               marginTop: 16,
             }
           ]}>
-            <TouchableOpacity onPress={handleBookmark}>
+            {item.speaker === 'Nurse' && <TouchableOpacity onPress={handleBookmark}>
               <Ionicons name={isBookmark ? "bookmark" : "bookmark-outline"} size={20} color={item.speaker === 'Nurse' ? Colors.WHITE : Colors.BLACK} />
-            </TouchableOpacity>
+            </TouchableOpacity>}
             <TouchableOpacity onPress={handleBook}>
               <Ionicons name={isShowTranslation ? "book" : "book-outline"} size={20} color={item.speaker === 'Nurse' ? Colors.WHITE : Colors.BLACK} style={{ marginHorizontal: 16 }} />
             </TouchableOpacity>
