@@ -1,5 +1,4 @@
-import { SPEECH_KEY_ANDROID, SPEECH_KEY_IOS } from "@env";
-import { Platform } from "react-native";
+import { SPEECH_KEY } from "@env";
 import RNFS from 'react-native-fs';
 import Sound from "react-native-sound";
 import SOUND from 'react-native-sound';
@@ -52,11 +51,10 @@ export const playSound = (path: string, onDone: () => void): Sound => {
 let play: Sound | null = null;
 //speech('hello world')와 같은 형식으로 사용하면 됩니다.
 export const speech = async (text: string, unitID: number, chapterID: number, isNurse: boolean, onDone: () => void) => {
-    const key_ios = SPEECH_KEY_IOS;
-    const key_android = SPEECH_KEY_ANDROID;
+    const speech_key = SPEECH_KEY;
 
     const voice = isNurse ? 'en-US-Wavenet-H' : 'en-AU-Neural2-B'
-    const key = Platform.OS === 'ios' ? key_ios : key_android
+    const key = speech_key
     const address = `https://texttospeech.googleapis.com/v1/text:synthesize?key=${key}`
     const payload = createSpeechRequest(text, voice, isNurse)
     const path = `${RNFS.DocumentDirectoryPath}/voice_${unitID}_${chapterID}.mp3`

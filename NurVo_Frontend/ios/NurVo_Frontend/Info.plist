@@ -2,14 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSMicrophoneUsageDescription</key>
-  	<string>Description of why you require the use of the microphone</string>
-  	<key>NSSpeechRecognitionUsageDescription</key>
-  	<string>Description of why you require the use of the speech recognition</string>
-	<key>UIAppFonts</key>
-	<array>
-		<string>Ionicons.ttf</string>
-	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -45,6 +37,15 @@
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Description of why you require the use of the microphone</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Description of why you require the use of the speech recognition</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Ionicons.ttf</string>
+		<string>PretendardVariable.ttf</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
