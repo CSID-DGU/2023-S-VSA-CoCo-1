@@ -6,7 +6,7 @@ export const router = express.Router();
 
 router.get('/', getBookmark);
 router.post('/', addBookmark);
-router.post('/delete', deleteBookmark);
+router.post('/delete', deleteBookmarks);
 
 async function getBookmark(req, res) {
   try {
@@ -33,15 +33,17 @@ async function addBookmark(req, res) {
   };
 };
 
-async function deleteBookmark(req, res) {
+async function deleteBookmarks(req, res) {
   try {
     const conversationIds = req.body;
-    conversationIds.forEach(async (conversationId) => {
+    for (const conversationId of conversationIds) {
       await deleteBookmark(conversationId);
-    });
+    }
 
     const bookmark = await getDialogueOfBookemark();
     res.status(200).send(bookmark);
+
+
   } catch (err) {
     console.error(err);
   };
