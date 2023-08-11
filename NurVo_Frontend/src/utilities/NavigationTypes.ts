@@ -15,7 +15,6 @@ export type HomeStackParamList = {
   MemberDetails: undefined;
   SetUserGoal: undefined;
 }
-
 export type HomeScreenNavigationProp = NativeStackNavigationProp<
   HomeStackParamList,
   'HomeScreen'

@@ -7,7 +7,7 @@
 
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
@@ -23,9 +23,9 @@ import Bookmark from './src/pages/Bookmark';
 import StudyPage from './src/pages/StudyPage';
 import MemberDetails from './src/pages/MemberDetails';
 import SetUserGoal from './src/pages/SetUserGoal';
-import { HomeStackParamList } from './src/utilities/NavigationTypes';
+import { HomeStackParamList, RootStackParamList } from './src/utilities/NavigationTypes';
 
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator<RootStackParamList>();
 function BottomTabs() {
   return (
     <Tab.Navigator
@@ -34,9 +34,7 @@ function BottomTabs() {
           let iconName: string = '';
 
           if (route.name === 'Home') {
-            iconName = focused
-              ? 'home'
-              : 'home';
+            iconName = focused ? 'home' : 'home';
           } else if (route.name === 'Library') {
             iconName = focused ? 'folder' : 'folder';
           }
@@ -53,8 +51,6 @@ function BottomTabs() {
     </Tab.Navigator>
   );
 }
-
-
 
 const HomeStack = createNativeStackNavigator<HomeStackParamList>();
 const HomeStackScreen = () => {
