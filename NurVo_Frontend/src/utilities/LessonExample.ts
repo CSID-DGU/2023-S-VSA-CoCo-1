@@ -1,6 +1,6 @@
 export interface Message {
     chapter_id: number;
-    conversation_id: number;
+    id: number;
     
     speaker: string;
     dialogue: string;
@@ -11,16 +11,16 @@ export interface Message {
 export const allMessages: Message[] = [
     {
         chapter_id: 1,
-        conversation_id: 1,
+        id: 1,
 
         speaker: "Nurse",
-        dialogue: "Hello, Mr. Baker. How are you doing?",
-        second_step: "",
+        dialogue: "Good morning. I'm your nurse, Sarah and I'll be taking care of you today. May I know your name?",
+        second_step: "be taking care of",
         korean: "안녕하세요, 베이커씨. 어떻게 지내세요?"
     },
     {
         chapter_id: 1,
-        conversation_id: 1,
+        id: 2,
 
         speaker: "Mr. Baker",
         dialogue: "I feel great. How about you?",
@@ -29,7 +29,7 @@ export const allMessages: Message[] = [
     },
     {
         chapter_id: 1,
-        conversation_id: 1,
+        id: 3,
 
         speaker: "Nurse",
         dialogue: "I'm doing great as well. My name is Rachel, and I will be your nurse today.",
@@ -38,7 +38,7 @@ export const allMessages: Message[] = [
     },
     {
         chapter_id: 1,
-        conversation_id: 1,
+        id: 4,
 
         speaker: "Mr. Baker",
         dialogue: "Okay, Rachel. Can I ask you where I am?",
@@ -47,16 +47,16 @@ export const allMessages: Message[] = [
     },
     {
         chapter_id: 1,
-        conversation_id: 1,
+        id: 5,
 
         speaker: "Nurse",
         dialogue: "You are in the medical unit at Hope Regional Hospital.",
-        second_step: "",
+        second_step: "are in the medical unit",
         korean: "당신은 호프 지역 병원의 의료부에 계십니다."
     },
     {
         chapter_id: 1,
-        conversation_id: 1,
+        id: 6,
 
         speaker: "Mr. Baker",
         dialogue: "Am I going to stay in this room?",
@@ -65,7 +65,7 @@ export const allMessages: Message[] = [
     },
     {
         chapter_id: 1,
-        conversation_id: 1,
+        id: 7,
         
         speaker: "Nurse",
         dialogue: "Yes, Mr. Baker. You are going to stay here for the next few days.",
@@ -74,7 +74,7 @@ export const allMessages: Message[] = [
     },
     {
         chapter_id: 1,
-        conversation_id: 1,
+        id: 8,
 
         speaker: "Mr. Baker",
         dialogue: "I see. By the way, you can call me Kevin.",

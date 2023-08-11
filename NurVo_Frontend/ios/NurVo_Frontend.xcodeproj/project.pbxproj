@@ -44,6 +44,7 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = NurVo_Frontend/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-NurVo_Frontend-NurVo_FrontendTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NurVo_Frontend-NurVo_FrontendTests.release.xcconfig"; path = "Target Support Files/Pods-NurVo_Frontend-NurVo_FrontendTests/Pods-NurVo_Frontend-NurVo_FrontendTests.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		F999233A2A8512A3002B27A4 /* PretendardVariable.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = PretendardVariable.ttf; sourceTree = "<group>"; };
 		F9E3BCB92A6ED53400572102 /* Ionicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Ionicons.ttf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -153,6 +154,7 @@
 		F9E3BCB82A6ED4D200572102 /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
+				F999233A2A8512A3002B27A4 /* PretendardVariable.ttf */,
 				F9E3BCB92A6ED53400572102 /* Ionicons.ttf */,
 			);
 			name = Fonts;
@@ -496,6 +498,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = L3A22T43UF;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = NurVo_Frontend/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -508,7 +511,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.CoCo.NurVo;
 				PRODUCT_NAME = NurVo_Frontend;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -523,6 +526,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = L3A22T43UF;
 				INFOPLIST_FILE = NurVo_Frontend/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -534,7 +538,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.CoCo.NurVo;
 				PRODUCT_NAME = NurVo_Frontend;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";

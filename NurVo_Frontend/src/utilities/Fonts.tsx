@@ -12,7 +12,11 @@ export function Title01({ text, color, numberOfLines, ellipsizeMode }: FontProps
         <Text style={[fonts.title01, { color: color }]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
     )
 }
-
+export function Title012({ text, color, numberOfLines, ellipsizeMode }: FontProps) {
+    return(
+        <Text style={[fonts.title01_2, { color: color }]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
+    )
+}
 export function Title02({ text, color, numberOfLines, ellipsizeMode }: FontProps) {
     return(
         <Text style={[fonts.title02, { color: color }]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
@@ -22,6 +26,11 @@ export function Title02({ text, color, numberOfLines, ellipsizeMode }: FontProps
 export function Subtitle011({ text, color, numberOfLines, ellipsizeMode }: FontProps) {
     return(
         <Text style={[fonts.subtitle01_1, { color: color }]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
+    )
+}
+export function Subtitle012({ text, color, numberOfLines, ellipsizeMode }: FontProps) {
+    return(
+        <Text style={[fonts.subtitle01_2, { color: color }]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
     )
 }
 
@@ -37,6 +46,16 @@ export function Body012({ text, color, numberOfLines, ellipsizeMode }: FontProps
     )
 }
 
+export function Body013({ text, color, numberOfLines, ellipsizeMode }: FontProps) {
+    return(
+        <Text style={[fonts.body01_3, { color: color }]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
+    )
+}
+export function Body021({ text, color, numberOfLines, ellipsizeMode }: FontProps) {
+    return(
+        <Text style={[fonts.body02_1, { color: color }]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
+    )
+}
 export function Body022({ text, color, numberOfLines, ellipsizeMode }: FontProps) {
     return(
         <Text style={[fonts.body02_2, { color: color }]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
@@ -50,6 +69,16 @@ export function Body023({ text, color, numberOfLines, ellipsizeMode }: FontProps
 export function Body024({ text, color, numberOfLines, ellipsizeMode }: FontProps){
     return(
         <Text style={[fonts.body02_4, { color: color }]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
+    )
+}
+export function Subtext011({ text, color, numberOfLines, ellipsizeMode }: FontProps) {
+    return(
+        <Text style={[fonts.subtext01_1, { color: color }]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
+    )
+}
+export function Subtext012({ text, color, numberOfLines, ellipsizeMode }: FontProps) {
+    return(
+        <Text style={[fonts.subtext01_2, { color: color }]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
     )
 }
 export function Subtext013({ text, color, numberOfLines, ellipsizeMode }: FontProps) {
@@ -71,18 +100,19 @@ export function Body017({ text, color, numberOfLines, ellipsizeMode }: FontProps
     )
 }
 
-export function Subtext012({ text, color, numberOfLines, ellipsizeMode }: FontProps) {
-    return(
-        <Text style={[fonts.subtext01_2, { color: color }]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
-    )
-}
-
 const fonts = StyleSheet.create({
     title01: {
         fontFamily: 'Pretendard Variable',
         fontSize: 26,
         fontStyle: 'normal',
         fontWeight: '800',
+        lineHeight: 38,
+    },
+    title01_2: {
+        fontFamily: 'Pretendard Variable',
+        fontSize: 26,
+        fontStyle: 'normal',
+        fontWeight: '500',
         lineHeight: 38,
     },
     title02: {
@@ -92,11 +122,19 @@ const fonts = StyleSheet.create({
         fontWeight: '700',
         lineHeight: 32,
     },
+
     subtitle01_1: {
         fontFamily: 'Pretendard Variable',
         fontSize: 20,
         fontStyle: 'normal',
         fontWeight: '700',
+        lineHeight: 28,
+    },
+    subtitle01_2: {
+        fontFamily: 'Pretendard Variable',
+        fontSize: 20,
+        fontStyle: 'normal',
+        fontWeight: '500',
         lineHeight: 28,
     },
 
@@ -113,6 +151,21 @@ const fonts = StyleSheet.create({
         fontStyle: 'normal',
         fontWeight: '500',
         lineHeight: 22,
+    },
+    body01_3: {
+        fontFamily: 'Pretendard Variable',
+        fontSize: 17,
+        fontStyle: 'normal',
+        fontWeight: '300',
+        lineHeight: 22,
+    },
+
+    body02_1: {
+        fontFamily: 'Pretendard Variable',
+        fontSize: 15,
+        fontStyle: 'normal',
+        fontWeight: '800',
+        lineHeight: 20,
     },
     body02_2: {
         fontFamily: 'Pretendard Variable',
@@ -134,6 +187,13 @@ const fonts = StyleSheet.create({
         fontStyle: 'normal',
         fontWeight: '400',
         lineHeight: 20,
+    },
+    subtext01_1: {
+        fontFamily: 'Pretendard Variable',
+        fontSize: 13,
+        fontStyle: 'normal',
+        fontWeight: '700',
+        lineHeight: 18,
     },
     subtext01_3: {
         fontFamily: 'Pretendard Variable',
