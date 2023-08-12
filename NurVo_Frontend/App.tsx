@@ -13,13 +13,17 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import Colors from './src/utilities/Color';
+import StudyPageInfor from './src/utilities/Infor.mjs';
+import LibraryHeader from './src/components/LibraryHeader';
 import Home from './src/pages/Home';
 import LessonsList from './src/pages/LessonsList';
 import LessonFirst from './src/pages/ChapterStudy/LessonFirst';
 import LessonSecond from './src/pages/ChapterStudy/LessonSecond';
 import LessonThird from './src/pages/ChapterStudy/LessonThird';
-import Library from './src/pages/Library';
+import Bookmark from './src/pages/Bookmark';
 import StudyPage from './src/pages/StudyPage';
+import MemberDetails from './src/pages/MemberDetails';
+import SetUserGoal from './src/pages/SetUserGoal';
 
 const Tab = createBottomTabNavigator();
 function BottomTabs() {
@@ -45,7 +49,7 @@ function BottomTabs() {
       })}
     >
       <Tab.Screen name="Home" component={HomeStackScreen} options={{ headerShown: false }} />
-      <Tab.Screen name="Library" component={LibraryStackScreen} />
+      <Tab.Screen name="Library" component={LibraryStackScreen} options={{ headerShown: false }} />
     </Tab.Navigator>
   );
 }
@@ -62,10 +66,14 @@ const HomeStackScreen = () => {
       }}
     >
       <HomeStack.Screen name="HomeScreen" component={Home} options={{ headerShown: false }} />
-      <HomeStack.Screen name="LessonsList" component={LessonsList}/>
+      <HomeStack.Screen name="LessonsList" component={LessonsList} />
       <HomeStack.Screen name="LessonFirstScreen" component={LessonFirst} />
       <HomeStack.Screen name="LessonSecondScreen" component={LessonSecond} />
       <HomeStack.Screen name="LessonThirdScreen" component={LessonThird} />
+      {/** 홈 화면에서 설정화면 넘어가는 버튼 만들면 주석 해제 *
+      <HomeStack.Screen name="MemberDetails" component={MemberDetails} />
+      <HomeStack.Screen name="SetUserGoal" component={SetUserGoal} />
+       */}
     </HomeStack.Navigator>
   );
 }
@@ -79,8 +87,18 @@ const LibraryStackScreen = () => {
         headerBackTitleVisible: false,
       }}
     >
-      <LibraryStack.Screen name="SelectText" component={Library} options={{ headerShown: false }}/>
-      <LibraryStack.Screen name="StudyPage" component={StudyPage} />
+      <LibraryStack.Screen name="Library" component={Bookmark}
+        options={{
+          header: ({ scene }) => {
+            return <LibraryHeader title='Library' isDelete={true} />;
+          },
+        }} />
+      <LibraryStack.Screen name="StudyPage" component={StudyPage}
+        options={{
+          header: ({ scene }) => {
+            return <LibraryHeader title='StudyPage' image={StudyPageInfor} isBack={true} />;
+          },
+        }} />
     </LibraryStack.Navigator>
   );
 }
