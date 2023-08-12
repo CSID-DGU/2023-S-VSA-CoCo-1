@@ -10,27 +10,28 @@ import {
 } from 'react-native';
 
 import Colors from '../../utilities/Color';
-import { Message, allMessages } from '../../utilities/LessonExample';
+// import { allMessages } from '../../utilities/LessonExample';
 import ChatBubble from '../../components/ChatBubble';
 import CustomAlert from '../../components/Alert';
 import { speech, stopSpeech } from '../../utilities/TextToSpeech';
+import { fetchChapterDialogueById } from '../../utilities/ServerFunc';
 
 const { StatusBarManager } = NativeModules;
 LogBox.ignoreLogs(['new NativeEventEmitter']);
 
-export default function LessonFirst({ navigation }: { navigation: any }) {
+export default function LessonFirst({ navigation, route }) {
   const flatListRef = useRef<FlatList>(null);
-  // const [messages, setMessages] = useState<Message[]>([allMessages[0]]);
-  // const [showAlert, setShowAlert] = useState(false);
-  // const [isSpeaking, setIsSpeaking] = useState<boolean[]>([]);
   const initialState = {
-    messages: [allMessages[0]],
+    allMessages: [],
+    messages: [],
     showAlert: false,
     isSpeaking: [],
   };
 
   const reducer = (state: typeof initialState, action: { type: string; payload?: any }) => {
     switch (action.type) {
+      case 'SET_ALLMESSAGES':
+        return { ...state, allMessages: action.payload };
       case 'SET_MESSAGES':
         return { ...state, messages: action.payload };
       case 'SET_SHOW_ALERT':
@@ -44,6 +45,7 @@ export default function LessonFirst({ navigation }: { navigation: any }) {
 
   const [state, dispatch] = useReducer(reducer, initialState);
   const {
+    allMessages,
     messages,
     showAlert,
     isSpeaking,
@@ -56,14 +58,20 @@ export default function LessonFirst({ navigation }: { navigation: any }) {
   }, []);
 
   useEffect(() => {
-    setIsSpeakingByIndex(0, true);
-    speech(
-      allMessages[0].dialogue,
-      allMessages[0].chapter_id,
-      allMessages[0].id,
-      allMessages[0].speaker === 'Nurse',
-      () => setIsSpeakingByIndex(0, false));    //speech함수가 끝나면 setIsSpeaking(false)로 바꿔줌
+    fetchChapterDialogueById(router.params.chapterId);
   }, []);
+
+  useEffect(() => {
+    if (allMessages.length !== 0) {
+      setIsSpeakingByIndex(0, true);
+      speech(
+        allMessages[0].dialogue,
+        allMessages[0].chapter_id,
+        allMessages[0].id,
+        allMessages[0].speaker === 'Nurse',
+        () => setIsSpeakingByIndex(0, false));    //speech함수가 끝나면 setIsSpeaking(false)로 바꿔줌
+    }
+  }, [allMessages]);
 
   const handlePress = () => {
     if (isSpeaking.some((value: boolean) => value)) {
