@@ -3,100 +3,88 @@ import { StyleSheet, Text } from 'react-native';
 interface FontProps {
     text: string;
     color?: string;
+    style?: {};
     numberOfLines?: number;
     ellipsizeMode?: 'head' | 'middle' | 'tail' | 'clip';
 }
 
-export function Title01({ text, color, numberOfLines, ellipsizeMode }: FontProps) {
+export function Title01({ text, color, style, numberOfLines, ellipsizeMode }: FontProps) {
     return(
-        <Text style={[fonts.title01, { color: color }]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
+        <Text style={[fonts.title01, { color: color }, style]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
     )
 }
-export function Title012({ text, color, numberOfLines, ellipsizeMode }: FontProps) {
+export function Title012({ text, color, style, numberOfLines, ellipsizeMode }: FontProps) {
     return(
-        <Text style={[fonts.title01_2, { color: color }]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
+        <Text style={[fonts.title01_2, { color: color }, style]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
     )
 }
-export function Title02({ text, color, numberOfLines, ellipsizeMode }: FontProps) {
+export function Title02({ text, color, style, numberOfLines, ellipsizeMode }: FontProps) {
     return(
-        <Text style={[fonts.title02, { color: color }]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
-    )
-}
-
-export function Subtitle011({ text, color, numberOfLines, ellipsizeMode }: FontProps) {
-    return(
-        <Text style={[fonts.subtitle01_1, { color: color }]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
-    )
-}
-export function Subtitle012({ text, color, numberOfLines, ellipsizeMode }: FontProps) {
-    return(
-        <Text style={[fonts.subtitle01_2, { color: color }]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
+        <Text style={[fonts.title02, { color: color }, style]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
     )
 }
 
-export function Body011({ text, color, numberOfLines, ellipsizeMode }: FontProps) {
+export function Subtitle011({ text, color, style, numberOfLines, ellipsizeMode }: FontProps) {
     return(
-        <Text style={[fonts.body01_1, { color: color }]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
+        <Text style={[fonts.subtitle01_1, { color: color }, style]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
+    )
+}
+export function Subtitle012({ text, color, style, numberOfLines, ellipsizeMode }: FontProps) {
+    return(
+        <Text style={[fonts.subtitle01_2, { color: color }, style]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
     )
 }
 
-export function Body012({ text, color, numberOfLines, ellipsizeMode }: FontProps) {
+export function Body011({ text, color, style, numberOfLines, ellipsizeMode }: FontProps) {
     return(
-        <Text style={[fonts.body01_2, { color: color }]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
+        <Text style={[fonts.body01_1, { color: color }, style]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
     )
 }
 
-export function Body013({ text, color, numberOfLines, ellipsizeMode }: FontProps) {
+export function Body012({ text, color, style, numberOfLines, ellipsizeMode }: FontProps) {
     return(
-        <Text style={[fonts.body01_3, { color: color }]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
+        <Text style={[fonts.body01_2, { color: color }, style]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
     )
 }
-export function Body021({ text, color, numberOfLines, ellipsizeMode }: FontProps) {
+
+export function Body013({ text, color, style, numberOfLines, ellipsizeMode }: FontProps) {
     return(
-        <Text style={[fonts.body02_1, { color: color }]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
+        <Text style={[fonts.body01_3, { color: color }, style]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
     )
 }
-export function Body022({ text, color, numberOfLines, ellipsizeMode }: FontProps) {
+export function Body021({ text, color, style, numberOfLines, ellipsizeMode }: FontProps) {
     return(
-        <Text style={[fonts.body02_2, { color: color }]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
+        <Text style={[fonts.body02_1, { color: color }, style]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
     )
 }
-export function Body023({ text, color, numberOfLines, ellipsizeMode }: FontProps) {
+export function Body022({ text, color, style, numberOfLines, ellipsizeMode }: FontProps) {
     return(
-        <Text style={[fonts.body02_3, { color: color }]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
+        <Text style={[fonts.body02_2, { color: color }, style]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
     )
 }
-export function Body024({ text, color, numberOfLines, ellipsizeMode }: FontProps){
+export function Body023({ text, color, style, numberOfLines, ellipsizeMode }: FontProps) {
     return(
-        <Text style={[fonts.body02_4, { color: color }]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
+        <Text style={[fonts.body02_3, { color: color }, style]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
+    )
+}
+export function Body024({ text, color, style, numberOfLines, ellipsizeMode }: FontProps){
+    return(
+        <Text style={[fonts.body02_4, { color: color }, style]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
     )
 }
 export function Subtext011({ text, color, numberOfLines, ellipsizeMode }: FontProps) {
     return(
-        <Text style={[fonts.subtext01_1, { color: color }]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
+        <Text style={[fonts.subtext01_1, { color: color }, style]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
     )
 }
-export function Subtext012({ text, color, numberOfLines, ellipsizeMode }: FontProps) {
+export function Subtext012({ text, color, style, numberOfLines, ellipsizeMode }: FontProps) {
     return(
-        <Text style={[fonts.subtext01_2, { color: color }]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
+        <Text style={[fonts.subtext01_2, { color: color }, style]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
     )
 }
-export function Subtext013({ text, color, numberOfLines, ellipsizeMode }: FontProps) {
+export function Subtext013({ text, color, style, numberOfLines, ellipsizeMode }: FontProps) {
     return(
-        <Text style={[fonts.subtext01_3, { color: color }]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
-    )
-}
-
-
-export function Title01_1({ text, color, numberOfLines, ellipsizeMode }: FontProps) {
-    return(
-        <Text style={[fonts.title01_1, { color: color }]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
-    )
-}
-
-export function Body017({ text, color, numberOfLines, ellipsizeMode }: FontProps) {
-    return(
-        <Text style={[fonts.body01_7, { color: color }]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
+        <Text style={[fonts.subtext01_3, { color: color }, style]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
     )
 }
 
@@ -137,7 +125,6 @@ const fonts = StyleSheet.create({
         fontWeight: '500',
         lineHeight: 28,
     },
-
     body01_1: {
         fontFamily: 'Pretendard Variable',
         fontSize: 17,
@@ -195,37 +182,18 @@ const fonts = StyleSheet.create({
         fontWeight: '700',
         lineHeight: 18,
     },
+    subtext01_2: {
+        fontFamily: 'Pretendard Variable',
+        fontSize: 13,
+        fontStyle: 'normal',
+        fontWeight: '500',
+        lineHeight: 18,
+    },
     subtext01_3: {
         fontFamily: 'Pretendard Variable',
         fontSize: 13,
         fontStyle: 'normal',
         fontWeight: '400',
-        lineHeight: 18,
-    },
-    title01_1: {
-        paddingHorizontal: 30,
-        fontFamily: 'Pretendard Variable',
-        fontSize: 26,
-        fontStyle: 'normal',
-        fontWeight: '800',
-        lineHeight: 38,
-    },
-    body01_7: {
-        paddingHorizontal: 10,
-        paddingTop: 10,
-        fontFamily: 'Pretendard Variable',
-        fontSize: 17,
-        fontStyle: 'normal',
-        fontWeight: '700',
-        lineHeight: 22,
-    },
-    subtext01_2: {
-        paddingHorizontal: 10,
-        paddingVertical: 10,
-        fontFamily: 'Pretendard Variable',
-        fontSize: 13,
-        fontStyle: 'normal',
-        fontWeight: '500',
         lineHeight: 18,
     },
 });

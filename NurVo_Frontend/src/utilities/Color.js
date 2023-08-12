@@ -1,7 +1,7 @@
 const Colors = 
 {
     MAINGREEN: '#007D74',
-    MAINLIGHTGREEN: 'rgba(98, 196, 150, 0.5)',
+    MAINLIGHTGREEN: 'rgba(0, 125, 116, 0.5)',
     WHITE: '#FFFFFF',
     BLACK: '#2B2B2B',
     GRAY03: '#5A5A5A',
