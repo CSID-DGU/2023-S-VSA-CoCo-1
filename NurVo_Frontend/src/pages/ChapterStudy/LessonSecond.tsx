@@ -12,21 +12,24 @@ import {
 } from 'react-native';
 
 import Colors from '../../utilities/Color';
-import { Message, allMessages } from '../../utilities/LessonExample';
+// import { Message, allMessages } from '../../utilities/LessonExample';
 import { ChatBubbleInputWord } from '../../components/ChatBubble';
 import CustomAlert from '../../components/Alert';
 import VoiceRecordButton from '../../components/VoiceFuncComp';
 import { stopSpeech } from '../../utilities/TextToSpeech';
+import { LessonSecondProps } from '../../utilities/NavigationTypes';
+import { fetchChapterDialogueSecondStepById, fetchChapterDialogueThirdStepById } from '../../utilities/ServerFunc';
 
 const { StatusBarManager } = NativeModules;
 
-export default function LessonSecond({ navigation }: { navigation: any }) {
+export default function LessonSecond({ navigation, route }: LessonSecondProps) {
 
   const flatListRef = useRef<FlatList>(null);
   const inputRef = useRef<TextInput>(null);
 
   type State = {
-    messages: Message[];
+    allMessages: [];
+    messages: [];
     inputText: string;
     inputValues: Record<string, any>;
     correctPercent: string;
@@ -38,7 +41,8 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
   };
 
   const initialState: State = {
-    messages: [allMessages[0]],
+    allMessages: [],
+    messages: [],
     inputText: '',
     inputValues: {},
     correctPercent: '',
@@ -51,6 +55,8 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
 
   const reducer = (state: typeof initialState, action: { type: string; payload?: any }) => {
     switch (action.type) {
+      case 'SET_ALLMESSAGES':
+        return { ...state, allMessages: action.payload };
       case 'SET_MESSAGES':
         return { ...state, messages: action.payload };
       case 'SET_INPUT_TEXT':
@@ -76,6 +82,7 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
 
   const [state, dispatch] = useReducer(reducer, initialState);
   const {
+    allMessages,
     messages,
     inputText,
     inputValues,
@@ -94,8 +101,31 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
   }, []);
 
   useEffect(() => {
-    if (!showCheckAlert && messages[messages.length - 1].speaker === 'Nurse') {
-      inputRef.current?.focus();
+    const getData = async () => {
+      const chapterId = route.params.chapterId;
+      const data = await fetchChapterDialogueThirdStepById(chapterId);
+      if (data) {
+        dispatch({ type: 'SET_ALLMESSAGES', payload: data });
+      }
+    }
+    getData();
+  }, []);
+
+  useEffect(() => {
+    if (allMessages.length > 0) {
+      dispatch({ type: 'SET_MESSAGES', payload: [allMessages[0]] });
+    }
+  }, [allMessages]);
+
+  useEffect(() => {
+    console.log(messages);
+  }, [messages]);
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      if (!showCheckAlert && messages[messages.length - 1].speaker === 'Nurse') {
+        inputRef.current?.focus();
+      }
     }
   }, [showCheckAlert]);
 
@@ -148,6 +178,7 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
             dispatch({ type: 'SET_SHOW_CHECK_ALERT', payload: true });
           }
         } else {
+          console.log(allMessages.slice(0, messages.length + 1) );
           dispatch({ type: 'SET_MESSAGES', payload: allMessages.slice(0, messages.length + 1) });
           setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100);
         }
@@ -170,7 +201,7 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
 
   const handleNext = () => {
     navigation.pop();
-    navigation.navigate("LessonThirdScreen");
+    navigation.navigate("LessonThirdScreen", { chapterId: route.params.chapterId });
   };
   const handleCancle = () => {
     dispatch({ type: 'SET_SHOW_NEXT_ALERT', payload: false });
@@ -187,10 +218,10 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
     dispatch({ type: 'SET_SHOW_CHECK_ALERT', payload: false });
   };
 
-  const hasInputText = messages[messages.length - 1].speaker === 'Nurse' &&
-    messages[messages.length - 1].second_step;
+  const hasInputText = messages.length>0 ? messages[messages.length - 1].speaker === 'Nurse' &&
+    messages[messages.length - 1].second_step : false;
 
-  //하단 키보드 버튼 애니메이션
+  // 하단 키보드 버튼 애니메이션
   const [buttonTranslateY] = useState(new Animated.Value(140));
   useEffect(() => {
     Animated.timing(buttonTranslateY, {

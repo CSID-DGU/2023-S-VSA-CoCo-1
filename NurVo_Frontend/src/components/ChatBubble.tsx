@@ -46,7 +46,7 @@ export default function ChatBubble({ index, item, isBookmarked, isSpeaking, spea
     }
   }
   return (
-    <View key={item.id} style={[
+    <View key={index} style={[
       item.speaker === 'Nurse' ? bubbleStyles.messageContainerRight : bubbleStyles.messageContainerLeft
     ]}>
       <View style={[
@@ -100,8 +100,9 @@ export function ChatBubbleInputWord({ index, item, isBookmarked, onEnterValue, o
 
   const textWithInputs = replaceWithInput(item.dialogue, item.second_step);
 
+  console.log("texttext", item.dialogue);
   return (
-    <View key={item.id} style={[
+    <View key={index} style={[
       item.speaker === 'Nurse' ? bubbleStyles.messageContainerRight : bubbleStyles.messageContainerLeft
     ]}>
       <View style={[
@@ -240,10 +241,11 @@ export function ChatBubbleInputAll({ index, item, isBookmarked, onEnterValue, on
   );
 }
 
-function replaceWithInput(text: string, textToReplace: string) {
-  if (textToReplace === '') {
+function replaceWithInput(text: string, textToReplace?: string) {
+  if (textToReplace === '' || textToReplace === undefined) {
     return [text];
   } else {
+    console.log("Text",text);
     const segments = text.split(new RegExp(`(${textToReplace})`, 'gi'));
     const result = segments.map((segment, index) => {
       if (segment.toLowerCase() === textToReplace.toLowerCase()) {
@@ -256,7 +258,7 @@ function replaceWithInput(text: string, textToReplace: string) {
   }
 }
 
-function checkInputWord(index: number, input: string, second_step: string) {
+function checkInputWord(index: number, input: string, second_step?: string) {
   return (
     <View key={index} style={[layoutStyles.VStackContainer, { paddingVertical: 10 }]}>
       <Body011 text={input} color={Colors.NAVY} />
