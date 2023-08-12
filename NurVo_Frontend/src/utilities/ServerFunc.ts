@@ -4,6 +4,7 @@ import { RN_HOST_URL } from "@env";
 const HOST_URL = RN_HOST_URL;
 
 export interface ResponseProps {
+    [x: string]: any;
     data: [];
 }
 
@@ -13,8 +14,8 @@ export async function fetchAllTopic(): Promise<ResponseProps | undefined> {
     try {
         const response = await fetch(url);
         const responseData = await response.json();
-        console.log(responseData.data);
-        return responseData.data;
+        console.log(responseData);
+        return responseData;
     } catch (error) {
         console.log(error);
     }
@@ -26,44 +27,44 @@ export async function fetchChapterDescriptionById(chapterId: string): Promise<Re
     try {
         const response = await fetch(url);
         const responseData = await response.json();
-        console.log(responseData.data);
-        return responseData.data;
+        console.log("response data", responseData);
+        return responseData;
     } catch (error) {
         console.log(error);
     }
 }
 
-export async function fetchChapterDialogueById(chapterId: string): Promise<ResponseProps | undefined> {
+export async function fetchChapterDialogueById(chapterId: number): Promise<ResponseProps | undefined> {
     const url = `${HOST_URL}/api/dialogues/1/${chapterId}`;
     try {
         const response = await fetch(url);
         const responseData = await response.json();
-        console.log(responseData.data);
-        return responseData.data;
+        console.log("response data", responseData);
+        return responseData;
     } catch (error) {
         console.log(error);
     }
 }
 
-export async function fetchChapterDialogueSecondStepById(chapterId: string): Promise<ResponseProps | undefined> {
+export async function fetchChapterDialogueSecondStepById(chapterId: number): Promise<ResponseProps | undefined> {
     const url = `${HOST_URL}/api/dialogues/1/${chapterId}/step2`;
     try {
         const response = await fetch(url);
         const responseData = await response.json();
-        console.log(responseData.data);
-        return responseData.data;
+        console.log(responseData);
+        return responseData;
     } catch (error) {
         console.log(error);
     }
 }
 
-export async function fetchChapterDialogueThirdStepById(chapterId: string): Promise<ResponseProps | undefined> {
+export async function fetchChapterDialogueThirdStepById(chapterId: number): Promise<ResponseProps | undefined> {
     const url = `${HOST_URL}/api/dialogues/1/${chapterId}/step3`;
     try {
         const response = await fetch(url);
         const responseData = await response.json();
-        console.log(responseData.data);
-        return responseData.data;
+        console.log(responseData);
+        return responseData;
     } catch (error) {
         console.error(error);
     }
@@ -82,8 +83,8 @@ export async function calculateSecondStepAccuracyWithSentenceId(chapterId: strin
             body: JSON.stringify(data),
         })
         const responseData = await response.json();
-        console.log(responseData.data);
-        return responseData.data;
+        console.log(responseData);
+        return responseData;
     } catch (error) {
         console.error(error);
     }
@@ -102,8 +103,8 @@ export async function calculateThirdStepAccuracyWithSentenceId(chapterId: string
             body: JSON.stringify(data),
         });
         const responseData = await response.json();
-        console.log(responseData.data);
-        return responseData.data;
+        console.log(responseData);
+        return responseData;
     } catch (error) {
         console.error(error);
     }
@@ -122,8 +123,8 @@ export async function addSentenceBookmark(chapterId: string, sentenceId: string)
             body: JSON.stringify(data),
         });
         const responseData = await response.json();
-        console.log(responseData.data);
-        return responseData.data;
+        console.log(responseData);
+        return responseData;
     } catch (error) {
         console.error(error);
     }
@@ -135,8 +136,8 @@ export async function fetchBookmark() {
     try {
         const response = await fetch(url);
         const responseData = await response.json();
-        console.log(responseData.data);
-        return responseData.data;
+        console.log(responseData);
+        return responseData;
     } catch (error) {
         console.error(error);
     }

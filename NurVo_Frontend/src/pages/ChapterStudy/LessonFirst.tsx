@@ -10,16 +10,16 @@ import {
 } from 'react-native';
 
 import Colors from '../../utilities/Color';
-// import { allMessages } from '../../utilities/LessonExample';
 import ChatBubble from '../../components/ChatBubble';
 import CustomAlert from '../../components/Alert';
 import { speech, stopSpeech } from '../../utilities/TextToSpeech';
 import { fetchChapterDialogueById } from '../../utilities/ServerFunc';
+import { LessonFirstProps } from '../../utilities/NavigationTypes';
 
 const { StatusBarManager } = NativeModules;
 LogBox.ignoreLogs(['new NativeEventEmitter']);
 
-export default function LessonFirst({ navigation, route }) {
+export default function LessonFirst({ navigation, route }: LessonFirstProps) {
   const flatListRef = useRef<FlatList>(null);
   const initialState = {
     allMessages: [],
@@ -58,11 +58,19 @@ export default function LessonFirst({ navigation, route }) {
   }, []);
 
   useEffect(() => {
-    fetchChapterDialogueById(router.params.chapterId);
+    const getData = async () => {
+      const chapterId = route.params.chapterId;
+      const data = await fetchChapterDialogueById(chapterId);
+      if (data) {
+        dispatch({ type: 'SET_ALLMESSAGES', payload: data });
+      }
+    }
+    getData();
   }, []);
 
   useEffect(() => {
-    if (allMessages.length !== 0) {
+    if (allMessages.length > 0) {
+      dispatch({ type: 'SET_MESSAGES', payload: [allMessages[0]] });
       setIsSpeakingByIndex(0, true);
       speech(
         allMessages[0].dialogue,
@@ -103,7 +111,7 @@ export default function LessonFirst({ navigation, route }) {
 
   const handleNext = () => {
     navigation.pop();
-    navigation.navigate("LessonSecondScreen");
+    navigation.navigate("LessonSecondScreen", { chapterId: route.params.chapterId });
   };
 
   const handleCancle = () => {
