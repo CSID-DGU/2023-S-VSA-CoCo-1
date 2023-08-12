@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
+
 import Colors from '../utilities/Color';
-import { Title01_1 } from '../utilities/Fonts';
+import { Title01 } from '../utilities/Fonts';
 
 interface StudyCardProps {
   context1: string;
   context2: string;
-  style?: {};
+  style?: number
 }
 
 // React.forwardRef로 감싼 StudyCard 컴포넌트를 정의합니다.
@@ -24,9 +25,9 @@ const StudyCard = ({ context1, context2, style }: StudyCardProps) => {
         <View
           style={[styles.textCard, style, cardTurn ? styles.turnTextCard : null]}>
           {!cardTurn ? (
-            <Title01_1 text={context1} color={Colors.BLACK} />
+            <Title01 text={context1} color={Colors.BLACK} style={{ marginHorizontal: 25 }} />
           ) : (
-            <Title01_1 text={context2} color={Colors.BLACK} />
+            <Title01 text={context2} color={Colors.BLACK} style={{ marginHorizontal: 25 }} />
           )}
         </View>
       </TouchableOpacity>
