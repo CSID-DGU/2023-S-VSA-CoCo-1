@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import axios from 'axios';
+import axios from '../api/axios';
 
 import Colors from '../utilities/Color';
 import { Body011 } from '../utilities/Fonts';
 import { screenWidth } from '../utilities/Layout';
-import BookmarkList from '../components/BookmarkList';
+import BookMarkList from '../components/BookMarkList';
 
-// 데이터 불러오기
+// 데이터 불러오기 http://10.0.2.2:5000
 async function getBookmark() {
-  const response = await axios.get<{ data: [] }>('http://10.0.2.2:5000/api/bookmark');
+  const response = await axios.get<{ data: [] }>('/api/bookmark');
   try {
     console.log('들어온 데이터', response.data);
   } catch (e) {
@@ -21,7 +21,7 @@ async function getBookmark() {
 // 데이터 내보내기
 async function deleteBookmark(data: []) {
   try {
-    const response = await axios.post('http://10.0.2.2:5000/api/bookmark/delete', data, {
+    const response = await axios.post('/api/bookmark/delete', data, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -72,10 +72,8 @@ const Bookmark = ({ navigation, route }) => {
       } else {
         navigation.navigate('StudyPage', { data: seletedList });
       }
-    } else {
-
-    }
-  };
+    };
+  }
 
   // 데이터 삭제
   const bookmarkDelete = () => {
@@ -85,7 +83,7 @@ const Bookmark = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      <BookmarkList
+      <BookMarkList
         dataArray={libraryData}
         isDelete={initialIsDelete}
         seletedBookMarkList={handleSeletedID}
