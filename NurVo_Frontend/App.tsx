@@ -70,10 +70,8 @@ const HomeStackScreen = () => {
       <HomeStack.Screen name="LessonFirstScreen" component={LessonFirst} />
       <HomeStack.Screen name="LessonSecondScreen" component={LessonSecond} />
       <HomeStack.Screen name="LessonThirdScreen" component={LessonThird} />
-      {/** 홈 화면에서 설정화면 넘어가는 버튼 만들면 주석 해제 *
       <HomeStack.Screen name="MemberDetails" component={MemberDetails} />
       <HomeStack.Screen name="SetUserGoal" component={SetUserGoal} />
-       */}
     </HomeStack.Navigator>
   );
 }
