@@ -13,6 +13,7 @@ import { Title01, Title02, Subtitle011, Subtext013, Body022, Body023, Body024 } 
 import { layoutStyles, screenWidth } from '../utilities/Layout';
 import { CarouselList } from '../components/CarouselListComp';
 import { ListCell } from '../components/ListCellComp';
+import { useNavigation } from '@react-navigation/native';
 
 const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -46,10 +47,14 @@ const MenuTitle = ({ text, onPress }: { text: string, onPress: () => void }) => 
 }
 
 function UserInfoHeader() {
+  const navigation = useNavigation();
+  
   interface CircleTextProps {
     text: string;
     backgroundColor?: string;
   }
+
+  
 
   const CircleText = ({ text, backgroundColor }: CircleTextProps) => {
     return (
@@ -69,6 +74,10 @@ function UserInfoHeader() {
     );
   };
 
+  const userPage = () => {
+    navigation.navigate('MemberDetails');
+  }
+
   return (
     <View style={styles.headerBackground}>
       <View style={[layoutStyles.VStackContainer, { paddingHorizontal: 20, paddingVertical: 16, marginTop: 20 }]}>
@@ -77,6 +86,7 @@ function UserInfoHeader() {
             <View style={[styles.headerText]}>
               <Title01 text="Hi," color={Colors.BLACK} />
               <Title02 text="Jimin" color={Colors.BLACK} />
+              <Ionicons name="settings" size={20} color={Colors.MAINLIGHTGREEN} style={{marginHorizontal: 5}} onPress={userPage}/>
             </View>
             <View style={styles.tagBackground}>
               <Body023 text="D-100days" color={Colors.WHITE} />
