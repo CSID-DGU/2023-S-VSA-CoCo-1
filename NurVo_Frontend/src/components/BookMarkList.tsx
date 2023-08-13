@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, ScrollView, Animated, FlatList } from 'react-native';
 
 import Colors from '../utilities/Color.js';
-import BoomarkComp from './BoomarkComp';
+import BookmarkComp from '../components/BookmarkComp';
 
 interface BookmarkListProbs {
   dataArray: {
@@ -24,7 +24,7 @@ interface BookmarkListProbs {
   }[]) => void;
 }
 
-const BookmarkList = ({ dataArray, isDelete, trueCount, seletedBookMarkList }: BookmarkListProbs) => {
+const BookMarkList = ({ dataArray, isDelete, trueCount, seletedBookMarkList }: BookmarkListProbs) => {
   const flatListRef = useRef<FlatList>(null);
   const dataLength = dataArray.length;
   const [animationValue] = useState(new Animated.Value(0));
@@ -145,7 +145,7 @@ const BookmarkList = ({ dataArray, isDelete, trueCount, seletedBookMarkList }: B
 
     return (
       <View key={index}>
-        <BoomarkComp
+        <BookmarkComp
           id={item.conversation_id}
           context={item.dialogue}
           chapter={item.chapter}
@@ -222,4 +222,4 @@ const textStyles = StyleSheet.create({
   },
 });
 
-export default BookmarkList;
+export default BookMarkList;
