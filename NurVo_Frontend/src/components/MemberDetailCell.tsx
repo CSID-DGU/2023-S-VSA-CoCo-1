@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import Colors from '../utilities/Color';
 import { Body012, Subtext012 } from '../utilities/Fonts';
@@ -12,28 +13,20 @@ interface MemberDetailCellProps {
   infor: string,
 
   openPage?: string
-  isOpenPage?: boolean,
+  isOpenIcon?: boolean,
 }
 
-const MemberDetailCell = ({ title, infor, openPage, isOpenPage }: MemberDetailCellProps) => {
-  const navigation = useNavigation();
-  const isOpenPagesButton = isOpenPage || false;
-
-  const openPages = () => {
-    navigation.navigate(openPage);
-  };
+const MemberDetailCell = ({ title, infor, isOpenIcon }: MemberDetailCellProps) => {
+  const isOpenPagesButton = isOpenIcon || false;
 
   return (
-
-    <View style={styles.container}>
+    <View style={styles.container} >
       <Subtext012 text={title} color={Colors.GRAY05} style={{ paddingBottom: 5 }} />
       <Body012 text={infor} color={Colors.GRAY03} style={{ paddingBottom: 10 }} />
 
-      {isOpenPagesButton ?
-        <TouchableOpacity style={styles.openButton} onPress={openPages}>
-          <Image source={open} />
-        </TouchableOpacity>
-        : null
+      {isOpenPagesButton ? (
+        <Ionicons name='chevron-forward-outline' size={14} color={Colors.GRAY05} style={styles.openButton} />
+      ) : null
       }
     </View>
   );
@@ -46,7 +39,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignContent: 'center',
     marginHorizontal: 10,
-    marginBottom: 15,
+    marginTop: 15,
     borderBottomWidth: 1,
     borderBottomColor: Colors.GRAY09,
   },
