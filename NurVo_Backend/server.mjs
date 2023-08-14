@@ -4,6 +4,7 @@ import cors from 'cors';
 import { router as dialoguesRouter } from './controllers/dialogues.mjs';
 import { router as bookmarkRouter} from './controllers/bookmark.mjs'
 import {router as signupRouter} from './controllers/signup.mjs'
+import { router as authRouter} from './controllers/login.mjs';
 
 const app = express();
 app.use(bodyParser.json());
@@ -28,5 +29,6 @@ app.listen(5000, () => {
 app.use('/api/dialogues', dialoguesRouter);
 app.use('/api/bookmark', bookmarkRouter);
 app.use('/api/signup', signupRouter);
+app.use('/api/auth', authRouter);
 
 
