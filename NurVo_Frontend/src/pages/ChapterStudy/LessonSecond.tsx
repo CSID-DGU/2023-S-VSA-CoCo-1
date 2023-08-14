@@ -18,7 +18,7 @@ import CustomAlert from '../../components/Alert';
 import VoiceRecordButton from '../../components/VoiceFuncComp';
 import { stopSpeech } from '../../utilities/TextToSpeech';
 import { LessonSecondProps } from '../../utilities/NavigationTypes';
-import { fetchChapterDialogueSecondStepById, fetchChapterDialogueThirdStepById } from '../../utilities/ServerFunc';
+import { calculateSecondStepAccuracyWithSentenceId, fetchChapterDialogueSecondStepById, fetchChapterDialogueThirdStepById } from '../../utilities/ServerFunc';
 
 const { StatusBarManager } = NativeModules;
 
@@ -103,7 +103,7 @@ export default function LessonSecond({ navigation, route }: LessonSecondProps) {
   useEffect(() => {
     const getData = async () => {
       const chapterId = route.params.chapterId;
-      const data = await fetchChapterDialogueThirdStepById(chapterId);
+      const data = await fetchChapterDialogueSecondStepById(chapterId);
       if (data) {
         dispatch({ type: 'SET_ALLMESSAGES', payload: data });
       }
@@ -116,10 +116,6 @@ export default function LessonSecond({ navigation, route }: LessonSecondProps) {
       dispatch({ type: 'SET_MESSAGES', payload: [allMessages[0]] });
     }
   }, [allMessages]);
-
-  useEffect(() => {
-    console.log(messages);
-  }, [messages]);
 
   useEffect(() => {
     if (messages.length > 0) {
@@ -167,7 +163,7 @@ export default function LessonSecond({ navigation, route }: LessonSecondProps) {
     dispatch({ type: 'SET_INPUT_TEXT', payload: text });
   };
 
-  const handlePress = () => {
+  const handlePress = async () => {
     if (!(isSpeaking.some((value: boolean) => value))) {
       if (messages.length < allMessages.length) {
         if (messages[messages.length - 1].speaker === 'Nurse' && messages[messages.length - 1].second_step) {
@@ -175,18 +171,30 @@ export default function LessonSecond({ navigation, route }: LessonSecondProps) {
             inputRef.current?.focus();
             return;
           } else {
+            await calculateCorrectPercent();
             dispatch({ type: 'SET_SHOW_CHECK_ALERT', payload: true });
           }
         } else {
-          console.log(allMessages.slice(0, messages.length + 1) );
           dispatch({ type: 'SET_MESSAGES', payload: allMessages.slice(0, messages.length + 1) });
           setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100);
         }
       } else {
+        if (messages[messages.length - 1].speaker === 'Nurse' && messages[messages.length - 1].second_step) {
+          await calculateCorrectPercent();
+          dispatch({ type: 'SET_SHOW_CHECK_ALERT', payload: true });
+        }
         dispatch({ type: 'SET_SHOW_NEXT_ALERT', payload: true });
       }
     }
   };
+
+  async function calculateCorrectPercent() {
+    const result = await calculateSecondStepAccuracyWithSentenceId(route.params.chapterId, messages[messages.length - 1].id, inputText)
+    if (result) {
+      dispatch({ type: 'SET_CORRECT_PERCENT', payload: result.accuracy });
+    }
+
+  }
 
   const setIsSpeakingByIndex = (index: number, bool: boolean) => {
     const speakingList: boolean[] = [...isSpeaking];
@@ -207,7 +215,8 @@ export default function LessonSecond({ navigation, route }: LessonSecondProps) {
     dispatch({ type: 'SET_SHOW_NEXT_ALERT', payload: false });
   };
   const handleCheckNext = () => {
-    const newInputValues = { ...inputValues, [messages[messages.length - 1].id]: inputText };
+    const jsonValue = { text: inputText, isOver: correctPercent >= 80 ? true : false}
+    const newInputValues = { ...inputValues, [messages[messages.length - 1].id]:  JSON.stringify(jsonValue)};
     dispatch({ type: 'SET_INPUT_VALUES', payload: newInputValues });
     dispatch({ type: 'SET_INPUT_TEXT', payload: '' });
     dispatch({ type: 'SET_SHOW_CHECK_ALERT', payload: false });
@@ -218,7 +227,7 @@ export default function LessonSecond({ navigation, route }: LessonSecondProps) {
     dispatch({ type: 'SET_SHOW_CHECK_ALERT', payload: false });
   };
 
-  const hasInputText = messages.length>0 ? messages[messages.length - 1].speaker === 'Nurse' &&
+  const hasInputText = messages.length > 0 ? messages[messages.length - 1].speaker === 'Nurse' &&
     messages[messages.length - 1].second_step : false;
 
   // 하단 키보드 버튼 애니메이션
@@ -280,7 +289,7 @@ export default function LessonSecond({ navigation, route }: LessonSecondProps) {
         <CustomAlert
           onCancle={handleCheckCancle}
           onConfirm={handleCheckNext}
-          content={`정답률이 %입니다. \n다음으로 넘어가시겠습니까?`}
+          content={`정답률이 ${correctPercent}%입니다. \n다음으로 넘어가시겠습니까?`}
           cancleText='다시하기'
           confirmText='넘어가기' />}
     </KeyboardAvoidingView>

@@ -74,7 +74,6 @@ export default function LessonFirst({ navigation, route }: LessonFirstProps) {
       setIsSpeakingByIndex(0, true);
       speech(
         allMessages[0].dialogue,
-        allMessages[0].chapter_id,
         allMessages[0].id,
         allMessages[0].speaker === 'Nurse',
         () => setIsSpeakingByIndex(0, false));    //speech함수가 끝나면 setIsSpeaking(false)로 바꿔줌
@@ -93,7 +92,6 @@ export default function LessonFirst({ navigation, route }: LessonFirstProps) {
 
         speech(
           allMessages[messages.length].dialogue,
-          allMessages[messages.length].chapter_id,
           allMessages[messages.length].id,
           allMessages[messages.length].speaker === 'Nurse',
           () => setIsSpeakingByIndex(messages.length, false));    //speech함수가 끝나면 setIsSpeaking(false)로 바꿔줌
@@ -145,7 +143,7 @@ export default function LessonFirst({ navigation, route }: LessonFirstProps) {
         <CustomAlert
           onCancle={handleCancle}
           onConfirm={handleNext}
-          content='1단계 학습을 완료했습니다. 2단계 학습을 시작하시겠습니까?'
+          content={`1단계 학습을 완료했습니다.\n2단계 학습을 시작하시겠습니까?`}
           cancleText='취소'
           confirmText='확인' />}
     </KeyboardAvoidingView>

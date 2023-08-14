@@ -27,10 +27,14 @@ type LessonSecondScreenNavigationProp = NativeStackNavigationProp<
   HomeStackParamList,
   'LessonSecondScreen'
 >;
+type LessonThirdScreenNavigationProp = NativeStackNavigationProp<
+  HomeStackParamList,
+  'LessonThirdScreen'
+>;
 
 type LessonFirstScreenRouteProp = RouteProp<HomeStackParamList, 'LessonFirstScreen'>;
-
 type LessonSecondScreenRouteProp = RouteProp<HomeStackParamList, 'LessonSecondScreen'>;
+type LessonThirdScreenRouteProp = RouteProp<HomeStackParamList, 'LessonThirdScreen'>;
 
 export interface HomeStackScreenProps {
   navigation: NativeStackNavigationProp<HomeStackParamList, 'HomeScreen'>;
@@ -45,4 +49,9 @@ export interface LessonFirstProps {
 export interface LessonSecondProps {
   navigation: LessonSecondScreenNavigationProp;
   route: LessonSecondScreenRouteProp;
+}
+
+export interface LessonThirdProps {
+  navigation: LessonThirdScreenNavigationProp;
+  route: LessonThirdScreenRouteProp;
 }

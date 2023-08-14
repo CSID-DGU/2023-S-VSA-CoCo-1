@@ -50,14 +50,14 @@ export const playSound = (path: string, onDone: () => void): Sound => {
 }
 let play: Sound | null = null;
 //speech('hello world')와 같은 형식으로 사용하면 됩니다.
-export const speech = async (text: string, unitID: number, chapterID: number, isNurse: boolean, onDone: () => void) => {
+export const speech = async (text: string, chapterID: number, isNurse: boolean, onDone: () => void) => {
     const speech_key = SPEECH_KEY;
 
     const voice = isNurse ? 'en-US-Wavenet-H' : 'en-AU-Neural2-B'
     const key = speech_key
     const address = `https://texttospeech.googleapis.com/v1/text:synthesize?key=${key}`
     const payload = createSpeechRequest(text, voice, isNurse)
-    const path = `${RNFS.DocumentDirectoryPath}/voice_${unitID}_${chapterID}.mp3`
+    const path = `${RNFS.DocumentDirectoryPath}/voice_${chapterID}.mp3`
     try {
         const response = await fetch(`${address}`, payload)
         const result = await response.json()

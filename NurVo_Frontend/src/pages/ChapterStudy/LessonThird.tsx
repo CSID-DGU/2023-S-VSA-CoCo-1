@@ -17,16 +17,32 @@ import ChatBubble, { ChatBubbleInputAll } from '../../components/ChatBubble';
 import CustomAlert from '../../components/Alert';
 import VoiceRecordButton from '../../components/VoiceFuncComp';
 import { stopSpeech } from '../../utilities/TextToSpeech';
+import { LessonThirdProps } from '../../utilities/NavigationTypes';
+import { calculateThirdStepAccuracyWithSentenceId, fetchChapterDialogueThirdStepById } from '../../utilities/ServerFunc';
 
 const { StatusBarManager } = NativeModules;
 
-export default function LessonSecond({ navigation }: { navigation: any }) {
+export default function LessonSecond({ navigation, route }: LessonThirdProps) {
 
   const flatListRef = useRef<FlatList>(null);
   const inputRef = useRef<TextInput>(null);
 
+  type State = {
+    allMessages: [];
+    messages: [];
+    inputText: string;
+    inputValues: Record<string, any>;
+    correctPercent: string;
+    keyboardHeight: number;
+    showNextAlert: boolean;
+    showCheckAlert: boolean;
+    isVoiceMode: boolean;
+    isSpeaking: boolean[];
+  };
+
   const initialState = {
-    messages: [allMessages[0]],
+    allMessages: [],
+    messages: [],
     inputText: '',
     inputValues: {},
     correctPercent: '',
@@ -39,6 +55,8 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
 
   const reducer = (state: typeof initialState, action: { type: string; payload?: any }) => {
     switch (action.type) {
+      case 'SET_ALLMESSAGES':
+        return { ...state, allMessages: action.payload };
       case 'SET_MESSAGES':
         return { ...state, messages: action.payload };
       case 'SET_INPUT_TEXT':
@@ -64,6 +82,7 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
 
   const [state, dispatch] = useReducer(reducer, initialState);
   const {
+    allMessages,
     messages,
     inputText,
     inputValues,
@@ -75,7 +94,6 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
     isSpeaking,
   } = state;
 
-
   useEffect(() => {
     return () => {
       stopSpeech();
@@ -83,8 +101,27 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
   }, []);
 
   useEffect(() => {
-    if (!showCheckAlert && messages[messages.length - 1].speaker === 'Nurse') {
-      inputRef.current?.focus();
+    const getData = async () => {
+      const chapterId = route.params.chapterId;
+      const data = await fetchChapterDialogueThirdStepById(chapterId);
+      if (data) {
+        dispatch({ type: 'SET_ALLMESSAGES', payload: data });
+      }
+    }
+    getData();
+  }, []);
+
+  useEffect(() => {
+    if (allMessages.length > 0) {
+      dispatch({ type: 'SET_MESSAGES', payload: [allMessages[0]] });
+    }
+  }, [allMessages]);
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      if (!showCheckAlert && messages[messages.length - 1].speaker === 'Nurse') {
+        inputRef.current?.focus();
+      }
     }
   }, [showCheckAlert]);
 
@@ -126,24 +163,39 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
   const handleSetInputText = (text: string) => {
     dispatch({ type: 'SET_INPUT_TEXT', payload: text });
   };
-  const handlePress = () => {
-    if (messages.length < allMessages.length) {
-      if (messages[messages.length - 1].speaker === 'Nurse' && messages[messages.length - 1].second_step) {
-        if (inputText.trim().length === 0) {
-          inputRef.current?.focus();
-          return;
+  const handlePress = async () => {
+    if (!(isSpeaking.some((value: boolean) => value))) {
+      if (messages.length < allMessages.length) {
+        if (messages[messages.length - 1].speaker === 'Nurse' && messages[messages.length - 1].second_step) {
+          if (inputText.trim().length === 0) {
+            inputRef.current?.focus();
+            return;
+          } else {
+            await calculateCorrectPercent();
+            dispatch({ type: 'SET_SHOW_CHECK_ALERT', payload: true });
+          }
         } else {
-          dispatch({ type: 'SET_SHOW_CHECK_ALERT', payload: true });
-
+          dispatch({ type: 'SET_MESSAGES', payload: allMessages.slice(0, messages.length + 1) });
+          setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100);
         }
       } else {
-        dispatch({ type: 'SET_MESSAGES', payload: allMessages.slice(0, messages.length + 1) });
-        setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100);
+        if (messages[messages.length - 1].speaker === 'Nurse' && messages[messages.length - 1].second_step) {
+          await calculateCorrectPercent();
+          dispatch({ type: 'SET_SHOW_CHECK_ALERT', payload: true });
+        }
+        dispatch({ type: 'SET_SHOW_NEXT_ALERT', payload: true });
       }
-    } else {
-      dispatch({ type: 'SET_SHOW_NEXT_ALERT', payload: true });
     }
   };
+
+  async function calculateCorrectPercent() {
+    const result = await calculateThirdStepAccuracyWithSentenceId(route.params.chapterId, messages[messages.length - 1].id, inputText)
+    if (result) {
+      dispatch({ type: 'SET_CORRECT_PERCENT', payload: result.accuracy });
+    }
+
+  }
+
   const setIsSpeakingByIndex = (index: number, bool: boolean) => {
     const speakingList: boolean[] = [...isSpeaking];
     speakingList[index] = bool;
@@ -161,7 +213,8 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
     dispatch({ type: 'SET_SHOW_NEXT_ALERT', payload: false });
   };
   const handleCheckNext = () => {
-    const newInputValues = { ...inputValues, [messages[messages.length - 1].id]: inputText };
+    const jsonValue = { text: inputText, isOver: correctPercent >= 80 ? true : false }
+    const newInputValues = { ...inputValues, [messages[messages.length - 1].id]: JSON.stringify(jsonValue) };
     dispatch({ type: 'SET_INPUT_VALUES', payload: newInputValues });
     dispatch({ type: 'SET_INPUT_TEXT', payload: '' });
     dispatch({ type: 'SET_SHOW_CHECK_ALERT', payload: false });
@@ -172,8 +225,8 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
     dispatch({ type: 'SET_SHOW_CHECK_ALERT', payload: false });
   };
 
-  const hasInputText = messages[messages.length - 1].speaker === 'Nurse' &&
-    messages[messages.length - 1].second_step;
+  const hasInputText = messages.length > 0 ? messages[messages.length - 1].speaker === 'Nurse' &&
+    messages[messages.length - 1].second_step : false;
 
   const [buttonTranslateY] = useState(new Animated.Value(140));
   useEffect(() => {
@@ -198,20 +251,20 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
         renderItem={({ item, index }) => (
           <TouchableOpacity onPress={handlePress} activeOpacity={1}>
             <ChatBubbleInputAll
-                index={index}
-                item={item}
-                isBookmarked={false}
-                onEnterValue={handleSend}
-                onChagneText={handleSetInputText}
-                inputRef={inputRef}
-                input={inputText}
-                inputValues={inputValues}
-                isVoiceMode={isVoiceMode}
-                isLastItem={index === messages.length - 1}
-                isSpeaking={isSpeaking[index]}
-                speakingList={isSpeaking}
-                onIsClickSpeakChange={(isSpeaking: boolean) => setIsSpeakingByIndex(index, isSpeaking)}
-              />
+              index={index}
+              item={item}
+              isBookmarked={false}
+              onEnterValue={handleSend}
+              onChagneText={handleSetInputText}
+              inputRef={inputRef}
+              input={inputText}
+              inputValues={inputValues}
+              isVoiceMode={isVoiceMode}
+              isLastItem={index === messages.length - 1}
+              isSpeaking={isSpeaking[index]}
+              speakingList={isSpeaking}
+              onIsClickSpeakChange={(isSpeaking: boolean) => setIsSpeakingByIndex(index, isSpeaking)}
+            />
           </TouchableOpacity>
         )}
       />
@@ -231,7 +284,7 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
         <CustomAlert
           onCancle={handleCheckCancle}
           onConfirm={handleCheckNext}
-          content={`정답률이 %입니다. \n다음으로 넘어가시겠습니까?`}
+          content={`정답률이 ${correctPercent}%입니다. \n다음으로 넘어가시겠습니까?`}
           cancleText='다시하기'
           confirmText='넘어가기' />}
     </KeyboardAvoidingView>

@@ -2,12 +2,19 @@ import { Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from "r
 import { useEffect, useState } from "react";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import { Message } from "../utilities/LessonExample";
+// import { Message } from "../utilities/LessonExample";
 import { Body011, Body012, Body013, Subtext013 } from "../utilities/Fonts";
 import { layoutStyles, screenWidth } from "../utilities/Layout";
 import Colors from "../utilities/Color";
 import { speech } from "../utilities/TextToSpeech";
 
+export interface Message {
+    id: number;
+    speaker: string;
+    dialogue: string;
+    second_step?: string; 
+    korean: string;
+}
 
 interface ChatBubbleProps {
   index: number;
@@ -42,7 +49,7 @@ export default function ChatBubble({ index, item, isBookmarked, isSpeaking, spea
   const handleSpeak = () => {
     if (!(speakingList.some(value => value)) && onIsClickSpeakChange) {
       onIsClickSpeakChange(true);
-      speech(item.dialogue, item.chapter_id, item.id, item.speaker === 'Nurse', () => { onIsClickSpeakChange(false) });
+      speech(item.dialogue, item.id, item.speaker === 'Nurse', () => { onIsClickSpeakChange(false) });
     }
   }
   return (
@@ -81,7 +88,7 @@ export default function ChatBubble({ index, item, isBookmarked, isSpeaking, spea
   );
 }
 
-export function ChatBubbleInputWord({ index, item, isBookmarked, onEnterValue, onChagneText, inputRef, input, inputValues, isVoiceMode, isLastItem, isSpeaking, speakingList, onIsClickSpeakChange }: ChatBubbleProps) {
+export function ChatBubbleInputWord({ index, item, isBookmarked, onEnterValue, onChagneText, inputRef, input, inputValues, isVoiceMode, isLastItem, isSpeaking, speakingList, onIsClickSpeakChange,  }: ChatBubbleProps) {
   useEffect(() => {
     setIsBookmark(isBookmarked);
   }, [isBookmarked]);
@@ -94,13 +101,12 @@ export function ChatBubbleInputWord({ index, item, isBookmarked, onEnterValue, o
   const handleSpeak = () => {
     if (!(speakingList.some(value => value)) && onIsClickSpeakChange) {
       onIsClickSpeakChange(true);
-      speech(item.dialogue, item.chapter_id, item.id, item.speaker === 'Nurse', () => { onIsClickSpeakChange(false) });
+      speech(item.dialogue, item.id, item.speaker === 'Nurse', () => { onIsClickSpeakChange(false) });
     }
   }
 
   const textWithInputs = replaceWithInput(item.dialogue, item.second_step);
 
-  console.log("texttext", item.dialogue);
   return (
     <View key={index} style={[
       item.speaker === 'Nurse' ? bubbleStyles.messageContainerRight : bubbleStyles.messageContainerLeft
@@ -183,7 +189,7 @@ export function ChatBubbleInputAll({ index, item, isBookmarked, onEnterValue, on
   const handleSpeak = () => {
     if (!(speakingList.some(value => value)) && onIsClickSpeakChange) {
       onIsClickSpeakChange(true);
-      speech(item.dialogue, item.chapter_id, item.id, item.speaker === 'Nurse', () => { onIsClickSpeakChange(false) });
+      speech(item.second_step ? item.second_step : item.dialogue, item.id, item.speaker === 'Nurse', () => { onIsClickSpeakChange(false) });
     }
   }
 
@@ -205,11 +211,7 @@ export function ChatBubbleInputAll({ index, item, isBookmarked, onEnterValue, on
                 ref={inputRef}
                 value={input}
                 onSubmitEditing={onEnterValue}
-                onChangeText={(text) => {
-                  if (onChagneText) {
-                    onChagneText(text);
-                  }
-                }}
+                onChangeText={(text) => { if (onChagneText) { onChagneText(text); } }}
                 showSoftInputOnFocus={!isVoiceMode}
                 multiline={true}
               /> :
@@ -245,7 +247,6 @@ function replaceWithInput(text: string, textToReplace?: string) {
   if (textToReplace === '' || textToReplace === undefined) {
     return [text];
   } else {
-    console.log("Text",text);
     const segments = text.split(new RegExp(`(${textToReplace})`, 'gi'));
     const result = segments.map((segment, index) => {
       if (segment.toLowerCase() === textToReplace.toLowerCase()) {
@@ -258,11 +259,12 @@ function replaceWithInput(text: string, textToReplace?: string) {
   }
 }
 
-function checkInputWord(index: number, input: string, second_step?: string) {
+function checkInputWord(index: number, inputValue: string, second_step?: string) {
+  const jsonValue = JSON.parse(inputValue);
   return (
     <View key={index} style={[layoutStyles.VStackContainer, { paddingVertical: 10 }]}>
-      <Body011 text={input} color={Colors.NAVY} />
-      <Body013 text={`( ${second_step} )`} color={Colors.GRAY07} />
+      <Body012 text={jsonValue.text} color={Colors.GRAY07} />
+      <Body011 text={`${second_step}`} color={jsonValue.isOver ? Colors.NAVY : Colors.YELLOW} />
     </View>
   )
 }

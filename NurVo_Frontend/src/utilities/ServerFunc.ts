@@ -71,42 +71,37 @@ export async function fetchChapterDialogueThirdStepById(chapterId: number): Prom
 }
 
 //2단계 정확도 계산(post)
-export async function calculateSecondStepAccuracyWithSentenceId(chapterId: string, sentenceId: string, reply: string): Promise<ResponseProps | undefined> {
+export async function calculateSecondStepAccuracyWithSentenceId(chapterId:number, sentenceId: string, reply: string): Promise<ResponseProps | undefined> {
     const url = `${HOST_URL}/api/dialogues/1/${chapterId}/step2?id=${sentenceId}`;
     const data = { "reply": reply };
     try {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'aaplication/json'
-            },
-            body: JSON.stringify(data),
-        })
-        const responseData = await response.json();
-        console.log(responseData);
-        return responseData;
+        const response = await axios.post<ResponseProps>(url, data);
+        console.log(response.data);
+        return response.data;
     } catch (error) {
-        console.error(error);
+        if (axios.isAxiosError(error)) {
+            const axiosError = error as AxiosError;
+            console.error(axiosError.message);
+        } else {
+            console.error(error);
+        }
     }
-}
-
+} 
 //3단계 정확도 계산(post)
-export async function calculateThirdStepAccuracyWithSentenceId(chapterId: string, sentenceId: string, reply: string): Promise<ResponseProps | undefined> {
+export async function calculateThirdStepAccuracyWithSentenceId(chapterId:number, sentenceId: string, reply: string): Promise<ResponseProps | undefined> {
     const url = `${HOST_URL}/api/dialogues/1/${chapterId}/step3?id=${sentenceId}`;
     const data = { "reply": reply };
     try {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data),
-        });
-        const responseData = await response.json();
-        console.log(responseData);
-        return responseData;
+        const response = await axios.post<ResponseProps>(url, data);
+        console.log(response.data);
+        return response.data;
     } catch (error) {
-        console.error(error);
+        if (axios.isAxiosError(error)) {
+            const axiosError = error as AxiosError;
+            console.error(axiosError.message);
+        } else {
+            console.error(error);
+        }
     }
 }
 
@@ -115,18 +110,16 @@ export async function addSentenceBookmark(chapterId: string, sentenceId: string)
     const url = `${HOST_URL}/api/dialogues/1/${chapterId}`;
     const data = { "conversation_id": `${sentenceId}` };
     try {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data),
-        });
-        const responseData = await response.json();
-        console.log(responseData);
-        return responseData;
+        const response = await axios.post<ResponseProps>(url, data);
+        console.log(response.data);
+        return response.data;
     } catch (error) {
-        console.error(error);
+        if (axios.isAxiosError(error)) {
+            const axiosError = error as AxiosError;
+            console.error(axiosError.message);
+        } else {
+            console.error(error);
+        }
     }
 }
 
