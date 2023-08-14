@@ -15,12 +15,14 @@ export async function FilterDialogues(list_id) {
 
 export async function FilterNurse(list_id) {
   const secondStep = await getDialogues(list_id);
+  console.log(secondStep);
   const result = secondStep.map((secondStep) => {
     if(secondStep.speaker === "Nurse" || secondStep.speaker === "nurse") {
       return {
         id: secondStep.id,
         speaker: secondStep.speaker,
         second_step: secondStep.second_step,
+        dialogue: secondStep.dialogue,
         korean: secondStep.korean,
       };
     } else {
