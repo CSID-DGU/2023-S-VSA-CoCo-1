@@ -1,28 +1,39 @@
 import { useState, useEffect } from 'react';
-import { StyleSheet, View, TouchableOpacity, } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+} from 'react-native';
+
 import Colors from '../utilities/Color.js';
-import { Body017, Subtext012 } from '../utilities/Fonts';
+import { Body011, Subtext012 } from '../utilities/Fonts';
 
 interface BookMarkProps {
-  id: string;
+  id: number;
   context: string;
   chapter: string;
-  isLastItem: boolean;
-  actionAll?: boolean;
+
   count: number;
   length: number;
-  seletedBookMark: (value: string) => void;
+
+  isLastItem: boolean;
+  isActionAll?: boolean;
+  isDelete: boolean;
+
+  seletedBookMark: (value: number) => void;
 }
 
-const BookMark = ({ id, context, chapter, isLastItem, actionAll, count, length, seletedBookMark }: BookMarkProps) => {
+const BookMark = ({ id, context, chapter, count, length, isLastItem, isActionAll, isDelete, seletedBookMark }: BookMarkProps) => {
   const [select, setSelect] = useState(false);
   const [unSeletedBookMark, setUnSeletedBookMark] = useState(false);
 
+  // clicked
   const seleted = () => {
     setSelect(prev => !prev);
     seletedBookMark(id);
   }
 
+  // count 증가 시 선택되지 않았을 때 상태 적용
   useEffect(() => {
     if (count >= 1 && !select) {
       setUnSeletedBookMark(true);
@@ -31,13 +42,21 @@ const BookMark = ({ id, context, chapter, isLastItem, actionAll, count, length, 
     }
   }, [count]);
 
+  // 전체 클릭 시 (1.선택 중 클릭 발생 / 2.전체 선택 취소)
   useEffect(() => {
-    if (count >= 1 && !select) {
+    if (isActionAll && !select) {
       seleted();
-    } else if (count === length && select) {
+    } else if (!isActionAll && select) {
       seleted();
     }
-  }, [actionAll]);
+  }, [isActionAll]);
+
+  // 삭제 모드
+  useEffect(() => {
+    if (select) {
+      seleted();
+    }
+  }, [isDelete]);
 
   return (
     <TouchableOpacity
@@ -49,8 +68,8 @@ const BookMark = ({ id, context, chapter, isLastItem, actionAll, count, length, 
       ]}
       onPress={seleted}>
       <View style={styles.contents}>
-        <Body017 text={context} color={Colors.BLACK} numberOfLines={1} ellipsizeMode='tail'/>
-        <Subtext012 text={chapter} color={Colors.GRAY05} numberOfLines={1} ellipsizeMode='tail'/>
+        <Body011 text={context} color={Colors.BLACK} style={{ marginHorizontal: 10, marginVertical: 10 }} numberOfLines={1} />
+        <Subtext012 text={chapter} color={Colors.GRAY05} style={{ marginHorizontal: 10, marginBottom: 10 }} numberOfLines={1} />
       </View>
     </TouchableOpacity>
 
