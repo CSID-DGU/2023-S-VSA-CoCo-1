@@ -72,7 +72,7 @@ export default function ChatBubble({ index, item, isBookmarked, isSpeaking, spea
         item.speaker.trim().toLowerCase() === 'nurse' ? bubbleStyles.bubbleRight : bubbleStyles.bubbleLeft
       ]}>
         <Body012 text={item.dialogue} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} />
-        {isShowTranslation && <Body023 text={item.korean} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} style={bubbleStyles.translation}/>}
+        {isShowTranslation && <Body023 text={item.korean} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.GRAY09 : Colors.GRAY03} style={bubbleStyles.translation}/>}
         <View style={[
           layoutStyles.HStackContainer,
           {
@@ -163,7 +163,7 @@ export function ChatBubbleInputWord({ index, item, isBookmarked, onEnterValue, o
             }
           })}
         </View>
-        {isShowTranslation && <Body023 text={item.korean} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} style={bubbleStyles.translation}/>}
+        {isShowTranslation && <Body023 text={item.korean} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.GRAY09 : Colors.GRAY03} style={bubbleStyles.translation}/>}
         <View style={[
           layoutStyles.HStackContainer,
           {
@@ -239,7 +239,7 @@ export function ChatBubbleInputAll({ index, item, isBookmarked, onEnterValue, on
               inputValues && checkInputWord(index, inputValues[item.id], item.second_step)
             ) :
             (<Body012 key={index} text={item.dialogue} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} />)}
-          {isShowTranslation && <Body023 text={item.korean} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} style={bubbleStyles.translation}/>}
+          {isShowTranslation && <Body023 text={item.korean} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.GRAY09 : Colors.GRAY03} style={bubbleStyles.translation}/>}
           <View style={[
             layoutStyles.HStackContainer,
             {

@@ -12,8 +12,7 @@ import {
 } from 'react-native';
 
 import Colors from '../../utilities/Color';
-import { Message, allMessages } from '../../utilities/LessonExample';
-import ChatBubble, { ChatBubbleInputAll } from '../../components/ChatBubble';
+import { ChatBubbleInputAll } from '../../components/ChatBubble';
 import CustomAlert from '../../components/Alert';
 import VoiceRecordButton from '../../components/VoiceFuncComp';
 import { stopSpeech } from '../../utilities/TextToSpeech';
@@ -26,19 +25,6 @@ export default function LessonSecond({ navigation, route }: LessonThirdProps) {
 
   const flatListRef = useRef<FlatList>(null);
   const inputRef = useRef<TextInput>(null);
-
-  type State = {
-    allMessages: [];
-    messages: [];
-    inputText: string;
-    inputValues: Record<string, any>;
-    correctPercent: string;
-    keyboardHeight: number;
-    showNextAlert: boolean;
-    showCheckAlert: boolean;
-    isVoiceMode: boolean;
-    isSpeaking: boolean[];
-  };
 
   const initialState = {
     allMessages: [],
