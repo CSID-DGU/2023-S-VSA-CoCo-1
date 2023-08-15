@@ -8,7 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import Colors from '../utilities/Color';
 import { Body023, Subtitle011 } from '../utilities/Fonts';
-import { layoutStyles, screenWidth } from '../utilities/Layout';
+import { layoutStyles } from '../utilities/Layout';
 import { HomeScreenNavigationProp } from '../utilities/NavigationTypes';
 
 interface ListCellProps {

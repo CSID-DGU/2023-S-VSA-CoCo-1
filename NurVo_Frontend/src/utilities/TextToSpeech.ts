@@ -1,7 +1,6 @@
 import { SPEECH_KEY } from "@env";
 import RNFS from 'react-native-fs';
-import Sound from "react-native-sound";
-import SOUND from 'react-native-sound';
+import Sound from 'react-native-sound';
 
 const createSpeechRequest = (text: string, voice: string, isFemale: boolean) => ({
     headers: {
@@ -33,7 +32,7 @@ const createFile = async (path: string, data: string) => {
 }
 
 export const playSound = (path: string, onDone: () => void): Sound => {
-    const speech = new SOUND(path, '', (e) => {
+    const speech = new Sound(path, '', (e) => {
         if (e) {
             console.warn('sound failed to load the sound', e)
             return null
