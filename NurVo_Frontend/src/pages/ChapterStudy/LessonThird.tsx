@@ -21,7 +21,7 @@ import { calculateThirdStepAccuracyWithSentenceId, fetchChapterDialogueThirdStep
 
 const { StatusBarManager } = NativeModules;
 
-export default function LessonSecond({ navigation, route }: LessonThirdProps) {
+export default function LessonThird({ navigation, route }: LessonThirdProps) {
 
   const flatListRef = useRef<FlatList>(null);
   const inputRef = useRef<TextInput>(null);
