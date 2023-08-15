@@ -1,7 +1,8 @@
 import axios, { AxiosError } from "axios";
-import { RN_HOST_URL } from "@env";
+import { RN_HOST_URL, TEST_TOKEN } from "@env";
 
 const HOST_URL = RN_HOST_URL;
+const TOKEN = TEST_TOKEN;
 
 export interface ResponseProps {
     [x: string]: any;
@@ -12,7 +13,12 @@ export interface ResponseProps {
 export async function fetchAllTopic(): Promise<ResponseProps | undefined> {
     const url = `${HOST_URL}/api/dialogues`;
     try {
-        const response = await fetch(url);
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + TOKEN
+            }
+        });
         const responseData = await response.json();
         console.log(responseData);
         return responseData;
@@ -25,7 +31,12 @@ export async function fetchAllTopic(): Promise<ResponseProps | undefined> {
 export async function fetchChapterDescriptionById(chapterId: string): Promise<ResponseProps | undefined> {
     const url = `${HOST_URL}/api/dialogues/${chapterId}`;
     try {
-        const response = await fetch(url);
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + TOKEN
+            }
+        });
         const responseData = await response.json();
         console.log("response data", responseData);
         return responseData;
@@ -35,9 +46,14 @@ export async function fetchChapterDescriptionById(chapterId: string): Promise<Re
 }
 
 export async function fetchChapterDialogueById(chapterId: number): Promise<ResponseProps | undefined> {
-    const url = `${HOST_URL}/api/dialogues/1/${chapterId}`;
+    const url = `${HOST_URL}/api/dialogues/${chapterId}`;
     try {
-        const response = await fetch(url);
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + TOKEN
+            }
+        });
         const responseData = await response.json();
         console.log("response data", responseData);
         return responseData;
@@ -47,9 +63,14 @@ export async function fetchChapterDialogueById(chapterId: number): Promise<Respo
 }
 
 export async function fetchChapterDialogueSecondStepById(chapterId: number): Promise<ResponseProps | undefined> {
-    const url = `${HOST_URL}/api/dialogues/1/${chapterId}/step2`;
+    const url = `${HOST_URL}/api/dialogues/${chapterId}/step2`;
     try {
-        const response = await fetch(url);
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + TOKEN
+            }
+        });
         const responseData = await response.json();
         console.log(responseData);
         return responseData;
@@ -59,9 +80,14 @@ export async function fetchChapterDialogueSecondStepById(chapterId: number): Pro
 }
 
 export async function fetchChapterDialogueThirdStepById(chapterId: number): Promise<ResponseProps | undefined> {
-    const url = `${HOST_URL}/api/dialogues/1/${chapterId}/step3`;
+    const url = `${HOST_URL}/api/dialogues/${chapterId}/step3`;
     try {
-        const response = await fetch(url);
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + TOKEN
+            }
+        });
         const responseData = await response.json();
         console.log(responseData);
         return responseData;
@@ -72,10 +98,11 @@ export async function fetchChapterDialogueThirdStepById(chapterId: number): Prom
 
 //2단계 정확도 계산(post)
 export async function calculateSecondStepAccuracyWithSentenceId(chapterId:number, sentenceId: string, reply: string): Promise<ResponseProps | undefined> {
-    const url = `${HOST_URL}/api/dialogues/1/${chapterId}/step2?id=${sentenceId}`;
+    const url = `${HOST_URL}/api/dialogues/${chapterId}/step2?id=${sentenceId}`;
     const data = { "reply": reply };
+    const headers = { 'Authorization': `Bearer ${TOKEN}` };
     try {
-        const response = await axios.post<ResponseProps>(url, data);
+        const response = await axios.post<ResponseProps>(url, data, { headers });
         console.log(response.data);
         return response.data;
     } catch (error) {
@@ -89,10 +116,11 @@ export async function calculateSecondStepAccuracyWithSentenceId(chapterId:number
 } 
 //3단계 정확도 계산(post)
 export async function calculateThirdStepAccuracyWithSentenceId(chapterId:number, sentenceId: string, reply: string): Promise<ResponseProps | undefined> {
-    const url = `${HOST_URL}/api/dialogues/1/${chapterId}/step3?id=${sentenceId}`;
+    const url = `${HOST_URL}/api/dialogues/${chapterId}/step3?id=${sentenceId}`;
     const data = { "reply": reply };
+    const headers = { 'Authorization': `Bearer ${TOKEN}` };
     try {
-        const response = await axios.post<ResponseProps>(url, data);
+        const response = await axios.post<ResponseProps>(url, data, { headers });
         console.log(response.data);
         return response.data;
     } catch (error) {
@@ -107,10 +135,11 @@ export async function calculateThirdStepAccuracyWithSentenceId(chapterId:number,
 
 //문장 북마크 저장
 export async function addSentenceBookmark(chapterId: number, sentenceId: number): Promise<ResponseProps | undefined> {
-    const url = `${HOST_URL}/api/dialogues/1/${chapterId}`;
+    const url = `${HOST_URL}/api/dialogues/${chapterId}`;
     const data = { "conversation_id": `${sentenceId}` };
+    const headers = { 'Authorization': `Bearer ${TOKEN}` };
     try {
-        const response = await axios.post<ResponseProps>(url, data);
+        const response = await axios.post<ResponseProps>(url, data, { headers });
         console.log(response.data);
         return response.data;
     } catch (error) {
