@@ -75,7 +75,7 @@ export default function LessonFirst({ navigation, route }: LessonFirstProps) {
       speech(
         allMessages[0].dialogue,
         allMessages[0].id,
-        allMessages[0].speaker === 'Nurse',
+        allMessages[0].speaker.trim().toLowerCase() === 'nurse',
         () => setIsSpeakingByIndex(0, false));    //speech함수가 끝나면 setIsSpeaking(false)로 바꿔줌
     }
   }, [allMessages]);
@@ -93,7 +93,7 @@ export default function LessonFirst({ navigation, route }: LessonFirstProps) {
         speech(
           allMessages[messages.length].dialogue,
           allMessages[messages.length].id,
-          allMessages[messages.length].speaker === 'Nurse',
+          allMessages[messages.length].speaker.trim().toLowerCase() === 'nurse',
           () => setIsSpeakingByIndex(messages.length, false));    //speech함수가 끝나면 setIsSpeaking(false)로 바꿔줌
       } else {
         dispatch({ type: 'SET_SHOW_ALERT', payload: true });

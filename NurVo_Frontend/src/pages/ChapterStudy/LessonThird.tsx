@@ -119,7 +119,7 @@ export default function LessonSecond({ navigation, route }: LessonThirdProps) {
 
   useEffect(() => {
     if (messages.length > 0) {
-      if (!showCheckAlert && messages[messages.length - 1].speaker === 'Nurse') {
+      if (!showCheckAlert && messages[messages.length - 1].speaker.trim().toLowerCase() === 'nurse') {
         inputRef.current?.focus();
       }
     }
@@ -166,7 +166,7 @@ export default function LessonSecond({ navigation, route }: LessonThirdProps) {
   const handlePress = async () => {
     if (!(isSpeaking.some((value: boolean) => value))) {
       if (messages.length < allMessages.length) {
-        if (messages[messages.length - 1].speaker === 'Nurse' && messages[messages.length - 1].second_step) {
+        if (messages[messages.length - 1].speaker.trim().toLowerCase() === 'nurse' && messages[messages.length - 1].second_step) {
           if (inputText.trim().length === 0) {
             inputRef.current?.focus();
             return;
@@ -179,7 +179,7 @@ export default function LessonSecond({ navigation, route }: LessonThirdProps) {
           setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100);
         }
       } else {
-        if (messages[messages.length - 1].speaker === 'Nurse' && messages[messages.length - 1].second_step) {
+        if (messages[messages.length - 1].speaker.trim().toLowerCase() === 'nurse' && messages[messages.length - 1].second_step) {
           await calculateCorrectPercent();
           dispatch({ type: 'SET_SHOW_CHECK_ALERT', payload: true });
         }
@@ -225,7 +225,7 @@ export default function LessonSecond({ navigation, route }: LessonThirdProps) {
     dispatch({ type: 'SET_SHOW_CHECK_ALERT', payload: false });
   };
 
-  const hasInputText = messages.length > 0 ? messages[messages.length - 1].speaker === 'Nurse' &&
+  const hasInputText = messages.length > 0 ? messages[messages.length - 1].speaker.trim().toLowerCase() === 'nurse' &&
     messages[messages.length - 1].second_step : false;
 
   const [buttonTranslateY] = useState(new Animated.Value(140));

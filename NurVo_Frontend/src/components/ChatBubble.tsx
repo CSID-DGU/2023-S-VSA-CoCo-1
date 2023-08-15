@@ -2,7 +2,7 @@ import { Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from "r
 import { useEffect, useState } from "react";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import { Body011, Body012, Body013, Body023, Subtext013 } from "../utilities/Fonts";
+import { Body011, Body012, Body023 } from "../utilities/Fonts";
 import { layoutStyles, screenWidth } from "../utilities/Layout";
 import Colors from "../utilities/Color";
 import { speech } from "../utilities/TextToSpeech";
@@ -34,6 +34,9 @@ interface ChatBubbleProps {
 }
 
 const userId = TEST_USERID;
+const icon_speak = "volume-high";
+const icon_translation = "language";
+const icon_bookmark = "bookmark";
 
 export default function ChatBubble({ index, item, isBookmarked, isSpeaking, speakingList, onIsClickSpeakChange }: ChatBubbleProps) {
   useEffect(() => {
@@ -68,10 +71,8 @@ export default function ChatBubble({ index, item, isBookmarked, isSpeaking, spea
         bubbleStyles.bubble,
         item.speaker.trim().toLowerCase() === 'nurse' ? bubbleStyles.bubbleRight : bubbleStyles.bubbleLeft
       ]}>
-        {item.speaker.trim().toLowerCase() === 'nurse' ?
-          <Body012 text={item.dialogue} color={Colors.WHITE} /> :
-          <Body012 text={item.dialogue} color={Colors.BLACK} />}
-        {isShowTranslation && <Body013 text={item.korean} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} />}
+        <Body012 text={item.dialogue} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} />
+        {isShowTranslation && <Body023 text={item.korean} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} style={bubbleStyles.translation}/>}
         <View style={[
           layoutStyles.HStackContainer,
           {
@@ -82,13 +83,13 @@ export default function ChatBubble({ index, item, isBookmarked, isSpeaking, spea
           }
         ]}>
           {item.speaker.trim().toLowerCase() === 'nurse' && <TouchableOpacity onPress={handleBookmark}>
-            <Ionicons name={isBookmark ? "bookmark" : "bookmark-outline"} size={20} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} />
+            <Ionicons name={isBookmark ? icon_bookmark : `${icon_bookmark}-outline`} size={20} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} />
           </TouchableOpacity>}
           <TouchableOpacity onPress={handleBook}>
-            <Ionicons name={isShowTranslation ? "book" : "book-outline"} size={20} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} style={{ marginHorizontal: 16 }} />
+            <Ionicons name={isShowTranslation ? icon_translation : `${icon_translation}-outline`} size={20} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} style={{ marginHorizontal: 16 }} />
           </TouchableOpacity>
           <TouchableOpacity onPress={handleSpeak}>
-            <Ionicons name={isSpeaking ? "volume-high" : "volume-high-outline"} size={20} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} />
+            <Ionicons name={isSpeaking ?  icon_speak : `${icon_speak}-outline`} size={20} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} />
           </TouchableOpacity>
         </View>
       </View>
@@ -162,7 +163,7 @@ export function ChatBubbleInputWord({ index, item, isBookmarked, onEnterValue, o
             }
           })}
         </View>
-        {isShowTranslation && <Body023 text={item.korean} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} />}
+        {isShowTranslation && <Body023 text={item.korean} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} style={bubbleStyles.translation}/>}
         <View style={[
           layoutStyles.HStackContainer,
           {
@@ -173,13 +174,13 @@ export function ChatBubbleInputWord({ index, item, isBookmarked, onEnterValue, o
           }
         ]}>
           {item.speaker.trim().toLowerCase() === 'nurse' && <TouchableOpacity onPress={handleBookmark}>
-            <Ionicons name={isBookmark ? "bookmark" : "bookmark-outline"} size={20} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} />
+            <Ionicons name={isBookmark ? icon_bookmark : `${icon_bookmark}-outline`} size={20} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} />
           </TouchableOpacity>}
           <TouchableOpacity onPress={handleBook}>
-            <Ionicons name={isShowTranslation ? "book" : "book-outline"} size={20} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} style={{ marginHorizontal: 16 }} />
+            <Ionicons name={isShowTranslation ? icon_translation : `${icon_translation}-outline`} size={20} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} style={{ marginHorizontal: 16 }} />
           </TouchableOpacity>
           {!(isLastItem && item.speaker.trim().toLowerCase() === 'nurse') && <TouchableOpacity onPress={handleSpeak}>
-            <Ionicons name={isSpeaking ? "volume-high" : "volume-high-outline"} size={20} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} />
+            <Ionicons name={isSpeaking ? icon_speak : `${icon_speak}-outline`} size={20} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} />
           </TouchableOpacity>}
         </View>
       </View>
@@ -238,7 +239,7 @@ export function ChatBubbleInputAll({ index, item, isBookmarked, onEnterValue, on
               inputValues && checkInputWord(index, inputValues[item.id], item.second_step)
             ) :
             (<Body012 key={index} text={item.dialogue} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} />)}
-          {isShowTranslation && <Subtext013 text={item.korean} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} />}
+          {isShowTranslation && <Body023 text={item.korean} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} style={bubbleStyles.translation}/>}
           <View style={[
             layoutStyles.HStackContainer,
             {
@@ -248,13 +249,13 @@ export function ChatBubbleInputAll({ index, item, isBookmarked, onEnterValue, on
             }
           ]}>
             {item.speaker.trim().toLowerCase() === 'nurse' && <TouchableOpacity onPress={handleBookmark}>
-              <Ionicons name={isBookmark ? "bookmark" : "bookmark-outline"} size={20} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} />
+              <Ionicons name={isBookmark ? icon_bookmark : `${icon_bookmark}-outline`} size={20} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} />
             </TouchableOpacity>}
             <TouchableOpacity onPress={handleBook}>
-              <Ionicons name={isShowTranslation ? "book" : "book-outline"} size={20} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} style={{ marginHorizontal: 16 }} />
+              <Ionicons name={isShowTranslation ? icon_translation : `${icon_translation}-outline`} size={20} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} style={{ marginHorizontal: 16 }} />
             </TouchableOpacity>
             {!(isLastItem && item.speaker.trim().toLowerCase() === 'nurse') && <TouchableOpacity onPress={handleSpeak}>
-              <Ionicons name={isSpeaking ? "volume-high" : "volume-high-outline"} size={20} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} />
+              <Ionicons name={isSpeaking ? icon_speak : `${icon_speak}-outline`} size={20} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} />
             </TouchableOpacity>}
           </View>
         </View>
@@ -326,6 +327,9 @@ const bubbleStyles = StyleSheet.create({
     backgroundColor: Colors.WHITE,
     borderTopLeftRadius: 0,
   },
+  translation: {
+    marginTop: 8,
+  }
 });
 
 const inputBubbleStyles = StyleSheet.create({
