@@ -1,5 +1,5 @@
 import { NativeStackNavigationProp, NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RouteProp } from "@react-navigation/native";
+import { NavigationProp, ParamListBase, RouteProp } from "@react-navigation/native";
 
 export type RootStackParamList = {
   Home: undefined;
@@ -19,19 +19,6 @@ export type HomeScreenNavigationProp = NativeStackNavigationProp<
   'HomeScreen'
 >;
 
-type LessonFirstScreenNavigationProp = NativeStackNavigationProp<
-  HomeStackParamList,
-  'LessonFirstScreen'
->;
-type LessonSecondScreenNavigationProp = NativeStackNavigationProp<
-  HomeStackParamList,
-  'LessonSecondScreen'
->;
-type LessonThirdScreenNavigationProp = NativeStackNavigationProp<
-  HomeStackParamList,
-  'LessonThirdScreen'
->;
-
 type LessonFirstScreenRouteProp = RouteProp<HomeStackParamList, 'LessonFirstScreen'>;
 type LessonSecondScreenRouteProp = RouteProp<HomeStackParamList, 'LessonSecondScreen'>;
 type LessonThirdScreenRouteProp = RouteProp<HomeStackParamList, 'LessonThirdScreen'>;
@@ -42,16 +29,16 @@ export interface HomeStackScreenProps {
 }
 
 export interface LessonFirstProps {
-  navigation: LessonFirstScreenNavigationProp;
-  route: LessonFirstScreenRouteProp;
+  navigation: NavigationProp<ParamListBase>;
+  route: RouteProp<ParamListBase, 'LessonFirstScreen'>;
 }
 
 export interface LessonSecondProps {
-  navigation: LessonSecondScreenNavigationProp;
-  route: LessonSecondScreenRouteProp;
+  navigation: NavigationProp<ParamListBase>;
+  route: RouteProp<ParamListBase, 'LessonSecondScreen'>;
 }
 
 export interface LessonThirdProps {
-  navigation: LessonThirdScreenNavigationProp;
-  route: LessonThirdScreenRouteProp;
+  navigation: NavigationProp<ParamListBase>;
+  route: RouteProp<ParamListBase, 'LessonThirdScreen'>;
 }
