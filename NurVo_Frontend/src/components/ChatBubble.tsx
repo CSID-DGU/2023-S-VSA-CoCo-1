@@ -78,7 +78,7 @@ export default function ChatBubble({ index, item, isBookmarked, isSpeaking, spea
           {
             flexWrap: 'wrap',
             justifyContent: 'space-evenly',
-            alignSelf: item.speaker.trim().toLowerCase() === 'Nurse' ? 'flex-start' : 'flex-end',
+            alignSelf: item.speaker.trim().toLowerCase() === 'nurse' ? 'flex-start' : 'flex-end',
             marginTop: 16,
           }
         ]}>
