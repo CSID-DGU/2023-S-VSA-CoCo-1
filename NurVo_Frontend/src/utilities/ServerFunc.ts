@@ -134,9 +134,29 @@ export async function calculateThirdStepAccuracyWithSentenceId(chapterId:number,
 }
 
 //문장 북마크 저장
-export async function addSentenceBookmark(chapterId: number, sentenceId: number): Promise<ResponseProps | undefined> {
-    const url = `${HOST_URL}/api/dialogues/${chapterId}`;
-    const data = { "conversation_id": `${sentenceId}` };
+export async function addSentenceBookmark(sentenceId: number, userId: string): Promise<ResponseProps | undefined> {
+    const url = `${HOST_URL}/api/bookmark/`;
+    const data = { "conversation_id": `${sentenceId}`, "user_id": `${userId}`};
+    const headers = { 'Authorization': `Bearer ${TOKEN}` };
+    try {
+        const response = await axios.post<ResponseProps>(url, data, { headers });
+        console.log(response.data);
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            const axiosError = error as AxiosError;
+            console.error(axiosError.message);
+        } else {
+            console.error(error);
+        }
+    }
+}
+
+//문장 북마크 삭제
+export async function deleteSentenceBookmark( sentenceId: number, userId: string): Promise<ResponseProps | undefined> {
+    const url = `${HOST_URL}/api/bookmark/delete`;
+    const data = { "conversation_id": [`${sentenceId}`], "user_id": `${userId}`};
+    console.log(data);
     const headers = { 'Authorization': `Bearer ${TOKEN}` };
     try {
         const response = await axios.post<ResponseProps>(url, data, { headers });

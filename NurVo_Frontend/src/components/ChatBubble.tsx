@@ -6,7 +6,8 @@ import { Body011, Body012, Body013, Body023, Subtext013 } from "../utilities/Fon
 import { layoutStyles, screenWidth } from "../utilities/Layout";
 import Colors from "../utilities/Color";
 import { speech } from "../utilities/TextToSpeech";
-import { addSentenceBookmark } from "../utilities/ServerFunc";
+import { addSentenceBookmark, deleteSentenceBookmark } from "../utilities/ServerFunc";
+import { TEST_USERID } from "@env";
 
 export interface Message {
     id: number;
@@ -19,7 +20,6 @@ export interface Message {
 interface ChatBubbleProps {
   index: number;
   item: Message;
-  chapterId: number;
   isBookmarked: boolean;
   inputRef?: React.RefObject<TextInput>;
   input?: string;
@@ -33,6 +33,8 @@ interface ChatBubbleProps {
   onIsClickSpeakChange?: (isSpeaking: boolean) => void;
 }
 
+const userId = TEST_USERID;
+
 export default function ChatBubble({ index, item, isBookmarked, isSpeaking, speakingList, onIsClickSpeakChange }: ChatBubbleProps) {
   useEffect(() => {
     setIsBookmark(isBookmarked);
@@ -41,7 +43,12 @@ export default function ChatBubble({ index, item, isBookmarked, isSpeaking, spea
   const [isBookmark, setIsBookmark] = useState(false);
   const [isShowTranslation, setIsShowTranslation] = useState(false);
 
-  const handleBookmark = () => {
+  const handleBookmark = async () => {
+    if (isBookmark) {
+      await deleteSentenceBookmark(item.id, userId);
+    } else {
+      const response = await addSentenceBookmark(item.id, userId);
+    }
     setIsBookmark(!isBookmark);
   }
   const handleBook = () => {
@@ -97,7 +104,14 @@ export function ChatBubbleInputWord({ index, item, isBookmarked, onEnterValue, o
   const [isBookmark, setIsBookmark] = useState(false);
   const [isShowTranslation, setIsShowTranslation] = useState(false);
 
-  const handleBookmark = () => { setIsBookmark(!isBookmark) }
+  const handleBookmark = async() => { 
+    if (isBookmark) {
+      await deleteSentenceBookmark(item.id, userId);
+    } else {
+      const response = await addSentenceBookmark(item.id, userId);
+    }
+    setIsBookmark(!isBookmark) 
+  }
   const handleBook = () => { setIsShowTranslation(!isShowTranslation) }
   const handleSpeak = () => {
     if (!(speakingList.some(value => value)) && onIsClickSpeakChange) {
@@ -173,7 +187,7 @@ export function ChatBubbleInputWord({ index, item, isBookmarked, onEnterValue, o
   );
 }
 
-export function ChatBubbleInputAll({ index, item, chapterId, isBookmarked, onEnterValue, onChagneText, inputRef, input, inputValues, isVoiceMode, isLastItem, isSpeaking, speakingList, onIsClickSpeakChange }: ChatBubbleProps) {
+export function ChatBubbleInputAll({ index, item, isBookmarked, onEnterValue, onChagneText, inputRef, input, inputValues, isVoiceMode, isLastItem, isSpeaking, speakingList, onIsClickSpeakChange }: ChatBubbleProps) {
   useEffect(() => {
     setIsBookmark(isBookmarked);
   }, [isBookmarked]);
@@ -183,9 +197,9 @@ export function ChatBubbleInputAll({ index, item, chapterId, isBookmarked, onEnt
 
   const handleBookmark = async () => {
     if (isBookmark) {
-      
+      await deleteSentenceBookmark(item.id, userId);
     } else {
-      const response = await addSentenceBookmark(chapterId, item.id);
+      const response = await addSentenceBookmark(item.id, userId);
     }
     setIsBookmark(!isBookmark);
   }

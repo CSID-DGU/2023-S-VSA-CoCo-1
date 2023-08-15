@@ -253,7 +253,6 @@ export default function LessonSecond({ navigation, route }: LessonThirdProps) {
             <ChatBubbleInputAll
               index={index}
               item={item}
-              chapterId={route.params.chapterId}
               isBookmarked={false}
               onEnterValue={handleSend}
               onChagneText={handleSetInputText}
