@@ -3,7 +3,7 @@ import { StyleSheet, TouchableOpacity, Image, Text, View, FlatList } from "react
 import Modal from 'react-native-modal';
 import Swiper from 'react-native-swiper';
 import Colors from "../utilities/Color";
-import { VStack } from '../utilities/Layout';
+import { VStack, screenHeight, screenWidth } from '../utilities/Layout';
 import information from '../assets/images/information.png';
 import { Body011, Body012, Body017 } from '../utilities/Fonts';
 
@@ -55,7 +55,7 @@ const ImformationAlert = ({ image }: ImformationAlertProps) => {
           >
             {image.map((item, index) => (
               <View key={index} style={{ flex: 1, justifyContent: 'center', marginBottom: 40, }}>
-                <Image style={{ width: '100%', height: '100%' }} source={item.src} />
+                <Image style={{ width: screenWidth*0.8, height: screenHeight*0.6, }} source={item.src} />
               </View>
             ))}
           </Swiper>
@@ -75,8 +75,8 @@ const ImformationAlert = ({ image }: ImformationAlertProps) => {
 const modalStyles = StyleSheet.create({
   container: {
     flex: 1,
-    marginHorizontal: 30,
-    marginVertical: 60,
+    marginHorizontal: screenWidth*0.03,
+    marginVertical: screenHeight*0.05,
     backgroundColor: Colors.WHITE,
     borderWidth: 2,
     borderColor: Colors.MAINGREEN,
