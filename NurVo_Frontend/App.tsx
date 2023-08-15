@@ -23,6 +23,7 @@ import Bookmark from './src/pages/Bookmark';
 import StudyPage from './src/pages/StudyPage';
 import MemberDetails from './src/pages/MemberDetails';
 import SetUserGoal from './src/pages/SetUserGoal';
+import { HomeStackParamList } from './src/utilities/NavigationTypes';
 
 const Tab = createBottomTabNavigator();
 function BottomTabs() {
@@ -55,7 +56,7 @@ function BottomTabs() {
 
 
 
-const HomeStack = createNativeStackNavigator();
+const HomeStack = createNativeStackNavigator<HomeStackParamList>();
 const HomeStackScreen = () => {
   return (
     <HomeStack.Navigator
@@ -65,7 +66,7 @@ const HomeStackScreen = () => {
       }}
     >
       <HomeStack.Screen name="HomeScreen" component={Home} options={{ headerShown: false }} />
-      <HomeStack.Screen name="LessonsList" component={LessonsList} />
+      <HomeStack.Screen name="LessonList" component={LessonsList} />
       <HomeStack.Screen name="LessonFirstScreen" component={LessonFirst} />
       <HomeStack.Screen name="LessonSecondScreen" component={LessonSecond} />
       <HomeStack.Screen name="LessonThirdScreen" component={LessonThird} />
