@@ -3,7 +3,7 @@ import {
     Text
 } from 'react-native';
 import { useEffect, useState } from 'react';
-import { RN_HOST_URL } from '@env';
+import { RN_HOST_URL, TEST_TOKEN } from '@env';
 import { ListCell } from '../components/ListCellComp';
 import { Subtext011, Subtitle011, Title02 } from '../utilities/Fonts';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
@@ -39,7 +39,12 @@ async function fetchAllTopic(): Promise<Section[] | undefined> {
     const HOST_URL = RN_HOST_URL;
     const url = `${HOST_URL}/api/dialogues`;
     try {
-        const response = await fetch(url);
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + TEST_TOKEN
+            }
+        });
         const responseData = await response.json();
         return responseData;
     } catch (error) {
