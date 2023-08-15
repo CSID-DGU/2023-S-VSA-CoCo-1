@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import axios from '../api/axios';
+import axios from 'axios';
 
 import Colors from '../utilities/Color';
 import { Body011 } from '../utilities/Fonts';
