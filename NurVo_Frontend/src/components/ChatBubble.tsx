@@ -2,11 +2,11 @@ import { Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from "r
 import { useEffect, useState } from "react";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-// import { Message } from "../utilities/LessonExample";
 import { Body011, Body012, Body013, Subtext013 } from "../utilities/Fonts";
 import { layoutStyles, screenWidth } from "../utilities/Layout";
 import Colors from "../utilities/Color";
 import { speech } from "../utilities/TextToSpeech";
+import { addSentenceBookmark } from "../utilities/ServerFunc";
 
 export interface Message {
     id: number;
@@ -19,6 +19,7 @@ export interface Message {
 interface ChatBubbleProps {
   index: number;
   item: Message;
+  chapterId: number;
   isBookmarked: boolean;
   inputRef?: React.RefObject<TextInput>;
   input?: string;
@@ -172,7 +173,7 @@ export function ChatBubbleInputWord({ index, item, isBookmarked, onEnterValue, o
   );
 }
 
-export function ChatBubbleInputAll({ index, item, isBookmarked, onEnterValue, onChagneText, inputRef, input, inputValues, isVoiceMode, isLastItem, isSpeaking, speakingList, onIsClickSpeakChange }: ChatBubbleProps) {
+export function ChatBubbleInputAll({ index, item, chapterId, isBookmarked, onEnterValue, onChagneText, inputRef, input, inputValues, isVoiceMode, isLastItem, isSpeaking, speakingList, onIsClickSpeakChange }: ChatBubbleProps) {
   useEffect(() => {
     setIsBookmark(isBookmarked);
   }, [isBookmarked]);
@@ -180,7 +181,12 @@ export function ChatBubbleInputAll({ index, item, isBookmarked, onEnterValue, on
   const [isBookmark, setIsBookmark] = useState(false);
   const [isShowTranslation, setIsShowTranslation] = useState(false);
 
-  const handleBookmark = () => {
+  const handleBookmark = async () => {
+    if (isBookmark) {
+      
+    } else {
+      const response = await addSentenceBookmark(chapterId, item.id);
+    }
     setIsBookmark(!isBookmark);
   }
   const handleBook = () => {

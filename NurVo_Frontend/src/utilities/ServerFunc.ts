@@ -106,7 +106,7 @@ export async function calculateThirdStepAccuracyWithSentenceId(chapterId:number,
 }
 
 //문장 북마크 저장
-export async function addSentenceBookmark(chapterId: string, sentenceId: string): Promise<ResponseProps | undefined> {
+export async function addSentenceBookmark(chapterId: number, sentenceId: number): Promise<ResponseProps | undefined> {
     const url = `${HOST_URL}/api/dialogues/1/${chapterId}`;
     const data = { "conversation_id": `${sentenceId}` };
     try {

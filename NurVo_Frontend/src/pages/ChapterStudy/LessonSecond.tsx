@@ -257,6 +257,7 @@ export default function LessonSecond({ navigation, route }: LessonSecondProps) {
               key={index.toString()}
               index={index}
               item={item}
+              chapterId={route.params.chapterId}
               isBookmarked={false}
               onEnterValue={handleSend}
               onChagneText={handleSetInputText}
