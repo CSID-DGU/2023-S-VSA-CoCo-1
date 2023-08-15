@@ -4,6 +4,9 @@ import {
   ScrollView,
   Platform,
   TouchableOpacity,
+  TouchableHighlight,
+  TouchableNativeFeedback,
+  TouchableHighlightBase,
 } from 'react-native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -14,26 +17,31 @@ import { layoutStyles, screenWidth } from '../utilities/Layout';
 import { CarouselList } from '../components/CarouselListComp';
 import { ListCell } from '../components/ListCellComp';
 import { useNavigation } from '@react-navigation/native';
+import { useEffect } from 'react';
+import { stopSpeech } from '../utilities/TextToSpeech';
 
 const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 const todayLessons = [
   {
-    title: 'Hospital life guidance',
-    subtitle: 'location of call bell, meal times, shower times, etc.',
-    chapterId: 1,
+    id: 1,
+    name: 'Hospital life guidance',
+    description: 'location of call bell, meal times, shower times, etc.',
+    topic_id: 1,
   },
   {
-    title: '1 Hospital life guidance',
-    subtitle: '1 location of call bell, meal times, shower times, etc.',
-    chapterId: 2,
+    id: 2,
+    name: '1 Hospital life guidance',
+    description: '1 location of call bell, meal times, shower times, etc.',
     checked: true,
+    topic_id: 1,
   },
   {
-    title: '2 Hospital life guidance',
-    subtitle: '2 location of call bell, meal times, shower times, etc.',
-    chapterId: 3,
+    id: 3,
+    name: '2 Hospital life guidance',
+    description: '2 location of call bell, meal times, shower times, etc.',
     checked: true,
+    topic_id: 1,
   }
 ]
 
@@ -51,13 +59,13 @@ const MenuTitle = ({ text, onPress }: { text: string, onPress: () => void }) => 
 
 function UserInfoHeader() {
   const navigation = useNavigation();
-  
+
   interface CircleTextProps {
     text: string;
     backgroundColor?: string;
   }
 
-  
+
 
   const CircleText = ({ text, backgroundColor }: CircleTextProps) => {
     return (
@@ -77,10 +85,6 @@ function UserInfoHeader() {
     );
   };
 
-  const userPage = () => {
-    navigation.navigate('MemberDetails');
-  }
-
   return (
     <View style={styles.headerBackground}>
       <View style={[layoutStyles.VStackContainer, { paddingHorizontal: 20, paddingVertical: 16, marginTop: 20 }]}>
@@ -89,7 +93,7 @@ function UserInfoHeader() {
             <View style={[styles.headerText]}>
               <Title01 text="Hi," color={Colors.BLACK} />
               <Title02 text="Jimin" color={Colors.BLACK} />
-              <Ionicons name="settings" size={20} color={Colors.MAINLIGHTGREEN} style={{marginHorizontal: 5}} onPress={userPage}/>
+              <Ionicons name="settings" size={20} color={Colors.MAINLIGHTGREEN} style={{ marginHorizontal: 5 }} />
             </View>
             <View style={styles.tagBackground}>
               <Body023 text="D-100days" color={Colors.WHITE} />
@@ -118,10 +122,20 @@ function UserInfoHeader() {
 
 export default function Home({ navigation }: { navigation: any }) {
 
+  useEffect(() => {
+    stopSpeech();
+  }, []);
+
+  const handleUserPage = () => {
+    navigation.navigate('MemberDetails');
+  }
+
   return (
     <ScrollView>
       <View style={layoutStyles.VStackContainer}>
-        <UserInfoHeader />
+        <TouchableHighlight onPress={handleUserPage}>
+          <UserInfoHeader />
+        </TouchableHighlight>
         <View style={[layoutStyles.VStackContainer]}>
           <MenuTitle text='Today’s Lesson' onPress={() => {
             navigation.navigate('LessonList');

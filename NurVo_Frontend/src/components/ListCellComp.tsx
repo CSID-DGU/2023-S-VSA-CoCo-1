@@ -13,9 +13,10 @@ import { HomeScreenNavigationProp } from '../utilities/NavigationTypes';
 
 interface ListCellProps {
     item: {
-        title: string;
-        subtitle: string;
-        chapterId: number;
+        id: number;
+        name: string;
+        description?: string;
+        topic_id: number;
     };
     checked?: boolean;
     style: ViewStyle;
@@ -31,8 +32,8 @@ export function ListCell({ item, checked, style }: ListCellProps) {
 
         }}>
             <View style={[layoutStyles.VStackContainer, style, { paddingHorizontal: 20, paddingVertical: 12, marginTop: 28 }]}>
-                <Subtitle011 text={item.title} color={Colors.GRAY03} numberOfLines={1} ellipsizeMode={'tail'} />
-                <Body023 text={item.subtitle} color={Colors.GRAY05} numberOfLines={1} ellipsizeMode={'tail'} />
+                <Subtitle011 text={item.name} color={Colors.GRAY03} numberOfLines={1} ellipsizeMode={'tail'} />
+                {item.description && (<Body023 text={item.description} color={Colors.GRAY05} numberOfLines={1} ellipsizeMode={'tail'} />)}
             </View>
             {checked && <View style={[listStyles.checkedListCell]} />}
         </TouchableOpacity>
