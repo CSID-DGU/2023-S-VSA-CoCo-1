@@ -72,7 +72,7 @@ export function Body024({ text, color, style, numberOfLines, ellipsizeMode }: Fo
         <Text style={[fonts.body02_4, { color: color }, style]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
     )
 }
-export function Subtext011({ text, color, numberOfLines, ellipsizeMode }: FontProps) {
+export function Subtext011({ text, color, style, numberOfLines, ellipsizeMode }: FontProps) {
     return(
         <Text style={[fonts.subtext01_1, { color: color }, style]} numberOfLines={numberOfLines} ellipsizeMode={ellipsizeMode}>{text}</Text>
     )
