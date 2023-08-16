@@ -189,3 +189,29 @@ export const saveCompletedLearning = async (user_id, data) => {
     client.release();
   }
 }
+
+// 학습완료 내역 불러오기
+export const getCompletedChapter = async (user_id) => {
+  const client = await pool.connect();
+  try{
+    const query = `
+    SELECT
+      t.name as topic_name,
+      e.chapter_id,
+      c.name as chapter_name,
+      e.step,
+      TO_CHAR(e.date, 'YYYY-MM-DD') as date
+    FROM edu e
+    JOIN chapter c ON e.chapter_id = c.id
+    JOIN topic t ON c.topic_id = t.id
+    WHERE e.user_id = $1
+    ORDER BY e.chapter_id ASC
+  `;
+    const chapter = await client.query(query, [user_id])
+    return chapter.rows;
+  } catch(err) {
+    console.error(err);
+  } finally {
+    client.release();
+  }
+}
