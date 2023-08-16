@@ -10,27 +10,28 @@ import {
 } from 'react-native';
 
 import Colors from '../../utilities/Color';
-import { Message, allMessages } from '../../utilities/LessonExample';
 import ChatBubble from '../../components/ChatBubble';
 import CustomAlert from '../../components/Alert';
 import { speech, stopSpeech } from '../../utilities/TextToSpeech';
+import { fetchChapterDialogueById } from '../../utilities/ServerFunc';
+import { LessonFirstProps } from '../../utilities/NavigationTypes';
 
 const { StatusBarManager } = NativeModules;
 LogBox.ignoreLogs(['new NativeEventEmitter']);
 
-export default function LessonFirst({ navigation }: { navigation: any }) {
+export default function LessonFirst({ navigation, route }: LessonFirstProps) {
   const flatListRef = useRef<FlatList>(null);
-  // const [messages, setMessages] = useState<Message[]>([allMessages[0]]);
-  // const [showAlert, setShowAlert] = useState(false);
-  // const [isSpeaking, setIsSpeaking] = useState<boolean[]>([]);
   const initialState = {
-    messages: [allMessages[0]],
+    allMessages: [],
+    messages: [],
     showAlert: false,
     isSpeaking: [],
   };
 
   const reducer = (state: typeof initialState, action: { type: string; payload?: any }) => {
     switch (action.type) {
+      case 'SET_ALLMESSAGES':
+        return { ...state, allMessages: action.payload };
       case 'SET_MESSAGES':
         return { ...state, messages: action.payload };
       case 'SET_SHOW_ALERT':
@@ -44,6 +45,7 @@ export default function LessonFirst({ navigation }: { navigation: any }) {
 
   const [state, dispatch] = useReducer(reducer, initialState);
   const {
+    allMessages,
     messages,
     showAlert,
     isSpeaking,
@@ -56,14 +58,27 @@ export default function LessonFirst({ navigation }: { navigation: any }) {
   }, []);
 
   useEffect(() => {
-    setIsSpeakingByIndex(0, true);
-    speech(
-      allMessages[0].dialogue,
-      allMessages[0].chapter_id,
-      allMessages[0].id,
-      allMessages[0].speaker === 'Nurse',
-      () => setIsSpeakingByIndex(0, false));    //speech함수가 끝나면 setIsSpeaking(false)로 바꿔줌
+    const getData = async () => {
+      const chapterId = route.params.chapterId;
+      const data = await fetchChapterDialogueById(chapterId);
+      if (data) {
+        dispatch({ type: 'SET_ALLMESSAGES', payload: data });
+      }
+    }
+    getData();
   }, []);
+
+  useEffect(() => {
+    if (allMessages.length > 0) {
+      dispatch({ type: 'SET_MESSAGES', payload: [allMessages[0]] });
+      setIsSpeakingByIndex(0, true);
+      speech(
+        allMessages[0].dialogue,
+        allMessages[0].id,
+        allMessages[0].speaker.trim().toLowerCase() === 'nurse',
+        () => setIsSpeakingByIndex(0, false));    //speech함수가 끝나면 setIsSpeaking(false)로 바꿔줌
+    }
+  }, [allMessages]);
 
   const handlePress = () => {
     if (isSpeaking.some((value: boolean) => value)) {
@@ -77,9 +92,8 @@ export default function LessonFirst({ navigation }: { navigation: any }) {
 
         speech(
           allMessages[messages.length].dialogue,
-          allMessages[messages.length].chapter_id,
           allMessages[messages.length].id,
-          allMessages[messages.length].speaker === 'Nurse',
+          allMessages[messages.length].speaker.trim().toLowerCase() === 'nurse',
           () => setIsSpeakingByIndex(messages.length, false));    //speech함수가 끝나면 setIsSpeaking(false)로 바꿔줌
       } else {
         dispatch({ type: 'SET_SHOW_ALERT', payload: true });
@@ -95,7 +109,7 @@ export default function LessonFirst({ navigation }: { navigation: any }) {
 
   const handleNext = () => {
     navigation.pop();
-    navigation.navigate("LessonSecondScreen");
+    navigation.navigate("LessonSecondScreen", { chapterId: route.params.chapterId });
   };
 
   const handleCancle = () => {
@@ -129,7 +143,7 @@ export default function LessonFirst({ navigation }: { navigation: any }) {
         <CustomAlert
           onCancle={handleCancle}
           onConfirm={handleNext}
-          content='1단계 학습을 완료했습니다. 2단계 학습을 시작하시겠습니까?'
+          content={`1단계 학습을 완료했습니다.\n2단계 학습을 시작하시겠습니까?`}
           cancleText='취소'
           confirmText='확인' />}
     </KeyboardAvoidingView>

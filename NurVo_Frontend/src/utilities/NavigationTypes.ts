@@ -1,31 +1,59 @@
 import { NativeStackNavigationProp, NativeStackScreenProps } from "@react-navigation/native-stack";
-import { DataProps } from "../pages/SelectText";
 import { RouteProp } from "@react-navigation/native";
 
+export type RootStackParamList = {
+  Home: undefined;
+  Library: undefined;
+};
 
-type HomeStackParamList = {
-    HomeScreen: undefined;
-    LessonFirstScreen: undefined;
-    LessonSecondScreen: undefined;
-    LessonThirdScreen: undefined;
-  }
+export type HomeStackParamList = {
+  HomeScreen: undefined;
+  LessonList: undefined;
+  LessonFirstScreen: { chapterId: number };
+  LessonSecondScreen: { chapterId: number };
+  LessonThirdScreen: { chapterId: number };
+  MemberDetails: undefined;
+  SetUserGoal: undefined;
+}
+
 export type HomeScreenNavigationProp = NativeStackNavigationProp<
-    HomeStackParamList,
-    'HomeScreen'
+  HomeStackParamList,
+  'HomeScreen'
 >;
 
+type LessonFirstScreenNavigationProp = NativeStackNavigationProp<
+  HomeStackParamList,
+  'LessonFirstScreen'
+>;
+type LessonSecondScreenNavigationProp = NativeStackNavigationProp<
+  HomeStackParamList,
+  'LessonSecondScreen'
+>;
+type LessonThirdScreenNavigationProp = NativeStackNavigationProp<
+  HomeStackParamList,
+  'LessonThirdScreen'
+>;
 
-type LibraryStackParamList = {
-  SelectText: undefined;
-  StudyPage: { data: DataProps[] };
-};
+type LessonFirstScreenRouteProp = RouteProp<HomeStackParamList, 'LessonFirstScreen'>;
+type LessonSecondScreenRouteProp = RouteProp<HomeStackParamList, 'LessonSecondScreen'>;
+type LessonThirdScreenRouteProp = RouteProp<HomeStackParamList, 'LessonThirdScreen'>;
 
-// export type StudyPageProps = NativeStackScreenProps<LibraryStackParamList, 'StudyPage'>;
+export interface HomeStackScreenProps {
+  navigation: NativeStackNavigationProp<HomeStackParamList, 'HomeScreen'>;
+  route: RouteProp<HomeStackParamList, 'HomeScreen'>;
+}
 
-type StudyPageNavigationProp = NativeStackNavigationProp<LibraryStackParamList, 'StudyPage'>;
-type StudyPageRouteProp = RouteProp<LibraryStackParamList, 'StudyPage'>;
+export interface LessonFirstProps {
+  navigation: LessonFirstScreenNavigationProp;
+  route: LessonFirstScreenRouteProp;
+}
 
-export type StudyPageProps = {
-  navigation: StudyPageNavigationProp;
-  route: StudyPageRouteProp;
-};
+export interface LessonSecondProps {
+  navigation: LessonSecondScreenNavigationProp;
+  route: LessonSecondScreenRouteProp;
+}
+
+export interface LessonThirdProps {
+  navigation: LessonThirdScreenNavigationProp;
+  route: LessonThirdScreenRouteProp;
+}

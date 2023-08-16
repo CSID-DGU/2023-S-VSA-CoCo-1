@@ -8,13 +8,14 @@ import { useNavigation } from '@react-navigation/native';
 
 import Colors from '../utilities/Color';
 import { Body023, Subtitle011 } from '../utilities/Fonts';
-import { layoutStyles, screenWidth } from '../utilities/Layout';
+import { layoutStyles } from '../utilities/Layout';
 import { HomeScreenNavigationProp } from '../utilities/NavigationTypes';
 
 interface ListCellProps {
     item: {
         title: string;
         subtitle: string;
+        chapterId: number;
     };
     checked?: boolean;
     style: ViewStyle;
@@ -26,7 +27,8 @@ export function ListCell({ item, checked, style }: ListCellProps) {
 
     return (
         <TouchableOpacity style={[listStyles.listCell, style]} onPress={() => {
-            navigation.navigate('LessonFirstScreen');
+            navigation.navigate('LessonFirstScreen', {chapterId: item.chapterId});
+
         }}>
             <View style={[layoutStyles.VStackContainer, style, { paddingHorizontal: 20, paddingVertical: 12, marginTop: 28 }]}>
                 <Subtitle011 text={item.title} color={Colors.GRAY03} numberOfLines={1} ellipsizeMode={'tail'} />

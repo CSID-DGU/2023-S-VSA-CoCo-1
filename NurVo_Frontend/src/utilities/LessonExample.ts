@@ -4,7 +4,7 @@ export interface Message {
     
     speaker: string;
     dialogue: string;
-    second_step: string; 
+    second_step?: string; 
     korean: string;
 }
 

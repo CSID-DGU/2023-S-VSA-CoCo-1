@@ -12,21 +12,24 @@ import {
 } from 'react-native';
 
 import Colors from '../../utilities/Color';
-import { Message, allMessages } from '../../utilities/LessonExample';
+// import { Message, allMessages } from '../../utilities/LessonExample';
 import { ChatBubbleInputWord } from '../../components/ChatBubble';
 import CustomAlert from '../../components/Alert';
 import VoiceRecordButton from '../../components/VoiceFuncComp';
 import { stopSpeech } from '../../utilities/TextToSpeech';
+import { LessonSecondProps } from '../../utilities/NavigationTypes';
+import { calculateSecondStepAccuracyWithSentenceId, fetchChapterDialogueSecondStepById, fetchChapterDialogueThirdStepById } from '../../utilities/ServerFunc';
 
 const { StatusBarManager } = NativeModules;
 
-export default function LessonSecond({ navigation }: { navigation: any }) {
+export default function LessonSecond({ navigation, route }: LessonSecondProps) {
 
   const flatListRef = useRef<FlatList>(null);
   const inputRef = useRef<TextInput>(null);
 
   type State = {
-    messages: Message[];
+    allMessages: [];
+    messages: [];
     inputText: string;
     inputValues: Record<string, any>;
     correctPercent: string;
@@ -38,7 +41,8 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
   };
 
   const initialState: State = {
-    messages: [allMessages[0]],
+    allMessages: [],
+    messages: [],
     inputText: '',
     inputValues: {},
     correctPercent: '',
@@ -51,6 +55,8 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
 
   const reducer = (state: typeof initialState, action: { type: string; payload?: any }) => {
     switch (action.type) {
+      case 'SET_ALLMESSAGES':
+        return { ...state, allMessages: action.payload };
       case 'SET_MESSAGES':
         return { ...state, messages: action.payload };
       case 'SET_INPUT_TEXT':
@@ -76,6 +82,7 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
 
   const [state, dispatch] = useReducer(reducer, initialState);
   const {
+    allMessages,
     messages,
     inputText,
     inputValues,
@@ -94,8 +101,27 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
   }, []);
 
   useEffect(() => {
-    if (!showCheckAlert && messages[messages.length - 1].speaker === 'Nurse') {
-      inputRef.current?.focus();
+    const getData = async () => {
+      const chapterId = route.params.chapterId;
+      const data = await fetchChapterDialogueSecondStepById(chapterId);
+      if (data) {
+        dispatch({ type: 'SET_ALLMESSAGES', payload: data });
+      }
+    }
+    getData();
+  }, []);
+
+  useEffect(() => {
+    if (allMessages.length > 0) {
+      dispatch({ type: 'SET_MESSAGES', payload: [allMessages[0]] });
+    }
+  }, [allMessages]);
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      if (!showCheckAlert && messages[messages.length - 1].speaker.trim().toLowerCase() === 'nurse') {
+        inputRef.current?.focus();
+      }
     }
   }, [showCheckAlert]);
 
@@ -137,14 +163,15 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
     dispatch({ type: 'SET_INPUT_TEXT', payload: text });
   };
 
-  const handlePress = () => {
+  const handlePress = async () => {
     if (!(isSpeaking.some((value: boolean) => value))) {
       if (messages.length < allMessages.length) {
-        if (messages[messages.length - 1].speaker === 'Nurse' && messages[messages.length - 1].second_step) {
+        if (messages[messages.length - 1].speaker.trim().toLowerCase() === 'nurse' && messages[messages.length - 1].second_step) {
           if (inputText.trim().length === 0) {
             inputRef.current?.focus();
             return;
           } else {
+            await calculateCorrectPercent();
             dispatch({ type: 'SET_SHOW_CHECK_ALERT', payload: true });
           }
         } else {
@@ -152,10 +179,22 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
           setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100);
         }
       } else {
+        if (messages[messages.length - 1].speaker.trim().toLowerCase() === 'nurse' && messages[messages.length - 1].second_step) {
+          await calculateCorrectPercent();
+          dispatch({ type: 'SET_SHOW_CHECK_ALERT', payload: true });
+        }
         dispatch({ type: 'SET_SHOW_NEXT_ALERT', payload: true });
       }
     }
   };
+
+  async function calculateCorrectPercent() {
+    const result = await calculateSecondStepAccuracyWithSentenceId(route.params.chapterId, messages[messages.length - 1].id, inputText)
+    if (result) {
+      dispatch({ type: 'SET_CORRECT_PERCENT', payload: result.accuracy });
+    }
+
+  }
 
   const setIsSpeakingByIndex = (index: number, bool: boolean) => {
     const speakingList: boolean[] = [...isSpeaking];
@@ -170,13 +209,14 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
 
   const handleNext = () => {
     navigation.pop();
-    navigation.navigate("LessonThirdScreen");
+    navigation.navigate("LessonThirdScreen", { chapterId: route.params.chapterId });
   };
   const handleCancle = () => {
     dispatch({ type: 'SET_SHOW_NEXT_ALERT', payload: false });
   };
   const handleCheckNext = () => {
-    const newInputValues = { ...inputValues, [messages[messages.length - 1].id]: inputText };
+    const jsonValue = { text: inputText, isOver: correctPercent >= 80 ? true : false}
+    const newInputValues = { ...inputValues, [messages[messages.length - 1].id]:  JSON.stringify(jsonValue)};
     dispatch({ type: 'SET_INPUT_VALUES', payload: newInputValues });
     dispatch({ type: 'SET_INPUT_TEXT', payload: '' });
     dispatch({ type: 'SET_SHOW_CHECK_ALERT', payload: false });
@@ -187,10 +227,10 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
     dispatch({ type: 'SET_SHOW_CHECK_ALERT', payload: false });
   };
 
-  const hasInputText = messages[messages.length - 1].speaker === 'Nurse' &&
-    messages[messages.length - 1].second_step;
+  const hasInputText = messages.length > 0 ? messages[messages.length - 1].speaker.trim().toLowerCase() === 'nurse' &&
+    messages[messages.length - 1].second_step : false;
 
-  //하단 키보드 버튼 애니메이션
+  // 하단 키보드 버튼 애니메이션
   const [buttonTranslateY] = useState(new Animated.Value(140));
   useEffect(() => {
     Animated.timing(buttonTranslateY, {
@@ -249,7 +289,7 @@ export default function LessonSecond({ navigation }: { navigation: any }) {
         <CustomAlert
           onCancle={handleCheckCancle}
           onConfirm={handleCheckNext}
-          content={`정답률이 %입니다. \n다음으로 넘어가시겠습니까?`}
+          content={`정답률이 ${correctPercent}%입니다. \n다음으로 넘어가시겠습니까?`}
           cancleText='다시하기'
           confirmText='넘어가기' />}
     </KeyboardAvoidingView>

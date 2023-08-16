@@ -21,15 +21,18 @@ const todayLessons = [
   {
     title: 'Hospital life guidance',
     subtitle: 'location of call bell, meal times, shower times, etc.',
+    chapterId: 1,
   },
   {
     title: '1 Hospital life guidance',
     subtitle: '1 location of call bell, meal times, shower times, etc.',
+    chapterId: 2,
     checked: true,
   },
   {
     title: '2 Hospital life guidance',
     subtitle: '2 location of call bell, meal times, shower times, etc.',
+    chapterId: 3,
     checked: true,
   }
 ]

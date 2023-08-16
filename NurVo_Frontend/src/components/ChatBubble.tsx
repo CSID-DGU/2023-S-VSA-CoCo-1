@@ -2,12 +2,20 @@ import { Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from "r
 import { useEffect, useState } from "react";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import { Message } from "../utilities/LessonExample";
-import { Body011, Body012, Body013, Subtext013 } from "../utilities/Fonts";
+import { Body011, Body012, Body023 } from "../utilities/Fonts";
 import { layoutStyles, screenWidth } from "../utilities/Layout";
 import Colors from "../utilities/Color";
 import { speech } from "../utilities/TextToSpeech";
+import { addSentenceBookmark, deleteSentenceBookmark } from "../utilities/ServerFunc";
+import { TEST_USERID } from "@env";
 
+export interface Message {
+    id: number;
+    speaker: string;
+    dialogue: string;
+    second_step?: string; 
+    korean: string;
+}
 
 interface ChatBubbleProps {
   index: number;
@@ -25,6 +33,11 @@ interface ChatBubbleProps {
   onIsClickSpeakChange?: (isSpeaking: boolean) => void;
 }
 
+const userId = TEST_USERID;
+const icon_speak = "volume-high";
+const icon_translation = "language";
+const icon_bookmark = "bookmark";
+
 export default function ChatBubble({ index, item, isBookmarked, isSpeaking, speakingList, onIsClickSpeakChange }: ChatBubbleProps) {
   useEffect(() => {
     setIsBookmark(isBookmarked);
@@ -33,7 +46,12 @@ export default function ChatBubble({ index, item, isBookmarked, isSpeaking, spea
   const [isBookmark, setIsBookmark] = useState(false);
   const [isShowTranslation, setIsShowTranslation] = useState(false);
 
-  const handleBookmark = () => {
+  const handleBookmark = async () => {
+    if (isBookmark) {
+      await deleteSentenceBookmark(item.id, userId);
+    } else {
+      const response = await addSentenceBookmark(item.id, userId);
+    }
     setIsBookmark(!isBookmark);
   }
   const handleBook = () => {
@@ -42,38 +60,36 @@ export default function ChatBubble({ index, item, isBookmarked, isSpeaking, spea
   const handleSpeak = () => {
     if (!(speakingList.some(value => value)) && onIsClickSpeakChange) {
       onIsClickSpeakChange(true);
-      speech(item.dialogue, item.chapter_id, item.id, item.speaker === 'Nurse', () => { onIsClickSpeakChange(false) });
+      speech(item.dialogue, item.id, item.speaker.trim().toLowerCase() === 'nurse', () => { onIsClickSpeakChange(false) });
     }
   }
   return (
-    <View key={item.id} style={[
-      item.speaker === 'Nurse' ? bubbleStyles.messageContainerRight : bubbleStyles.messageContainerLeft
+    <View key={index} style={[
+      item.speaker.trim().toLowerCase() === 'nurse' ? bubbleStyles.messageContainerRight : bubbleStyles.messageContainerLeft
     ]}>
       <View style={[
         bubbleStyles.bubble,
-        item.speaker === 'Nurse' ? bubbleStyles.bubbleRight : bubbleStyles.bubbleLeft
+        item.speaker.trim().toLowerCase() === 'nurse' ? bubbleStyles.bubbleRight : bubbleStyles.bubbleLeft
       ]}>
-        {item.speaker === 'Nurse' ?
-          <Body012 text={item.dialogue} color={Colors.WHITE} /> :
-          <Body012 text={item.dialogue} color={Colors.BLACK} />}
-        {isShowTranslation && <Body013 text={item.korean} color={item.speaker === 'Nurse' ? Colors.WHITE : Colors.BLACK} />}
+        <Body012 text={item.dialogue} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} />
+        {isShowTranslation && <Body023 text={item.korean} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.GRAY09 : Colors.GRAY03} style={bubbleStyles.translation}/>}
         <View style={[
           layoutStyles.HStackContainer,
           {
             flexWrap: 'wrap',
             justifyContent: 'space-evenly',
-            alignSelf: item.speaker === 'Nurse' ? 'flex-start' : 'flex-end',
+            alignSelf: item.speaker.trim().toLowerCase() === 'nurse' ? 'flex-start' : 'flex-end',
             marginTop: 16,
           }
         ]}>
-          {item.speaker === 'Nurse' && <TouchableOpacity onPress={handleBookmark}>
-            <Ionicons name={isBookmark ? "bookmark" : "bookmark-outline"} size={20} color={item.speaker === 'Nurse' ? Colors.WHITE : Colors.BLACK} />
+          {item.speaker.trim().toLowerCase() === 'nurse' && <TouchableOpacity onPress={handleBookmark}>
+            <Ionicons name={isBookmark ? icon_bookmark : `${icon_bookmark}-outline`} size={20} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} />
           </TouchableOpacity>}
           <TouchableOpacity onPress={handleBook}>
-            <Ionicons name={isShowTranslation ? "book" : "book-outline"} size={20} color={item.speaker === 'Nurse' ? Colors.WHITE : Colors.BLACK} style={{ marginHorizontal: 16 }} />
+            <Ionicons name={isShowTranslation ? icon_translation : `${icon_translation}-outline`} size={20} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} style={{ marginHorizontal: 16 }} />
           </TouchableOpacity>
           <TouchableOpacity onPress={handleSpeak}>
-            <Ionicons name={isSpeaking ? "volume-high" : "volume-high-outline"} size={20} color={item.speaker === 'Nurse' ? Colors.WHITE : Colors.BLACK} />
+            <Ionicons name={isSpeaking ?  icon_speak : `${icon_speak}-outline`} size={20} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} />
           </TouchableOpacity>
         </View>
       </View>
@@ -81,7 +97,7 @@ export default function ChatBubble({ index, item, isBookmarked, isSpeaking, spea
   );
 }
 
-export function ChatBubbleInputWord({ index, item, isBookmarked, onEnterValue, onChagneText, inputRef, input, inputValues, isVoiceMode, isLastItem, isSpeaking, speakingList, onIsClickSpeakChange }: ChatBubbleProps) {
+export function ChatBubbleInputWord({ index, item, isBookmarked, onEnterValue, onChagneText, inputRef, input, inputValues, isVoiceMode, isLastItem, isSpeaking, speakingList, onIsClickSpeakChange,  }: ChatBubbleProps) {
   useEffect(() => {
     setIsBookmark(isBookmarked);
   }, [isBookmarked]);
@@ -89,25 +105,32 @@ export function ChatBubbleInputWord({ index, item, isBookmarked, onEnterValue, o
   const [isBookmark, setIsBookmark] = useState(false);
   const [isShowTranslation, setIsShowTranslation] = useState(false);
 
-  const handleBookmark = () => { setIsBookmark(!isBookmark) }
+  const handleBookmark = async() => { 
+    if (isBookmark) {
+      await deleteSentenceBookmark(item.id, userId);
+    } else {
+      const response = await addSentenceBookmark(item.id, userId);
+    }
+    setIsBookmark(!isBookmark) 
+  }
   const handleBook = () => { setIsShowTranslation(!isShowTranslation) }
   const handleSpeak = () => {
     if (!(speakingList.some(value => value)) && onIsClickSpeakChange) {
       onIsClickSpeakChange(true);
-      speech(item.dialogue, item.chapter_id, item.id, item.speaker === 'Nurse', () => { onIsClickSpeakChange(false) });
+      speech(item.dialogue, item.id, item.speaker.trim().toLowerCase() === 'nurse', () => { onIsClickSpeakChange(false) });
     }
   }
 
   const textWithInputs = replaceWithInput(item.dialogue, item.second_step);
 
   return (
-    <View key={item.id} style={[
-      item.speaker === 'Nurse' ? bubbleStyles.messageContainerRight : bubbleStyles.messageContainerLeft
+    <View key={index} style={[
+      item.speaker.trim().toLowerCase() === 'nurse' ? bubbleStyles.messageContainerRight : bubbleStyles.messageContainerLeft
     ]}>
       <View style={[
         bubbleStyles.bubble,
         inputBubbleStyles.container,
-        item.speaker === 'Nurse' ? bubbleStyles.bubbleRight : bubbleStyles.bubbleLeft,
+        item.speaker.trim().toLowerCase() === 'nurse' ? bubbleStyles.bubbleRight : bubbleStyles.bubbleLeft,
         { flexDirection: 'row', flexWrap: 'wrap' }
       ]}>
         <View style={[layoutStyles.VStackContainer]}>
@@ -117,7 +140,7 @@ export function ChatBubbleInputWord({ index, item, isBookmarked, onEnterValue, o
                 <Body012
                   key={index}
                   text={segment}
-                  color={item.speaker === 'Nurse' ? Colors.WHITE : Colors.BLACK}
+                  color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK}
                 />
               );
             } else {
@@ -140,24 +163,24 @@ export function ChatBubbleInputWord({ index, item, isBookmarked, onEnterValue, o
             }
           })}
         </View>
-        {isShowTranslation && <Subtext013 text={item.korean} color={item.speaker === 'Nurse' ? Colors.WHITE : Colors.BLACK} />}
+        {isShowTranslation && <Body023 text={item.korean} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.GRAY09 : Colors.GRAY03} style={bubbleStyles.translation}/>}
         <View style={[
           layoutStyles.HStackContainer,
           {
             width: '100%',
             flexWrap: 'wrap',
-            justifyContent: item.speaker === 'Nurse' ? 'flex-start' : 'flex-end',
+            justifyContent: item.speaker.trim().toLowerCase() === 'nurse' ? 'flex-start' : 'flex-end',
             marginTop: 16,
           }
         ]}>
-          {item.speaker === 'Nurse' && <TouchableOpacity onPress={handleBookmark}>
-            <Ionicons name={isBookmark ? "bookmark" : "bookmark-outline"} size={20} color={item.speaker === 'Nurse' ? Colors.WHITE : Colors.BLACK} />
+          {item.speaker.trim().toLowerCase() === 'nurse' && <TouchableOpacity onPress={handleBookmark}>
+            <Ionicons name={isBookmark ? icon_bookmark : `${icon_bookmark}-outline`} size={20} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} />
           </TouchableOpacity>}
           <TouchableOpacity onPress={handleBook}>
-            <Ionicons name={isShowTranslation ? "book" : "book-outline"} size={20} color={item.speaker === 'Nurse' ? Colors.WHITE : Colors.BLACK} style={{ marginHorizontal: 16 }} />
+            <Ionicons name={isShowTranslation ? icon_translation : `${icon_translation}-outline`} size={20} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} style={{ marginHorizontal: 16 }} />
           </TouchableOpacity>
-          {!(isLastItem && item.speaker === 'Nurse') && <TouchableOpacity onPress={handleSpeak}>
-            <Ionicons name={isSpeaking ? "volume-high" : "volume-high-outline"} size={20} color={item.speaker === 'Nurse' ? Colors.WHITE : Colors.BLACK} />
+          {!(isLastItem && item.speaker.trim().toLowerCase() === 'nurse') && <TouchableOpacity onPress={handleSpeak}>
+            <Ionicons name={isSpeaking ? icon_speak : `${icon_speak}-outline`} size={20} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} />
           </TouchableOpacity>}
         </View>
       </View>
@@ -173,7 +196,12 @@ export function ChatBubbleInputAll({ index, item, isBookmarked, onEnterValue, on
   const [isBookmark, setIsBookmark] = useState(false);
   const [isShowTranslation, setIsShowTranslation] = useState(false);
 
-  const handleBookmark = () => {
+  const handleBookmark = async () => {
+    if (isBookmark) {
+      await deleteSentenceBookmark(item.id, userId);
+    } else {
+      const response = await addSentenceBookmark(item.id, userId);
+    }
     setIsBookmark(!isBookmark);
   }
   const handleBook = () => {
@@ -182,56 +210,52 @@ export function ChatBubbleInputAll({ index, item, isBookmarked, onEnterValue, on
   const handleSpeak = () => {
     if (!(speakingList.some(value => value)) && onIsClickSpeakChange) {
       onIsClickSpeakChange(true);
-      speech(item.dialogue, item.chapter_id, item.id, item.speaker === 'Nurse', () => { onIsClickSpeakChange(false) });
+      speech(item.second_step ? item.second_step : item.dialogue, item.id, item.speaker.trim().toLowerCase() === 'nurse', () => { onIsClickSpeakChange(false) });
     }
   }
 
   return (
     <View key={item.id} style={[
-      item.speaker === 'Nurse' ? bubbleStyles.messageContainerRight : bubbleStyles.messageContainerLeft
+      item.speaker.trim().toLowerCase() === 'nurse' ? bubbleStyles.messageContainerRight : bubbleStyles.messageContainerLeft
     ]}>
       <View style={[
         bubbleStyles.bubble,
         inputBubbleStyles.container,
-        item.speaker === 'Nurse' ? bubbleStyles.bubbleRight : bubbleStyles.bubbleLeft,
+        item.speaker.trim().toLowerCase() === 'nurse' ? bubbleStyles.bubbleRight : bubbleStyles.bubbleLeft,
         { flexDirection: 'row', flexWrap: 'wrap' }
       ]}>
         <View style={[layoutStyles.VStackContainer, { width: '100%' }]}>
-          {item.speaker === 'Nurse' ?
+          {item.speaker.trim().toLowerCase() === 'nurse' ?
             (isLastItem ?
               <TextInput
                 style={[inputBubbleStyles.input, { color: Colors.BLACK, marginVertical: 4 }]}
                 ref={inputRef}
                 value={input}
                 onSubmitEditing={onEnterValue}
-                onChangeText={(text) => {
-                  if (onChagneText) {
-                    onChagneText(text);
-                  }
-                }}
+                onChangeText={(text) => { if (onChagneText) { onChagneText(text); } }}
                 showSoftInputOnFocus={!isVoiceMode}
                 multiline={true}
               /> :
               inputValues && checkInputWord(index, inputValues[item.id], item.second_step)
             ) :
-            (<Body012 key={index} text={item.dialogue} color={item.speaker === 'Nurse' ? Colors.WHITE : Colors.BLACK} />)}
-          {isShowTranslation && <Subtext013 text={item.korean} color={item.speaker === 'Nurse' ? Colors.WHITE : Colors.BLACK} />}
+            (<Body012 key={index} text={item.dialogue} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} />)}
+          {isShowTranslation && <Body023 text={item.korean} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.GRAY09 : Colors.GRAY03} style={bubbleStyles.translation}/>}
           <View style={[
             layoutStyles.HStackContainer,
             {
               flexWrap: 'wrap',
-              justifyContent: item.speaker === 'Nurse' ? 'flex-start' : 'flex-end',
+              justifyContent: item.speaker.trim().toLowerCase() === 'nurse' ? 'flex-start' : 'flex-end',
               marginTop: 16,
             }
           ]}>
-            {item.speaker === 'Nurse' && <TouchableOpacity onPress={handleBookmark}>
-              <Ionicons name={isBookmark ? "bookmark" : "bookmark-outline"} size={20} color={item.speaker === 'Nurse' ? Colors.WHITE : Colors.BLACK} />
+            {item.speaker.trim().toLowerCase() === 'nurse' && <TouchableOpacity onPress={handleBookmark}>
+              <Ionicons name={isBookmark ? icon_bookmark : `${icon_bookmark}-outline`} size={20} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} />
             </TouchableOpacity>}
             <TouchableOpacity onPress={handleBook}>
-              <Ionicons name={isShowTranslation ? "book" : "book-outline"} size={20} color={item.speaker === 'Nurse' ? Colors.WHITE : Colors.BLACK} style={{ marginHorizontal: 16 }} />
+              <Ionicons name={isShowTranslation ? icon_translation : `${icon_translation}-outline`} size={20} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} style={{ marginHorizontal: 16 }} />
             </TouchableOpacity>
-            {!(isLastItem && item.speaker === 'Nurse') && <TouchableOpacity onPress={handleSpeak}>
-              <Ionicons name={isSpeaking ? "volume-high" : "volume-high-outline"} size={20} color={item.speaker === 'Nurse' ? Colors.WHITE : Colors.BLACK} />
+            {!(isLastItem && item.speaker.trim().toLowerCase() === 'nurse') && <TouchableOpacity onPress={handleSpeak}>
+              <Ionicons name={isSpeaking ? icon_speak : `${icon_speak}-outline`} size={20} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} />
             </TouchableOpacity>}
           </View>
         </View>
@@ -240,8 +264,8 @@ export function ChatBubbleInputAll({ index, item, isBookmarked, onEnterValue, on
   );
 }
 
-function replaceWithInput(text: string, textToReplace: string) {
-  if (textToReplace === '') {
+function replaceWithInput(text: string, textToReplace?: string) {
+  if (textToReplace === '' || textToReplace === undefined) {
     return [text];
   } else {
     const segments = text.split(new RegExp(`(${textToReplace})`, 'gi'));
@@ -256,11 +280,12 @@ function replaceWithInput(text: string, textToReplace: string) {
   }
 }
 
-function checkInputWord(index: number, input: string, second_step: string) {
+function checkInputWord(index: number, inputValue: string, second_step?: string) {
+  const jsonValue = JSON.parse(inputValue);
   return (
     <View key={index} style={[layoutStyles.VStackContainer, { paddingVertical: 10 }]}>
-      <Body011 text={input} color={Colors.NAVY} />
-      <Body013 text={`( ${second_step} )`} color={Colors.GRAY07} />
+      <Body012 text={jsonValue.text} color={Colors.GRAY07} />
+      <Body011 text={`${second_step}`} color={jsonValue.isOver ? Colors.NAVY : Colors.YELLOW} />
     </View>
   )
 }
@@ -302,6 +327,9 @@ const bubbleStyles = StyleSheet.create({
     backgroundColor: Colors.WHITE,
     borderTopLeftRadius: 0,
   },
+  translation: {
+    marginTop: 8,
+  }
 });
 
 const inputBubbleStyles = StyleSheet.create({
