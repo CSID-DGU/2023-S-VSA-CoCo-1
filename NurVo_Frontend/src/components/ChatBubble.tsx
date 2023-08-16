@@ -153,6 +153,7 @@ export function ChatBubbleInputWord({ index, item, isBookmarked, onEnterValue, o
                   ]}
                   value={input}
                   ref={inputRef}
+                  multiline={true}
                   onSubmitEditing={onEnterValue}
                   onChangeText={onChagneText}
                   showSoftInputOnFocus={!isVoiceMode}
