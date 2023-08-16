@@ -1,5 +1,6 @@
 import { NativeStackNavigationProp, NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RouteProp } from "@react-navigation/native";
+import { Chapter } from "../pages/LessonsList";
 
 export type RootStackParamList = {
   Home: undefined;
@@ -10,14 +11,17 @@ export type RootStackParamList = {
 
 export type HomeStackParamList = {
   HomeScreen: undefined;
-  LessonList: undefined;
+  LessonList: { 
+    title?: string,
+    chapters?: Chapter[],
+   };
   LessonFirstScreen: { chapterId: number };
   LessonSecondScreen: { chapterId: number };
   LessonThirdScreen: { chapterId: number };
   MemberDetails: undefined;
   SetUserGoal: undefined;
 }
-export type HomeScreenNavigationProp = NativeStackNavigationProp<
+export type HomeStackNavigationProp = NativeStackNavigationProp<
   HomeStackParamList,
   'HomeScreen'
 >;
@@ -27,7 +31,7 @@ export interface HomeStackScreenProps {
 }
 
 export type ChapterStackParamList = {
-  LessonList: undefined;
+  LessonList: { chapters?: Chapter[] };
   LessonFirstScreen: { chapterId: number };
   LessonSecondScreen: { chapterId: number };
   LessonThirdScreen: { chapterId: number };
@@ -39,6 +43,28 @@ ChapterStackParamList,
 export interface ChapterStackScreenProps {
   navigation: NativeStackNavigationProp<ChapterStackParamList, 'LessonList'>;
   route: RouteProp<HomeStackParamList, 'LessonList'>;
+}
+
+//HomeScreen
+type HomeScreenRouteProp = RouteProp<HomeStackParamList, 'HomeScreen'>;
+type HomeScreenNavigationProp = NativeStackNavigationProp<
+  HomeStackParamList,
+  'HomeScreen'
+>;
+export interface HomeScreenProps {
+  navigation: HomeScreenNavigationProp;
+  route: HomeScreenRouteProp;
+}
+
+//LessonList
+type LessonListScreenRouteProp = RouteProp<HomeStackParamList, 'LessonList'>;
+type LessonListScreenNavigationProp = NativeStackNavigationProp<
+  HomeStackParamList,
+  'LessonList'
+>;
+export interface LessonListProps {
+  navigation: LessonListScreenNavigationProp;
+  route: LessonListScreenRouteProp;
 }
 
 //LessonFirstScreen

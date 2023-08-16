@@ -5,8 +5,6 @@ import {
   Platform,
   TouchableOpacity,
   TouchableHighlight,
-  TouchableNativeFeedback,
-  TouchableHighlightBase,
 } from 'react-native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -17,8 +15,11 @@ import { layoutStyles, screenWidth } from '../utilities/Layout';
 import { CarouselList } from '../components/CarouselListComp';
 import { ListCell } from '../components/ListCellComp';
 import { useNavigation } from '@react-navigation/native';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { stopSpeech } from '../utilities/TextToSpeech';
+import { HomeScreenProps } from '../utilities/NavigationTypes';
+import { fetchAllTopic } from '../utilities/ServerFunc';
+import { Section } from './LessonsList';
 
 const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -120,10 +121,35 @@ function UserInfoHeader() {
 
 
 
-export default function Home({ navigation }: { navigation: any }) {
+export default function Home({ navigation, route }: HomeScreenProps) {
+
+  const [sections, setSections] = useState<Section[]>([]);
 
   useEffect(() => {
     stopSpeech();
+  }, []);
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const data = await fetchAllTopic();
+        if (!data) return;
+        const sectionData: Section[] = data.map(item => ({
+          topic: item.topic,
+          chapter: item.chapter.map(chapter => ({
+            id: chapter.id,
+            name: chapter.name,
+            description: chapter.description,
+            topic_id: chapter.topic_id
+          }))
+        }));
+        setSections(sectionData);
+
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getData();
   }, []);
 
   const handleUserPage = () => {
@@ -138,14 +164,14 @@ export default function Home({ navigation }: { navigation: any }) {
         </TouchableHighlight>
         <View style={[layoutStyles.VStackContainer]}>
           <MenuTitle text='Today’s Lesson' onPress={() => {
-            navigation.navigate('LessonList');
+            navigation.navigate('LessonList', { title: "Today’s Lesson", chapters: sections[1].chapter });
           }} />
-          <CarouselList gap={8} offset={12} pages={todayLessons} pageWidth={screenWidth - (8 + 12) * 2} />
+          { sections.length>0 && (<CarouselList gap={8} offset={12} pages={sections[1].chapter} pageWidth={screenWidth - (8 + 12) * 2} />)}
           <MenuTitle text='Review' onPress={() => {
-            navigation.navigate('LessonList');
+            navigation.navigate('LessonList', { title: "Review", chapters: sections[0].chapter });
           }} />
           <View style={[layoutStyles.VStackContainer, { marginTop: 4, marginBottom: 28, paddingHorizontal: 20 }]}>
-            {todayLessons.slice(0, 2).map((lesson, index) => (
+            {sections.length>0 && sections[0].chapter.slice(0, 2).map((lesson, index) => (
               <ListCell
                 key={index}
                 item={lesson}

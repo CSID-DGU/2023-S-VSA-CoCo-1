@@ -9,7 +9,7 @@ import { useNavigation } from '@react-navigation/native';
 import Colors from '../utilities/Color';
 import { Body023, Subtitle011 } from '../utilities/Fonts';
 import { layoutStyles } from '../utilities/Layout';
-import { HomeScreenNavigationProp } from '../utilities/NavigationTypes';
+import { HomeStackNavigationProp } from '../utilities/NavigationTypes';
 
 interface ListCellProps {
     item: {
@@ -24,11 +24,11 @@ interface ListCellProps {
 
 export function ListCell({ item, checked, style }: ListCellProps) {
 
-    const navigation = useNavigation<HomeScreenNavigationProp>();
+    const navigation = useNavigation<HomeStackNavigationProp>();
 
     return (
         <TouchableOpacity style={[listStyles.listCell, style]} onPress={() => {
-            navigation.navigate('LessonFirstScreen', {chapterId: item.chapterId});
+            navigation.navigate('LessonFirstScreen', {chapterId: item.id});
 
         }}>
             <View style={[layoutStyles.VStackContainer, style, { paddingHorizontal: 20, paddingVertical: 12, marginTop: 28 }]}>
