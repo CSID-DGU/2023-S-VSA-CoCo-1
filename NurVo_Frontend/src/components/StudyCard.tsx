@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
@@ -16,11 +16,12 @@ interface StudyCardProps {
     date: string;
     korean: string;
   }[];
-  style?: number
+  style?: number;
+  isAction?: string;
 }
 
 // React.forwardRef로 감싼 StudyCard 컴포넌트를 정의합니다.
-const StudyCard = ({ id, item, style }: StudyCardProps) => {
+const StudyCard = ({ id, item, style, isAction }: StudyCardProps) => {
   const [cardTurn, setCardTurn] = useState(false); // 카드 뒤집기
   const [isSpeaking, setIsSpeaking] = useState(false); // tts 동작
 
@@ -37,6 +38,13 @@ const StudyCard = ({ id, item, style }: StudyCardProps) => {
       });
     }
   }
+
+  useEffect(()=>{
+    if (isAction === 'remove' || isAction === 'keep'){
+      stopSpeech(); // Assuming stopSpeech is an async function
+      setIsSpeaking(false);
+    }
+  },[isAction]);
 
   return (
     <TouchableOpacity onPress={turnCard} style={styles.container}>

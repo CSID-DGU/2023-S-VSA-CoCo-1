@@ -65,6 +65,7 @@ const CardSwiper = ({ data, action, pageWidth, nextaction, alertOpen }: CardSwip
         id={item.index}
         item={item}
         style={{ width: pageWidth }}
+        isAction={action}
       />
     </View>
   );
