@@ -31,14 +31,14 @@ function BottomTabs() {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
-          let iconName: string = '';
+          let iconName: string = route.name.toLowerCase();
 
           if (route.name === 'Home') {
-            iconName = focused ? 'home' : 'home-outline';
+            iconName = 'home';
           } else if (route.name === 'Chapter') {
-            iconName = focused ? 'book' : 'book-outline';
+            iconName = 'book';
           } else if (route.name === 'Library') {
-            iconName = focused ? 'folder' : 'folder-outline';
+            iconName = 'folder';
           } 
           // You can return any component that you like here!
           return <Ionicons name={iconName} size={size} color={color} />;
@@ -112,7 +112,6 @@ const ChapterStack = createNativeStackNavigator<ChapterStackParamList>();
 const ChapterStackScreen = ({navigation, route}: any) => {
   useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route);
-    console.log("routeName", routeName);
     if (routeName === 'LessonFirstScreen' || routeName === 'LessonSecondScreen' || routeName === 'LessonThirdScreen') {
       navigation.setOptions({tabBarStyle: {display: 'none'}});
     } else {
