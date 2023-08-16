@@ -5,9 +5,9 @@
  * @format
  */
 
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
@@ -23,7 +23,7 @@ import Bookmark from './src/pages/Bookmark';
 import StudyPage from './src/pages/StudyPage';
 import MemberDetails from './src/pages/MemberDetails';
 import SetUserGoal from './src/pages/SetUserGoal';
-import { HomeStackParamList, RootStackParamList } from './src/utilities/NavigationTypes';
+import { ChapterStackParamList, HomeStackParamList, RootStackParamList } from './src/utilities/NavigationTypes';
 
 const Tab = createBottomTabNavigator<RootStackParamList>();
 function BottomTabs() {
@@ -34,11 +34,12 @@ function BottomTabs() {
           let iconName: string = '';
 
           if (route.name === 'Home') {
-            iconName = focused ? 'home' : 'home';
+            iconName = focused ? 'home' : 'home-outline';
+          } else if (route.name === 'Chapter') {
+            iconName = focused ? 'book' : 'book-outline';
           } else if (route.name === 'Library') {
-            iconName = focused ? 'folder' : 'folder';
-          }
-
+            iconName = focused ? 'folder' : 'folder-outline';
+          } 
           // You can return any component that you like here!
           return <Ionicons name={iconName} size={size} color={color} />;
         },
@@ -47,13 +48,23 @@ function BottomTabs() {
       })}
     >
       <Tab.Screen name="Home" component={HomeStackScreen} options={{ headerShown: false }} />
+      <Tab.Screen name="Chapter" component={ChapterStackScreen} options={{ headerShown: false }} />
       <Tab.Screen name="Library" component={LibraryStackScreen} options={{ headerShown: false }} />
     </Tab.Navigator>
   );
 }
 
 const HomeStack = createNativeStackNavigator<HomeStackParamList>();
-const HomeStackScreen = () => {
+const HomeStackScreen = ({navigation, route}: any) => {
+  useLayoutEffect(() => {
+    const routeName = getFocusedRouteNameFromRoute(route);
+    console.log("routeName", routeName);
+    if (routeName === 'LessonFirstScreen' || routeName === 'LessonSecondScreen' || routeName === 'LessonThirdScreen') {
+      navigation.setOptions({tabBarStyle: {display: 'none'}});
+    } else {
+      navigation.setOptions({tabBarStyle: {display: undefined}});
+    }
+  })
   return (
     <HomeStack.Navigator
       screenOptions={{
@@ -96,6 +107,33 @@ const LibraryStackScreen = () => {
     </LibraryStack.Navigator>
   );
 }
+
+const ChapterStack = createNativeStackNavigator<ChapterStackParamList>();
+const ChapterStackScreen = ({navigation, route}: any) => {
+  useLayoutEffect(() => {
+    const routeName = getFocusedRouteNameFromRoute(route);
+    console.log("routeName", routeName);
+    if (routeName === 'LessonFirstScreen' || routeName === 'LessonSecondScreen' || routeName === 'LessonThirdScreen') {
+      navigation.setOptions({tabBarStyle: {display: 'none'}});
+    } else {
+      navigation.setOptions({tabBarStyle: {display: undefined}});
+    }
+  })
+  return (
+    <ChapterStack.Navigator
+      screenOptions={{
+        headerTintColor: Colors.BLACK,
+        headerBackTitleVisible: false,
+      }}
+    >
+      <ChapterStack.Screen name="LessonList" component={LessonsList} />
+      <ChapterStack.Screen name="LessonFirstScreen" component={LessonFirst} />
+      <ChapterStack.Screen name="LessonSecondScreen" component={LessonSecond} />
+      <ChapterStack.Screen name="LessonThirdScreen" component={LessonThird} />
+    </ChapterStack.Navigator>
+  );
+}
+
 
 function App(): JSX.Element {
   return (
