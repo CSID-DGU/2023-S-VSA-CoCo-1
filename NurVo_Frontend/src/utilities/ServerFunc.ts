@@ -1,9 +1,11 @@
 import axios, { AxiosError } from "axios";
-import { RN_HOST_URL, TEST_TOKEN } from "@env";
+import { RN_HOST_URL, RN_IOS_HOST_URL, TEST_TOKEN } from "@env";
+import { Section } from "../pages/LessonsList";
+import { Platform } from "react-native";
 import { retrieveUserSession } from "./EncryptedStorage";
 
-const HOST_URL = RN_HOST_URL;
-const TOKEN = TEST_TOKEN; // 스토리지에 토큰을 저장할 거면 추후 지워도 될거 같아요!
+const HOST_URL = (Platform.OS ==='ios') ? RN_IOS_HOST_URL : RN_HOST_URL;
+const TOKEN = TEST_TOKEN;
 
 export interface ResponseProps {
     [x: string]: any;
@@ -11,13 +13,13 @@ export interface ResponseProps {
 }
 
 //topic과 chpater 요청
-export async function fetchAllTopic(): Promise<ResponseProps | undefined> {
+export async function fetchAllTopic(): Promise<Section[] | undefined> {
     const url = `${HOST_URL}/api/dialogues`;
     try {
         const response = await fetch(url, {
             method: 'GET',
             headers: {
-                'Authorization': 'Bearer ' + TOKEN
+                'Authorization': 'Bearer ' + TEST_TOKEN
             }
         });
         const responseData = await response.json();
@@ -93,7 +95,7 @@ export async function fetchChapterDialogueThirdStepById(chapterId: number): Prom
 }
 
 //2단계 정확도 계산(post)
-export async function calculateSecondStepAccuracyWithSentenceId(chapterId:number, sentenceId: string, reply: string): Promise<ResponseProps | undefined> {
+export async function calculateSecondStepAccuracyWithSentenceId(chapterId: number, sentenceId: string, reply: string): Promise<ResponseProps | undefined> {
     const url = `${HOST_URL}/api/dialogues/${chapterId}/step2?id=${sentenceId}`;
     const data = { "reply": reply };
     const headers = { 'Authorization': `Bearer ${TOKEN}` };
@@ -109,9 +111,8 @@ export async function calculateSecondStepAccuracyWithSentenceId(chapterId:number
         }
     }
 } 
-
 //3단계 정확도 계산(post)
-export async function calculateThirdStepAccuracyWithSentenceId(chapterId:number, sentenceId: string, reply: string): Promise<ResponseProps | undefined> {
+export async function calculateThirdStepAccuracyWithSentenceId(chapterId: number, sentenceId: string, reply: string): Promise<ResponseProps | undefined> {
     const url = `${HOST_URL}/api/dialogues/${chapterId}/step3?id=${sentenceId}`;
     const data = { "reply": reply };
     const headers = { 'Authorization': `Bearer ${TOKEN}` };
@@ -132,7 +133,7 @@ export async function calculateThirdStepAccuracyWithSentenceId(chapterId:number,
 //문장 북마크 저장
 export async function addSentenceBookmark(sentenceId: number, userId: string): Promise<ResponseProps | undefined> {
     const url = `${HOST_URL}/api/bookmark/`;
-    const data = { "conversation_id": `${sentenceId}`, "user_id": `${userId}`};
+    const data = { "conversation_id": `${sentenceId}`, "user_id": `${userId}` };
     const headers = { 'Authorization': `Bearer ${TOKEN}` };
     try {
         const response = await axios.post<ResponseProps>(url, data, { headers });
@@ -148,9 +149,9 @@ export async function addSentenceBookmark(sentenceId: number, userId: string): P
 }
 
 //문장 북마크 삭제
-export async function deleteSentenceBookmark( sentenceId: number, userId: string): Promise<ResponseProps | undefined> {
+export async function deleteSentenceBookmark(sentenceId: number, userId: string): Promise<ResponseProps | undefined> {
     const url = `${HOST_URL}/api/bookmark/delete`;
-    const data = { "conversation_id": [`${sentenceId}`], "user_id": `${userId}`};
+    const data = { "conversation_id": [`${sentenceId}`], "user_id": `${userId}` };
     console.log(data);
     const headers = { 'Authorization': `Bearer ${TOKEN}` };
     try {
