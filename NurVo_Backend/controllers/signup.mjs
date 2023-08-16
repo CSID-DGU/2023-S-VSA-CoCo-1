@@ -19,12 +19,12 @@ const messageService = new coolsmsMessageService(IDENTIFY_API_KEY, IDENTIFY_API_
 let randomSixDigitNumber;
 
 router.post('/', signup);
-router.get('/:id', checkId); //겹치는 id 있나 확인하는 엔드포인트
+router.post('/id', checkId); //겹치는 id 있나 확인하는 엔드포인트
 router.post('/identify', identify); //인증번호 발송하는 엔드포인트
 
 
 async function signup(req, res) {
-  const { id, name, password, email, phone_number } = req.body;
+  const { id, name, password, email, phone_number, nickname } = req.body;
   try {
     const user = await getUser();
     for(let i=0; i<user.length; i++){ //이미 회원가입 되어있는 유저인지 확인
@@ -38,8 +38,8 @@ async function signup(req, res) {
       id: id,
       name: name,
       password: hashedPassword,
-      email: email,
-      phone_number: phone_number
+      phone_number: phone_number,
+      nickname: nickname,
     };
     await saveUser(userInfo);
     res.send({ "message": "회원가입 성공" });
@@ -50,7 +50,7 @@ async function signup(req, res) {
 };
 
 async function checkId(req, res) {
-  const { id } = req.params;
+  const { id } = req.body;
   try {
     const user = await getUser(id);
     if (user) {
@@ -85,7 +85,7 @@ async function identify(req, res) { //사용자 인증번호 발송
     }else {
     randomSixDigitNumber = generateRandomSixDigitNumber();
     const response = await messageService.sendOne(params);
-    res.send({ "Message": "발송되었습니다" });
+    res.send({ "Message": "발송되었습니다", "Number" : randomSixDigitNumber });
   }
 
   }

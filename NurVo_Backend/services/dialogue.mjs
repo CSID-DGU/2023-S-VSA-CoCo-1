@@ -1,29 +1,36 @@
-import { getDialogues, getSentences } from "../db/db.mjs";
+import { getDialogues, getSentences, getBookmark } from "../db/db.mjs";
 
 export async function FilterDialogues(list_id) {
   const firstStep = await getDialogues(list_id);
-  const result = firstStep.map((firstStep) => {
+  const bookmark = await getBookmark();
+  const filterFirstStep = firstStep.map((firstStep) => {
+    const isBookmarked = bookmark.some((bookmark) => bookmark.conversation_id === firstStep.id);
     return {
       id: firstStep.id,
       speaker: firstStep.speaker,
       dialogue: firstStep.dialogue,
       korean: firstStep.korean,
+      bookmark: isBookmarked,
     };
   });
+  const result = FilterDialoguesById(filterFirstStep);
   return result;
 };
 
 export async function FilterNurse(list_id) {
   const secondStep = await getDialogues(list_id);
-  console.log(secondStep);
-  const result = secondStep.map((secondStep) => {
+  const bookmark = await getBookmark();
+
+  const filterSecondStep = secondStep.map((secondStep) => {
     if(secondStep.speaker === "Nurse" || secondStep.speaker === "nurse") {
+      const isBookmarked = bookmark.some((bookmark) => bookmark.conversation_id === firstStep.id);
       return {
         id: secondStep.id,
         speaker: secondStep.speaker,
         second_step: secondStep.second_step,
         dialogue: secondStep.dialogue,
         korean: secondStep.korean,
+        bookmark: isBookmarked,
       };
     } else {
       return {
@@ -35,6 +42,15 @@ export async function FilterNurse(list_id) {
     };
     }
   );
+  const result = FilterDialoguesById(filterSecondStep);
+  return result;
+};
+
+//dialogue id로 정렬
+export async function FilterDialoguesById(dialogue) {
+  const result = dialogue.sort((a, b) => {
+    return a.id - b.id;
+  });
   return result;
 };
 
@@ -77,13 +93,16 @@ export async function Accuracy(id, reply){ // 문장별 id와 reply(클라이언
 // 대화학습 3단계 클라이언트로 보낼 데이터
 export async function FilterNurse_ThirdStep(list_id) {  
   const thirdStep = await getDialogues(list_id);
-  const result = thirdStep.map((thirdStep) => {
+  const bookmark = await getBookmark();
+  const filterThirdStep = thirdStep.map((thirdStep) => {
     if(thirdStep.speaker === "Nurse" || thirdStep.speaker === "nurse") {  // speaker가 간호사일 경우 대화 비움
+      const isBookmarked = bookmark.some((bookmark) => bookmark.conversation_id === firstStep.id);
       return {
         id: thirdStep.id,
         speaker: thirdStep.speaker,
         dialogue: "",
         korean: thirdStep.korean,
+        bookmark: isBookmarked,
       };
     }
     else{   // speaker가 간호사가 아닐경우(환자) 대화내용 그대로
@@ -95,5 +114,6 @@ export async function FilterNurse_ThirdStep(list_id) {
       }
     }
   })
+  const result = FilterDialoguesById(filterThirdStep);
   return result;
 }
