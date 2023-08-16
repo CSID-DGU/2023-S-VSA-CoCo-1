@@ -53,8 +53,7 @@ export const speech = async (text: string, chapterID: number, isNurse: boolean, 
     const speech_key = SPEECH_KEY;
 
     const voice = isNurse ? 'en-US-Wavenet-H' : 'en-AU-Neural2-B'
-    const key = speech_key
-    const address = `https://texttospeech.googleapis.com/v1/text:synthesize?key=${key}`
+    const address = `https://texttospeech.googleapis.com/v1/text:synthesize?key=${speech_key}`
     const payload = createSpeechRequest(text, voice, isNurse)
     const path = `${RNFS.DocumentDirectoryPath}/voice_${chapterID}.mp3`
     try {
