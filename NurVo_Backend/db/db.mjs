@@ -39,7 +39,7 @@ export const getUser = async (id) => {
 export const saveUser = async (userInfo) => { //userInfo는 id, name, password, email, phone_number를 가지고 있음  
   const client = await pool.connect();
   try { //회원정보 저장
-    const user = await client.query('INSERT INTO public.user (id, name, email, phone_number, password) VALUES ($1, $2, $3, $4, $5)', [userInfo.id, userInfo.name, userInfo.phone_number, userInfo.email, userInfo.password]);
+    const user = await client.query('INSERT INTO public.user (id, name, phone_number, password, nickname) VALUES ($1, $2, $3, $4, $5)', [userInfo.id, userInfo.name, userInfo.phone_number, userInfo.password, userInfo.nickname]);
     return user.rows[0];
   } catch (err) {
     console.error(err);
