@@ -54,7 +54,6 @@ function BottomTabs() {
       <Tab.Screen name="Home" component={HomeStackScreen} options={{ headerShown: false }} />
       <Tab.Screen name="Chapter" component={ChapterStackScreen} options={{ headerShown: false }} />
       <Tab.Screen name="Library" component={LibraryStackScreen} options={{ headerShown: false }} />
-      <Tab.Screen name="Chapter" component={ChapterStackScreen} options={{ headerShown: false }} />
     </Tab.Navigator>
   );
 }
@@ -84,23 +83,6 @@ const HomeStackScreen = ({ navigation, route }: any) => {
       <HomeStack.Screen name="MemberDetails" component={MemberDetails} />
       <HomeStack.Screen name="SetUserGoal" component={SetUserGoal} />
     </HomeStack.Navigator>
-  );
-}
-
-const ChapterStack = createNativeStackNavigator();
-const ChapterStackScreen = () => {
-  return (
-    <ChapterStack.Navigator
-      screenOptions={{
-        headerTintColor: Colors.BLACK,
-        headerBackTitleVisible: false,
-      }}
-    >
-      <ChapterStack.Screen name="LessonsList" component={LessonsList} options={{ headerShown: false }} />
-      <ChapterStack.Screen name="LessonFirstScreen" component={LessonFirst} />
-      <ChapterStack.Screen name="LessonSecondScreen" component={LessonSecond} />
-      <ChapterStack.Screen name="LessonThirdScreen" component={LessonThird} />
-    </ChapterStack.Navigator>
   );
 }
 
