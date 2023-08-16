@@ -20,7 +20,6 @@ export async function fetchAllTopic(): Promise<ResponseProps | undefined> {
             }
         });
         const responseData = await response.json();
-        console.log(responseData);
         return responseData;
     } catch (error) {
         console.log(error);
@@ -38,7 +37,6 @@ export async function fetchChapterDescriptionById(chapterId: string): Promise<Re
             }
         });
         const responseData = await response.json();
-        console.log("response data", responseData);
         return responseData;
     } catch (error) {
         console.log(error);
@@ -55,7 +53,6 @@ export async function fetchChapterDialogueById(chapterId: number): Promise<Respo
             }
         });
         const responseData = await response.json();
-        console.log("response data", responseData);
         return responseData;
     } catch (error) {
         console.log(error);
@@ -72,7 +69,6 @@ export async function fetchChapterDialogueSecondStepById(chapterId: number): Pro
             }
         });
         const responseData = await response.json();
-        console.log(responseData);
         return responseData;
     } catch (error) {
         console.log(error);
@@ -89,7 +85,6 @@ export async function fetchChapterDialogueThirdStepById(chapterId: number): Prom
             }
         });
         const responseData = await response.json();
-        console.log(responseData);
         return responseData;
     } catch (error) {
         console.error(error);
@@ -103,7 +98,6 @@ export async function calculateSecondStepAccuracyWithSentenceId(chapterId:number
     const headers = { 'Authorization': `Bearer ${TOKEN}` };
     try {
         const response = await axios.post<ResponseProps>(url, data, { headers });
-        console.log(response.data);
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -140,7 +134,6 @@ export async function addSentenceBookmark(sentenceId: number, userId: string): P
     const headers = { 'Authorization': `Bearer ${TOKEN}` };
     try {
         const response = await axios.post<ResponseProps>(url, data, { headers });
-        console.log(response.data);
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -160,7 +153,6 @@ export async function deleteSentenceBookmark( sentenceId: number, userId: string
     const headers = { 'Authorization': `Bearer ${TOKEN}` };
     try {
         const response = await axios.post<ResponseProps>(url, data, { headers });
-        console.log(response.data);
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -178,7 +170,6 @@ export async function fetchBookmark() {
     try {
         const response = await fetch(url);
         const responseData = await response.json();
-        console.log(responseData);
         return responseData;
     } catch (error) {
         console.error(error);

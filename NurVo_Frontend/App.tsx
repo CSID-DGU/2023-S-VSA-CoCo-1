@@ -58,7 +58,6 @@ const HomeStack = createNativeStackNavigator<HomeStackParamList>();
 const HomeStackScreen = ({navigation, route}: any) => {
   useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route);
-    console.log("routeName", routeName);
     if (routeName === 'LessonFirstScreen' || routeName === 'LessonSecondScreen' || routeName === 'LessonThirdScreen') {
       navigation.setOptions({tabBarStyle: {display: 'none'}});
     } else {
