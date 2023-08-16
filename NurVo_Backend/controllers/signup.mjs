@@ -28,7 +28,7 @@ async function signup(req, res) {
   try {
     const user = await getUser();
     for(let i=0; i<user.length; i++){ //이미 회원가입 되어있는 유저인지 확인
-      if(user[i].name === name && (user[i].phone_number === phone_number || user[i].email === email)){
+      if(user[i].name === name && (user[i].phone_number === phone_number )){
         res.send({"message":"기존에 회원가입 되어있는 유저입니다."});
         break;
       }

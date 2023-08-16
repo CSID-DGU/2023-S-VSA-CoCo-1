@@ -2,14 +2,15 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import passport from '../services/auth.mjs';
-import { getUser } from '../db/db.mjs';
+import { getUser, updateUser } from '../db/db.mjs';
 
 dotenv.config();
 const ACCESS_SECRET = process.env.ACCESS_SECRET;
 
 export const router = express.Router();
 router.post("/login", login);
-router.get("/mypage", passport.authenticate("jwt", { session: false }), mypage)
+router.get("/mypage", passport.authenticate("jwt", { session: false }), mypage);
+router.post("/mypage", passport.authenticate("jwt", { session: false }), updateUserInfo);
 
 async function login(req, res, next) {
   try{
@@ -49,6 +50,21 @@ async function mypage(req, res){
     const userInfo = await getUser(id);
     delete userInfo.password;
     res.status(200).send(userInfo);
+  }
+  catch(err){
+    console.error(err);
+  }
+}
+
+async function updateUserInfo(req, res){
+  try{
+    const id = req.user.id;
+    const {obj, obj_date} = req.body;
+    const updateData = {id, obj, obj_date};
+    const result = await updateUser(updateData);
+    delete result.password;
+    console.log(result);
+    res.status(200).send(result);
   }
   catch(err){
     console.error(err);
