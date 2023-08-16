@@ -18,7 +18,7 @@ import CustomAlert from '../../components/Alert';
 import VoiceRecordButton from '../../components/VoiceFuncComp';
 import { stopSpeech } from '../../utilities/TextToSpeech';
 import { LessonSecondProps } from '../../utilities/NavigationTypes';
-import { calculateSecondStepAccuracyWithSentenceId, fetchChapterDialogueSecondStepById, fetchChapterDialogueThirdStepById } from '../../utilities/ServerFunc';
+import { calculateSecondStepAccuracyWithSentenceId, fetchChapterDialogueSecondStepById } from '../../utilities/ServerFunc';
 
 const { StatusBarManager } = NativeModules;
 
@@ -242,7 +242,7 @@ export default function LessonSecond({ navigation, route }: LessonSecondProps) {
 
   return (
     <KeyboardAvoidingView
-      style={[styles.container, { paddingBottom: keyboardHeight - 50 }]}
+      style={[styles.container, { paddingBottom: keyboardHeight}]}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       keyboardVerticalOffset={Platform.OS === 'ios' ? StatusBarManager.HEIGHT + 44 : undefined}
     >

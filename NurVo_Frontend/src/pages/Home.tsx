@@ -124,11 +124,11 @@ export default function Home({ navigation }: { navigation: any }) {
         <UserInfoHeader />
         <View style={[layoutStyles.VStackContainer]}>
           <MenuTitle text='Today’s Lesson' onPress={() => {
-            navigation.navigate('LessonsList');
+            navigation.navigate('LessonList');
           }} />
           <CarouselList gap={8} offset={12} pages={todayLessons} pageWidth={screenWidth - (8 + 12) * 2} />
           <MenuTitle text='Review' onPress={() => {
-            navigation.navigate('LessonsList');
+            navigation.navigate('LessonList');
           }} />
           <View style={[layoutStyles.VStackContainer, { marginTop: 4, marginBottom: 28, paddingHorizontal: 20 }]}>
             {todayLessons.slice(0, 2).map((lesson, index) => (
