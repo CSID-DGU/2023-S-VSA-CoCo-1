@@ -1,5 +1,5 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { View, ViewStyle, StyleSheet, Text, TouchableOpacity, TextInput } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 import Colors from '../utilities/Color';
 import { Body012, Subtext011, Subtext012 } from '../utilities/Fonts';
 
@@ -41,12 +41,11 @@ const SignUpCell = ({ title, initialText, subText, isConfirmButton, buttonText, 
               placeholder={`${initialText}`}
               placeholderTextColor={Colors.GRAY07}
               secureTextEntry={title.includes('비밀번호') ? true : false}
-              keyboardType={title.includes('휴대전화 번호') ? "numeric" : "default"}
               autoFocus
             />
           </View>
-          <TouchableOpacity style={styles.buttonContainer} onPress={onClick} disabled={isButtonDisable}>
-            <Subtext011 text={buttonText} color={Colors.MAINGREEN} style={{ marginVertical: 0, marginHorizontal: 7 }} />
+          <TouchableOpacity style={[styles.buttonContainer, isButtonDisable ? {borderColor: Colors.GRAY05} : null]} onPress={onClick} disabled={isButtonDisable}>
+            <Subtext011 text={buttonText} color={isButtonDisable ? Colors.GRAY05 : Colors.MAINGREEN} style={{ marginVertical: 0, marginHorizontal: 7 }} />
           </TouchableOpacity>
         </View>
       ) : (
@@ -71,7 +70,7 @@ const styles = StyleSheet.create({
   container: {
     display: 'flex',
     flexDirection: 'column',
-    marginHorizontal: 25,
+    marginHorizontal: 30,
     marginVertical: 10,
   },
   confirmContainer: {
