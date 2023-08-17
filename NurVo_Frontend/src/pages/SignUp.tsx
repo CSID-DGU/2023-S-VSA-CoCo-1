@@ -19,7 +19,7 @@ interface SignUpData {
   nickname: string;
 }
 
-const SignUp: React.FC = ({ navigation }) => {
+const SignUp = ({ navigation }) => {
   const [id, setId] = useState(''); //input으로 입력받고 여기에 저장한 뒤 백엔드로 보내주는 값들
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -56,32 +56,37 @@ const SignUp: React.FC = ({ navigation }) => {
 
   //중복된 아이디인지 확인하는 함수
   const handleCheckId = async () => {
-    const checkIdData = {
-      id
-    }
-    try {
-      const result = await axios.post('http://10.0.2.2:5000/api/signup/id', checkIdData);
-      if (result.data === '사용 가능한 아이디입니다.') {
-        setCheckId(true);
-        setAlretMessages('사용 가능한 아이디입니다.');
-        setIsAlretAction(true);
-      } else {
-        setCheckId(false);
-        setAlretMessages('이미 사용중인 아이디입니다');
-        setIsAlretAction(true);
+    if (id === '') {
+      setAlretMessages('아이디를 입력해주세요.');
+      setIsAlretAction(true);
+    } else {
+      const checkIdData = {
+        id,
       }
-    } catch (e) {
-      console.log(e);
-    };
+      try {
+        const result = await axios.post('http://10.0.2.2:5000/api/signup/id', checkIdData);
+        if (result.data.message === '사용 가능한 아이디입니다.') {
+          setCheckId(true);
+          setAlretMessages(result.data.message);
+          setIsAlretAction(true);
+        } else {
+          setCheckId(false);
+          setAlretMessages('이미 사용중인 아이디입니다');
+          setIsAlretAction(true);
+        }
+      } catch (e) {
+        console.log(e);
+      };
+    }
   }
 
   //전화번호 인증을 위한 인증번호
   const handleCheckIdentify = async () => {
     const identifyData = {
-      phone_number
+      phone_number,
     }
     try {
-      const result = await axios.post('http://10.0.2.2:5000/api/signup/idendify', identifyData);
+      const result = await axios.post('http://10.0.2.2:5000/api/signup/identify', identifyData);
       setIdentifyNumber(result.data.Number);
     } catch (e) {
       console.log(e);
@@ -91,7 +96,7 @@ const SignUp: React.FC = ({ navigation }) => {
   //사용자가 인증번호 입력했을 때의 함수
   const handleCheckIdentifyNumber = () => {
     if (checkIdentifyNumber.length === 6) {
-      if (checkIdentifyNumber === identifyNumber) {
+      if (checkIdentifyNumber.includes(identifyNumber)) {
         setIsIdentifyModal(false);
         setIdentify(true);
       }
@@ -114,27 +119,29 @@ const SignUp: React.FC = ({ navigation }) => {
       // 유효성 검사를 통과한 경우, 회원가입 처리 로직을 실행합니다.
       const result = await axios.post('http://10.0.2.2:5000/api/signup', signUpData);
       if (result.data === '회원가입 성공') {
-        //다음 로직 실행 사용자 설정 페이지로 이동
+        navigation.navigate('MainPage');
       }
     } catch (e) {
       const errorMessages = e.inner[0]?.message; // 에러메시지가 뜰 것임 그러면 그에 맞게 사용자에게 다시 입력해달라고 하면 됨
       setAlretMessages(errorMessages);
       setIsAlretAction(true);
-    }
+    } 
   };
 
   useEffect(() => {
-    console.log(checkIdentifyNumber);
+    console.log('입력: ', checkIdentifyNumber);
   }, [checkIdentifyNumber]);
 
-  const onClick = (value: boolean) => {
+  const onClick = (value: string) => {
     if (value === '중복확인') {
-      console.log(value);
       handleCheckId();
     } else if (value === '인증번호 전송') {
       console.log(value);
       handleCheckIdentify();
       setIsIdentifyModal(true);
+    } else if (value === '인증번호 확인') {
+      console.log(value);
+      handleCheckIdentifyNumber();
     }
   }
 
@@ -143,7 +150,6 @@ const SignUp: React.FC = ({ navigation }) => {
   }
 
   return (
-
     <>
       <KeyboardAvoidingView
         behavior={Platform.select({ ios: 'padding', android: 'padding' })}
@@ -179,7 +185,7 @@ const SignUp: React.FC = ({ navigation }) => {
           initialText="'-' 구분없이 입력"
           isConfirmButton={true}
           buttonText="인증번호 전송"
-          onText={value => setPhoneNumber(value)}
+          onText={(value) => setPhoneNumber(value)}
           onClickAction={onClick}
           isButtonDisable={identify}
         />
@@ -198,12 +204,7 @@ const SignUp: React.FC = ({ navigation }) => {
         isAction={isIdentifyModal}
         onText={(value: string) => setCheckIdentifyNumber(value)}
         onClose={(value: boolean) => setIsIdentifyModal(value)}
-        onConfirmText={async (value: boolean) => {
-          if (value) {
-            await handleCheckIdentifyNumber();
-          }
-        }}
-
+        onConfirmText={onClick}
         isIndenify={identify}
       />
 
