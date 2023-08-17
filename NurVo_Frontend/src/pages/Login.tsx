@@ -17,7 +17,7 @@ const MainPage = ({ navigation, route }) => {
 
   const onSubmit = async() => {
     console.log("로그인");
-    // if (userId === "coco1111" && userPassword === "coco1111") {
+    if (userId === "coco1111" && userPassword === "coco1111") {
     //   try {
     //     await EncryptedStorage.setItem(
     //       "accessToken123",
