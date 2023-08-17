@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { View, Image, TouchableOpacity, StyleSheet } from 'react-native';
+
+import { screenHeight, screenWidth } from '../utilities/Layout';
 import CardSwiper from '../components/CardSwiper';
 import ProgressBar from '../components/ProgressBar';
 import CustomAlert from '../components/Alert';
-import { screenWidth } from '../utilities/Layout';
-import rightArrow from '../assets/images/rightArrow.png';
-import leftArrow from '../assets/images/leftArrow.png';
 
 const StudyPage = ({ navigation, route }) => {
 
@@ -38,6 +37,7 @@ const StudyPage = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       <ProgressBar length={data_length} progress={progress} />
+
       <CardSwiper
         data={data}
         action={action}
@@ -47,24 +47,19 @@ const StudyPage = ({ navigation, route }) => {
         }}
         pageWidth={screenWidth - (10 + 15 + 15) * 2}
       />
+
       <View style={styles.btnContainer}>
-        <TouchableOpacity onPress={remove}>
-          <View style={styles.btnRemove}>
-            <Image source={leftArrow} resizeMode="contain" />
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={keep}>
-          <View style={styles.btnKeep}>
-            <Image source={rightArrow} resizeMode="contain" />
-          </View>
-        </TouchableOpacity>
+        <TouchableOpacity onPress={remove} style={styles.nextBtn} />
+        <TouchableOpacity onPress={keep} style={styles.nextBtn} />
       </View >
+
       {alertOpen &&
         <CustomAlert
           onConfirm={handlePage}
           content='복습 완료! Libray로 이동합니다.'
           confirmText='확인' />
       }
+
     </View >
   );
 }
@@ -84,16 +79,9 @@ const styles = StyleSheet.create({
     height: '100%',
     alignItems: 'center',
   },
-  btnRemove: {
-    fontSize: 50,
-    paddingHorizontal: 30,
-    paddingVertical: 300,
-  },
-  btnKeep: {
-    fontSize: 50,
-    fontWeight: 'bold',
-    paddingHorizontal: 30,
-    paddingVertical: 300,
+  nextBtn: {
+    paddingHorizontal: 25,
+    paddingVertical: screenHeight,
   },
 });
 

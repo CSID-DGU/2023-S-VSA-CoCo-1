@@ -4,6 +4,7 @@ import StudyCard from './StudyCard';
 
 interface CardSwiperProps {
   data: {
+    conversation_id: number;
     dialogue: string;
     chapter: string;
     date: string;
@@ -61,9 +62,10 @@ const CardSwiper = ({ data, action, pageWidth, nextaction, alertOpen }: CardSwip
   const renderItem = ({ item }: { item: any }) => (
     <View>
       <StudyCard
-        context1={item.dialogue}
-        context2={item.korean}
+        id={item.index}
+        item={item}
         style={{ width: pageWidth }}
+        isAction={action}
       />
     </View>
   );
@@ -74,7 +76,7 @@ const CardSwiper = ({ data, action, pageWidth, nextaction, alertOpen }: CardSwip
         ref={flatListRef}
         data={dataArray}
         renderItem={renderItem}
-        keyExtractor={(item) => item.date}
+        keyExtractor={(item) => item.id}
         horizontal={true}
         pagingEnabled={true}
         showsHorizontalScrollIndicator={false}
@@ -86,12 +88,10 @@ const CardSwiper = ({ data, action, pageWidth, nextaction, alertOpen }: CardSwip
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginHorizontal: 10,
-    marginVertical: 30,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
     justifyContent: 'center',
     alignItems: 'center',
+    marginHorizontal: 10,
+    paddingHorizontal: 20,
   },
 });
 
