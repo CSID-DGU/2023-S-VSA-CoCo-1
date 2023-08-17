@@ -118,7 +118,7 @@ const SignUp = ({ navigation }) => {
       await validationSchema.validate(signUpData, { abortEarly: false });
       // 유효성 검사를 통과한 경우, 회원가입 처리 로직을 실행합니다.
       const result = await axios.post('http://10.0.2.2:5000/api/signup', signUpData);
-      if (result.data === '회원가입 성공') {
+      if (result.data.message === '회원가입 성공') {
         navigation.navigate('MainPage');
       }
     } catch (e) {
