@@ -17,20 +17,20 @@ const MainPage = ({ navigation, route }) => {
 
   const onSubmit = async() => {
     console.log("로그인");
-    if (userId === "coco1111" && userPassword === "coco1111") {
-      try {
-        await EncryptedStorage.setItem(
-          "accessToken123",
-          JSON.stringify({
-            age: 22,
-            token: "ACCESS_sTOKEN",
-            username: "cocos",
-          })
-        );
-        // Congrats! You've just stored your first value!
-      } catch (error) {
-        // There was an error on the native side
-      }
+    // if (userId === "coco1111" && userPassword === "coco1111") {
+    //   try {
+    //     await EncryptedStorage.setItem(
+    //       "accessToken123",
+    //       JSON.stringify({
+    //         age: 22,
+    //         token: "ACCESS_sTOKEN",
+    //         username: "cocos",
+    //       })
+    //     );
+    //     // Congrats! You've just stored your first value!
+    //   } catch (error) {
+    //     // There was an error on the native side
+    //   }
     } else if (userId === '' || userPassword === '') {
       setAlertMessage('아이디와 비밀번호를 모두 입력해주세요.');
       setIsAlert(true);
