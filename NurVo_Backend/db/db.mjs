@@ -184,3 +184,54 @@ export const deleteBookmark = async (dialogue_id, user) => {
     client.release();
   };
 };
+
+// 학습 완료 시 저장 -  date, chapter_id, step
+export const saveCompletedLearning = async (user_id, data) => {
+  const client = await pool.connect();
+  try{
+    const check = await client.query('select * from edu where user_id = $1 and chapter_id = $2', [user_id, data.chapter_id])
+    if(check.rows[0]){  // 이미 학습한 chapter_id 일 경우 date, step 업데이트
+      console.log(check)
+      await client.query('update edu set date = $1, step = $2 where user_id = $3 and chapter_id = $4', [
+        data.date, data.step, user_id, data.chapter_id
+      ])
+      console.log("완료된 학습 업데이트 성공")
+    }
+    else{   // 학습하지 않은 chapter_id 일경우 새롭게 insert
+      await client.query('insert into edu (id, user_id, date, chapter_id, step) values (default, $1, $2, $3, $4)', [
+        user_id, data.date, data.chapter_id, data.step
+      ])
+      console.log("완료된 학습 저장 성공")
+    }
+  } catch(err) {
+    console.error(err);
+  } finally {
+    client.release();
+  }
+}
+
+// 학습완료 내역 불러오기
+export const getCompletedChapter = async (user_id) => {
+  const client = await pool.connect();
+  try{
+    const query = `
+    SELECT
+      t.name as topic_name,
+      e.chapter_id,
+      c.name as chapter_name,
+      e.step,
+      TO_CHAR(e.date, 'YYYY-MM-DD') as date
+    FROM edu e
+    JOIN chapter c ON e.chapter_id = c.id
+    JOIN topic t ON c.topic_id = t.id
+    WHERE e.user_id = $1
+    ORDER BY e.chapter_id ASC
+  `;
+    const chapter = await client.query(query, [user_id])
+    return chapter.rows;
+  } catch(err) {
+    console.error(err);
+  } finally {
+    client.release();
+  }
+}
