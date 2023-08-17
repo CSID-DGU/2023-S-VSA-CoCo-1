@@ -48,6 +48,26 @@ export const saveUser = async (userInfo) => { //userInfo는 id, name, password, 
   };
 };
 
+//사용자 정보 수정하기
+export const updateUser = async (userInfo) => { 
+  const client = await pool.connect();
+  try { //회원정보 수정
+    if(!userInfo.obj_date) {
+      await client.query('UPDATE public.user SET obj = $1 WHERE id = $2', [userInfo.obj, userInfo.id]);
+    } else if(!userInfo.obj) {
+      await client.query('UPDATE public.user SET obj_date = $1 WHERE id = $2', [userInfo.obj_date, userInfo.id]);
+    } else {
+     await client.query('UPDATE public.user SET obj = $1, obj_date = $2 WHERE id = $3', [userInfo.obj, userInfo.obj_date, userInfo.id]);
+    };
+    const user = await client.query('SELECT * FROM public.user WHERE id = $1', [userInfo.id]);
+    return user.rows[0];
+  } catch (err) {
+    console.error(err);
+  } finally {
+    client.release();
+  };
+};
+
 //topic 가지고 오는 함수
 export const getTopic = async () => {
   const client = await pool.connect();
