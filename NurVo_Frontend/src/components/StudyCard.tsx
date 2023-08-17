@@ -88,6 +88,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignContent: 'center',
     marginHorizontal: 10,
+    marginVertical: 50,
     marginTop: 50,
     borderRadius: 15,
   },

@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { View, Image, TouchableOpacity, StyleSheet } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import Colors from '../utilities/Color';
 import { screenHeight, screenWidth } from '../utilities/Layout';
 import CardSwiper from '../components/CardSwiper';
 import ProgressBar from '../components/ProgressBar';
@@ -62,13 +60,6 @@ const StudyPage = ({ navigation, route }) => {
           confirmText='확인' />
       }
 
-      <Ionicons 
-        name='arrow-undo-outline'
-        size={25}
-        color={Colors.BLACK}
-        onPress={handlePage}
-        style={{marginHorizontal: 20, marginVertical: 40}}
-      />
     </View >
   );
 }
