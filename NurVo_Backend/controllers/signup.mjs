@@ -24,7 +24,7 @@ router.post('/identify', identify); //인증번호 발송하는 엔드포인트
 
 
 async function signup(req, res) {
-  const { id, name, password, email, phone_number, nickname } = req.body;
+  const { id, name, password, phone_number, nickname } = req.body;
   try {
     const user = await getUser();
     for(let i=0; i<user.length; i++){ //이미 회원가입 되어있는 유저인지 확인
@@ -51,6 +51,7 @@ async function signup(req, res) {
 
 async function checkId(req, res) {
   const { id } = req.body;
+
   try {
     const user = await getUser(id);
     if (user) {
@@ -65,10 +66,10 @@ async function checkId(req, res) {
 };
 
 async function identify(req, res) { //사용자 인증번호 발송
-  const { phone_number, Certification } = req.body;
+  const { phone_number} = req.body;
   try {
 
-    
+    randomSixDigitNumber = generateRandomSixDigitNumber();
     const params = {
       to: phone_number,
       from: process.env.SMS_FROM,
@@ -76,17 +77,8 @@ async function identify(req, res) { //사용자 인증번호 발송
       text: `[NurVo]인증번호는 ${randomSixDigitNumber} 입니다.`,
     };
 
-    if(Certification) {
-      if(Certification === randomSixDigitNumber){
-        res.send({"message":"인증번호가 일치합니다."});
-      } else {
-        res.send({"message":"인증번호가 일치하지 않습니다."});
-      }
-    }else {
-    randomSixDigitNumber = generateRandomSixDigitNumber();
     const response = await messageService.sendOne(params);
     res.send({ "Message": "발송되었습니다", "Number" : randomSixDigitNumber });
-  }
 
   }
   catch (err) {
