@@ -257,7 +257,6 @@ export default function LessonSecond({ navigation, route }: LessonSecondProps) {
               key={index.toString()}
               index={index}
               item={item}
-              isBookmarked={false}
               onEnterValue={handleSend}
               onChagneText={handleSetInputText}
               inputRef={inputRef}

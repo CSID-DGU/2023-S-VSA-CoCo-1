@@ -239,7 +239,6 @@ export default function LessonThird({ navigation, route }: LessonThirdProps) {
             <ChatBubbleInputAll
               index={index}
               item={item}
-              isBookmarked={false}
               onEnterValue={handleSend}
               onChagneText={handleSetInputText}
               inputRef={inputRef}

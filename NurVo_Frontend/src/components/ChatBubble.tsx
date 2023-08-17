@@ -15,12 +15,12 @@ export interface Message {
     dialogue: string;
     second_step?: string; 
     korean: string;
+    bookmark: boolean;
 }
 
 interface ChatBubbleProps {
   index: number;
   item: Message;
-  isBookmarked: boolean;
   inputRef?: React.RefObject<TextInput>;
   input?: string;
   inputValues?: { [key: number]: string };
@@ -38,10 +38,10 @@ const icon_speak = "volume-high";
 const icon_translation = "language";
 const icon_bookmark = "bookmark";
 
-export default function ChatBubble({ index, item, isBookmarked, isSpeaking, speakingList, onIsClickSpeakChange }: ChatBubbleProps) {
+export default function ChatBubble({ index, item, isSpeaking, speakingList, onIsClickSpeakChange }: ChatBubbleProps) {
   useEffect(() => {
-    setIsBookmark(isBookmarked);
-  }, [isBookmarked]);
+    setIsBookmark(item.bookmark);
+  }, []);
 
   const [isBookmark, setIsBookmark] = useState(false);
   const [isShowTranslation, setIsShowTranslation] = useState(false);
@@ -97,10 +97,10 @@ export default function ChatBubble({ index, item, isBookmarked, isSpeaking, spea
   );
 }
 
-export function ChatBubbleInputWord({ index, item, isBookmarked, onEnterValue, onChagneText, inputRef, input, inputValues, isVoiceMode, isLastItem, isSpeaking, speakingList, onIsClickSpeakChange,  }: ChatBubbleProps) {
+export function ChatBubbleInputWord({ index, item, onEnterValue, onChagneText, inputRef, input, inputValues, isVoiceMode, isLastItem, isSpeaking, speakingList, onIsClickSpeakChange,  }: ChatBubbleProps) {
   useEffect(() => {
-    setIsBookmark(isBookmarked);
-  }, [isBookmarked]);
+    setIsBookmark(item.bookmark);
+  }, []);
 
   const [isBookmark, setIsBookmark] = useState(false);
   const [isShowTranslation, setIsShowTranslation] = useState(false);
@@ -189,10 +189,10 @@ export function ChatBubbleInputWord({ index, item, isBookmarked, onEnterValue, o
   );
 }
 
-export function ChatBubbleInputAll({ index, item, isBookmarked, onEnterValue, onChagneText, inputRef, input, inputValues, isVoiceMode, isLastItem, isSpeaking, speakingList, onIsClickSpeakChange }: ChatBubbleProps) {
+export function ChatBubbleInputAll({ index, item, onEnterValue, onChagneText, inputRef, input, inputValues, isVoiceMode, isLastItem, isSpeaking, speakingList, onIsClickSpeakChange }: ChatBubbleProps) {
   useEffect(() => {
-    setIsBookmark(isBookmarked);
-  }, [isBookmarked]);
+    setIsBookmark(item.bookmark);
+  }, []);
 
   const [isBookmark, setIsBookmark] = useState(false);
   const [isShowTranslation, setIsShowTranslation] = useState(false);

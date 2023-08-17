@@ -132,7 +132,6 @@ export default function LessonFirst({ navigation, route }: LessonFirstProps) {
             <ChatBubble
               index={index}
               item={item}
-              isBookmarked={false}
               isSpeaking={isSpeaking[index]}
               speakingList={isSpeaking}
               onIsClickSpeakChange={(isSpeaking) => setIsSpeakingByIndex(index, isSpeaking)} />
