@@ -4,8 +4,8 @@ import Modal from 'react-native-modal';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import Colors from "../utilities/Color";
-import { screenHeight, screenWidth } from '../utilities/Layout';
-import { Body011, Subtext011, Title01 } from '../utilities/Fonts';
+import { screenWidth } from '../utilities/Layout';
+import { Body011, Body021, Subtext012 } from '../utilities/Fonts';
 
 interface IndentifyModalProps {
   isAction: boolean;
@@ -13,7 +13,7 @@ interface IndentifyModalProps {
 
   onText: (value: string) => Void;
   onClose: (value: boolean) => Void;
-  onConfirmText: (value: boolean) => Void;
+  onConfirmText: (value: string) => Void;
 }
 
 const IndentifyModal = ({ isAction, isIndenify, onText, onClose, onConfirmText }: IndentifyModalProps) => {
@@ -29,7 +29,7 @@ const IndentifyModal = ({ isAction, isIndenify, onText, onClose, onConfirmText }
   }
 
   const onConfirm = () => {
-    onConfirmText(true);
+    onConfirmText('인증번호 확인');
   }
 
   return (
@@ -62,7 +62,8 @@ const IndentifyModal = ({ isAction, isIndenify, onText, onClose, onConfirmText }
               />
             </View>
             <TouchableOpacity style={styles.buttonContainer} onPress={onConfirm} >
-              <Subtext011 text='인증번호 확인' color={Colors.MAINGREEN} style={{ marginVertical: 0, marginHorizontal: 7 }} />
+              <Body021 text='인증번호' color={Colors.MAINGREEN} style={{ marginHorizontal: 20 }} />
+              <Body021 text='확인' color={Colors.MAINGREEN} />
             </TouchableOpacity>
           </View>
 
@@ -88,8 +89,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 10,
-    paddingVertical: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 30,
   },
   textInputContainer: {
     flex: 1,
@@ -97,7 +98,7 @@ const styles = StyleSheet.create({
   textInput: {
     paddingHorizontal: 0,
     paddingVertical: 5,
-    fontSize: 15,
+    fontSize: 16,
     borderBottomWidth: 1,
     borderColor: Colors.GRAY07,
   },
@@ -106,10 +107,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginLeft: 10,
-    height: 30,
     borderWidth: 1,
     borderColor: Colors.MAINGREEN,
-    borderRadius: 15,
+    borderRadius: 25,
   },
   textContainer: {
     paddingVertical: 10,
@@ -117,6 +117,8 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 18,
     borderTopRightRadius: 18,
 
+    fontSize: 20,
+    lineHeight: 30,
     textAlign: 'center',
   },
   ioniconsContainer: {

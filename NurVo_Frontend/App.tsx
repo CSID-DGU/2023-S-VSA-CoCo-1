@@ -5,10 +5,11 @@
  * @format
  */
 
-import React, { useLayoutEffect } from 'react';
+import React, { useLayoutEffect, useState, useEffect } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer, getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import EncryptedStorage from 'react-native-encrypted-storage';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import Colors from './src/utilities/Color';
@@ -23,7 +24,11 @@ import Bookmark from './src/pages/Bookmark';
 import StudyPage from './src/pages/StudyPage';
 import MemberDetails from './src/pages/MemberDetails';
 import SetUserGoal from './src/pages/SetUserGoal';
-import { ChapterStackParamList, HomeStackParamList, RootStackParamList } from './src/utilities/NavigationTypes';
+import MainPage from './src/pages/MainPage';
+import Login from './src/pages/Login';
+import SignUp from './src/pages/SignUp';
+import { ChapterStackParamList, HomeStackParamList, MainStackParamList, RootStackParamList } from './src/utilities/NavigationTypes';
+
 
 const Tab = createBottomTabNavigator<RootStackParamList>();
 function BottomTabs() {
@@ -39,7 +44,7 @@ function BottomTabs() {
             iconName = 'book';
           } else if (route.name === 'Library') {
             iconName = 'folder';
-          } 
+          }
           // You can return any component that you like here!
           return <Ionicons name={iconName} size={size} color={color} />;
         },
@@ -55,13 +60,13 @@ function BottomTabs() {
 }
 
 const HomeStack = createNativeStackNavigator<HomeStackParamList>();
-const HomeStackScreen = ({navigation, route}: any) => {
+const HomeStackScreen = ({ navigation, route }: any) => {
   useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route);
     if (routeName === 'LessonFirstScreen' || routeName === 'LessonSecondScreen' || routeName === 'LessonThirdScreen') {
-      navigation.setOptions({tabBarStyle: {display: 'none'}});
+      navigation.setOptions({ tabBarStyle: { display: 'none' } });
     } else {
-      navigation.setOptions({tabBarStyle: {display: undefined}});
+      navigation.setOptions({ tabBarStyle: { display: undefined } });
     }
   })
   return (
@@ -108,13 +113,13 @@ const LibraryStackScreen = () => {
 }
 
 const ChapterStack = createNativeStackNavigator<ChapterStackParamList>();
-const ChapterStackScreen = ({navigation, route}: any) => {
+const ChapterStackScreen = ({ navigation, route }: any) => {
   useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route);
     if (routeName === 'LessonFirstScreen' || routeName === 'LessonSecondScreen' || routeName === 'LessonThirdScreen') {
-      navigation.setOptions({tabBarStyle: {display: 'none'}});
+      navigation.setOptions({ tabBarStyle: { display: 'none' } });
     } else {
-      navigation.setOptions({tabBarStyle: {display: undefined}});
+      navigation.setOptions({ tabBarStyle: { display: undefined } });
     }
   })
   return (
@@ -132,13 +137,57 @@ const ChapterStackScreen = ({navigation, route}: any) => {
   );
 }
 
+const MainStack = createNativeStackNavigator<MainStackParamList>();
+const MainStackScreen = () => {
 
-function App(): JSX.Element {
   return (
-    <NavigationContainer>
-      <BottomTabs />
-    </NavigationContainer>
+    <MainStack.Navigator
+      screenOptions={{
+        headerShown: false,
+        headerTintColor: Colors.BLACK,
+        headerBackTitleVisible: false,
+      }}
+    >
+      <MainStack.Screen name="MainPage" component={MainPage} />
+      <MainStack.Screen name="Login" component={Login} />
+      <MainStack.Screen name="SignUp" component={SignUp} />
+    </MainStack.Navigator>
   );
 }
+
+
+function App(): JSX.Element {
+  // Main screen 보고싶으면 'MainStackScreen'으로 우선 입력
+  const initialRoute = 'Home';
+
+  // 계속 로그인
+  // const [initialRoute, setInitialRoute] = useState('Home');
+
+  // useEffect(() => {
+  //   const checkTokenAndSetInitialRoute = async () => {
+  //     try {
+  //       const accessToken = await EncryptedStorage.getItem('accessToken');
+
+  //       if (accessToken) {
+  //         setInitialRoute('Home');
+  //       } 
+  //     } catch (error) {
+  //       // 에러 메세지
+  //     }
+  //   };
+
+  //   checkTokenAndSetInitialRoute();
+  // }, [initialRoute]);
+
+  return (
+    <NavigationContainer>
+      {initialRoute === 'MainStackScreen' ? (
+        <MainStackScreen />
+      ) : (
+        <BottomTabs />
+      )}
+    </NavigationContainer>
+  );
+};
 
 export default App;

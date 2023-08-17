@@ -5,6 +5,7 @@ export type RootStackParamList = {
   Home: undefined;
   Library: undefined;
   Chapter: undefined;
+  Main: undefined;
 };
 
 export type HomeStackParamList = {
@@ -71,4 +72,18 @@ type LessonThirdScreenNavigationProp = NativeStackNavigationProp<
 export interface LessonThirdProps {
   navigation: LessonThirdScreenNavigationProp;
   route: LessonThirdScreenRouteProp;
+}
+
+export type MainStackParamList = {
+  MainScreen: undefined;
+  Login: undefined;
+  SignUp: undefined;
+}
+export type MainScreenNavigationProp = NativeStackNavigationProp<
+  MainStackParamList,
+  'MainScreen'
+>;
+export interface MainStackScreenProps {
+  navigation: NativeStackNavigationProp<MainStackParamList, 'MainScreen'>;
+  route: RouteProp<MainStackParamList, 'MainScreen'>;
 }
