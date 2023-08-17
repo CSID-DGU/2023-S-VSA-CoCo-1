@@ -10,7 +10,8 @@ router.post('/delete', deleteBookmarks);
 
 async function getBookmark(req, res) {
   try {
-    const bookmark = await getDialogueOfBookemark();
+    const user_id = req.user.id;
+    const bookmark = await getDialogueOfBookemark(user_id);
 
     console.log(bookmark);
 
@@ -24,9 +25,10 @@ async function getBookmark(req, res) {
 
 async function addBookmark(req, res) {
   try {
+    const user_id = req.user.id;
     const conversation_id = req.body.conversation_id;
     console.log(conversation_id);
-    await saveBookemark(conversation_id);
+    await saveBookemark(conversation_id, user_id);
     res.status(200).send({"message":"save"});
   } catch (err) {
     console.error(err);
@@ -35,12 +37,13 @@ async function addBookmark(req, res) {
 
 async function deleteBookmarks(req, res) {
   try {
+    const user_id = req.user.id;
     const conversationIds = req.body;
     for (const conversationId of conversationIds) {
-      await deleteBookmark(conversationId);
+      await deleteBookmark(conversationId, user_id);
     }
 
-    const bookmark = await getDialogueOfBookemark();
+    const bookmark = await getDialogueOfBookemark(user_id);
     res.status(200).send(bookmark);
 
 

@@ -2,7 +2,7 @@ import { getBookmark, getDialogues, getChapter } from "../db/db.mjs";
 
 export async function getDialogueOfBookemark (user_id) {
 
-  const bookmark = await getBookmark(); //나중에는 user_id 넣어서 요청
+  const bookmark = await getBookmark(user_id); //나중에는 user_id 넣어서 요청
   const dialogues = await getDialogues();
   const chapter = await getChapter();
 
