@@ -48,9 +48,9 @@ export default function ChatBubble({ index, item, isSpeaking, speakingList, onIs
 
   const handleBookmark = async () => {
     if (isBookmark) {
-      await deleteSentenceBookmark(item.id, userId);
+      await deleteSentenceBookmark(item.id);
     } else {
-      const response = await addSentenceBookmark(item.id, userId);
+      const response = await addSentenceBookmark(item.id);
     }
     setIsBookmark(!isBookmark);
   }
@@ -107,9 +107,9 @@ export function ChatBubbleInputWord({ index, item, onEnterValue, onChagneText, i
 
   const handleBookmark = async() => { 
     if (isBookmark) {
-      await deleteSentenceBookmark(item.id, userId);
+      await deleteSentenceBookmark(item.id);
     } else {
-      const response = await addSentenceBookmark(item.id, userId);
+      const response = await addSentenceBookmark(item.id);
     }
     setIsBookmark(!isBookmark) 
   }
@@ -199,9 +199,9 @@ export function ChatBubbleInputAll({ index, item, onEnterValue, onChagneText, in
 
   const handleBookmark = async () => {
     if (isBookmark) {
-      await deleteSentenceBookmark(item.id, userId);
+      await deleteSentenceBookmark(item.id);
     } else {
-      const response = await addSentenceBookmark(item.id, userId);
+      const response = await addSentenceBookmark(item.id);
     }
     setIsBookmark(!isBookmark);
   }

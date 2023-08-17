@@ -1,11 +1,12 @@
 import axios, { AxiosError } from "axios";
-import { RN_HOST_URL, RN_IOS_HOST_URL, TEST_TOKEN } from "@env";
+import { RN_HOST_URL, RN_IOS_HOST_URL, TEST_TOKEN, TEST_USERID } from "@env";
 import { Section } from "../pages/LessonsList";
 import { Platform } from "react-native";
 import { retrieveUserSession } from "./EncryptedStorage";
 
 const HOST_URL = (Platform.OS ==='ios') ? RN_IOS_HOST_URL : RN_HOST_URL;
 const TOKEN = TEST_TOKEN;
+const USER_ID = TEST_USERID;
 
 export interface ResponseProps {
     [x: string]: any;
@@ -131,9 +132,9 @@ export async function calculateThirdStepAccuracyWithSentenceId(chapterId: number
 }
 
 //문장 북마크 저장
-export async function addSentenceBookmark(sentenceId: number, userId: string): Promise<ResponseProps | undefined> {
+export async function addSentenceBookmark(sentenceId: number): Promise<ResponseProps | undefined> {
     const url = `${HOST_URL}/api/bookmark/`;
-    const data = { "conversation_id": `${sentenceId}`, "user_id": `${userId}` };
+    const data = { "conversation_id": `${sentenceId}` };
     const headers = { 'Authorization': `Bearer ${TOKEN}` };
     try {
         const response = await axios.post<ResponseProps>(url, data, { headers });
@@ -149,10 +150,9 @@ export async function addSentenceBookmark(sentenceId: number, userId: string): P
 }
 
 //문장 북마크 삭제
-export async function deleteSentenceBookmark(sentenceId: number, userId: string): Promise<ResponseProps | undefined> {
+export async function deleteSentenceBookmark(sentenceId: number): Promise<ResponseProps | undefined> {
     const url = `${HOST_URL}/api/bookmark/delete`;
-    const data = { "conversation_id": [`${sentenceId}`], "user_id": `${userId}` };
-    console.log(data);
+    const data = [sentenceId];
     const headers = { 'Authorization': `Bearer ${TOKEN}` };
     try {
         const response = await axios.post<ResponseProps>(url, data, { headers });
