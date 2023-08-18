@@ -6,7 +6,7 @@ const TOKEN = TEST_TOKEN;
 
 export interface ResponseProps {
     [x: string]: any;
-    data: [];
+    data: []|{};
 }
 
 //topic과 chpater 요청
@@ -168,7 +168,6 @@ export async function deleteSentenceBookmark( sentenceId: number, userId: string
 export async function deleteLibraryBookmark( sentenceId: [] ): Promise<ResponseProps | undefined> {
   const url = `${HOST_URL}/api/bookmark/delete`;
   const data = sentenceId;
-  console.log(data); 
   const headers = { 'Authorization': `Bearer ${TOKEN}` };
   try {
       const response = await axios.post<ResponseProps>(url, data, { headers });
@@ -215,5 +214,23 @@ export async function fetchMypage() {
   } catch (error) {
     console.error('Error fetching user info:', error);
     return null;
+  }
+}
+
+// 사용자 목표 변경
+export async function updateUserInfo(updateData: {}) {
+  const url = `${HOST_URL}/api/auth/mypage`;
+  const data = updateData;
+  const headers = { 'Authorization': `Bearer ${TOKEN}` };
+  try {
+      const response = await axios.post<ResponseProps>(url, data, { headers });
+      return response.data;
+  } catch (error) {
+      if (axios.isAxiosError(error)) {
+          const axiosError = error as AxiosError;
+          console.error(axiosError.message);
+      } else {
+          console.error(error);
+      }
   }
 }
