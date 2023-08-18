@@ -164,14 +164,56 @@ export async function deleteSentenceBookmark( sentenceId: number, userId: string
     }
 }
 
+//라이브러리에서 북마크 삭제
+export async function deleteLibraryBookmark( sentenceId: [] ): Promise<ResponseProps | undefined> {
+  const url = `${HOST_URL}/api/bookmark/delete`;
+  const data = sentenceId;
+  console.log(data); 
+  const headers = { 'Authorization': `Bearer ${TOKEN}` };
+  try {
+      const response = await axios.post<ResponseProps>(url, data, { headers });
+      return response.data;
+  } catch (error) {
+      if (axios.isAxiosError(error)) {
+          const axiosError = error as AxiosError;
+          console.error(axiosError.message);
+      } else {
+          console.error(error);
+      }
+  }
+}
+
 //북마크 불러오기
 export async function fetchBookmark() {
     const url = `${HOST_URL}/api/bookmark`;
     try {
-        const response = await fetch(url);
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + TOKEN
+        }
+      });
         const responseData = await response.json();
         return responseData;
     } catch (error) {
         console.error(error);
     }
+}
+
+//회원 정보 불러오기
+export async function fetchMypage() {
+  const url = `${HOST_URL}/api/auth/mypage`;
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+          'Authorization': 'Bearer ' + TOKEN
+      }
+    });
+    const userInfo = await response.json();
+    return userInfo;
+  } catch (error) {
+    console.error('Error fetching user info:', error);
+    return null;
+  }
 }
