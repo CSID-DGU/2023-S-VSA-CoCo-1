@@ -4,7 +4,7 @@ import { Section } from "../pages/LessonsList";
 import { Platform } from "react-native";
 import { retrieveUserSession } from "./EncryptedStorage";
 
-const HOST_URL = (Platform.OS ==='ios') ? RN_IOS_HOST_URL : RN_HOST_URL;
+const HOST_URL = (Platform.OS === 'ios') ? RN_IOS_HOST_URL : RN_HOST_URL;
 const TOKEN = TEST_TOKEN;
 const USER_ID = TEST_USERID;
 
@@ -197,6 +197,51 @@ export async function fetchBookmark() {
             'Authorization': 'Bearer ' + USER_TOKEN
         }
       });
+        const responseData = await response.json();
+        return responseData;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+//학습완료
+export async function completeChapter(chapterId: number, step: number): Promise<ResponseProps | undefined> {
+    const url = `${HOST_URL}/api/edu`;
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1).toString().padStart(2, '0');
+    const day = today.getDate().toString().padStart(2, '0');
+    const date = `${year}-${month}-${day}`;
+    const data = {
+        "chapter_id": chapterId,
+        "step": step,
+        "date": date
+    };
+    console.log(data);
+    const headers = { 'Authorization': `Bearer ${TOKEN}` };
+    try {
+        const response = await axios.post<ResponseProps>(url, data, { headers });
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            const axiosError = error as AxiosError;
+            console.error(axiosError.message);
+        } else {
+            console.error(error);
+        }
+    }
+}
+
+//Reviews
+export async function fetchReviews(): Promise<ResponseProps | undefined> {
+    const url = `${HOST_URL}/api/edu/review`;
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + TOKEN
+            }
+        });
         const responseData = await response.json();
         return responseData;
     } catch (error) {
