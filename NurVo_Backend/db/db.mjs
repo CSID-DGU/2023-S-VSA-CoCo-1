@@ -237,7 +237,7 @@ export const getCompletedChapter = async (user_id) => {
 }
 
 // 전체 chapter중 해당 user의 step이 3인 경우를 제외하고 chapter 불러오기(단 이번주에 step3가 된 것은)
-export const getAllTodayLessons = async (user_id) => {
+export const getAllTodayLessons = async (user_id, day) => {
   const client = await pool.connect();
   try{
     const obj = await client.query('select obj from public.user where id = $1', [user_id])  // user obj
@@ -251,10 +251,13 @@ export const getAllTodayLessons = async (user_id) => {
       from edu e
       where e.chapter_id = c.id and e.step = 3 and e.user_id = $1
     )
+    or (
+      e.step = 3 and e.user_id = $1 and e.date between $3 and $4
+    )
     ORDER BY c.id ASC
     limit $2;
   `;
-    const chapter = await client.query(query, [user_id, obj.rows[0].obj])
+    const chapter = await client.query(query, [user_id, obj.rows[0].obj, day.monday, day.sunday])
     return chapter.rows;
   } catch(err) {
     console.error(err);

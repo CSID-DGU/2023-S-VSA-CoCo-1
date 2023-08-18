@@ -1,5 +1,6 @@
 import express from 'express';
 import {saveCompletedLearning, getCompletedChapter, getAllTodayLessons} from '../db/db.mjs';
+import { CalculateWeekDay } from '../services/edu.mjs';
 
 export const router = express.Router();
 
@@ -28,7 +29,8 @@ async function getChapterForReview(req, res) {
 
 async function getTodayLessons(req, res) {
   const id = req.user.id;
+  const day = CalculateWeekDay();
 
-  const result = await getAllTodayLessons(id)
+  const result = await getAllTodayLessons(id, day)
   res.status(200).send(result);
 }
