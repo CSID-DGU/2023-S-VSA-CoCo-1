@@ -15,9 +15,21 @@ export type HomeStackParamList = {
     title?: string,
     chapters?: Chapter[],
    };
-  LessonFirstScreen: { chapterId: number };
-  LessonSecondScreen: { chapterId: number };
-  LessonThirdScreen: { chapterId: number };
+  LessonFirstScreen: { 
+    chapterId: number,
+    chapter_name: string,
+    step: number,
+   };
+  LessonSecondScreen: { 
+    chapterId: number,
+    chapter_name: string,
+    step: number,
+   };
+  LessonThirdScreen: { 
+    chapterId: number,
+    chapter_name: string,
+    step: number, 
+  };
   MemberDetails: undefined;
   SetUserGoal: undefined;
 }
@@ -32,9 +44,21 @@ export interface HomeStackScreenProps {
 
 export type ChapterStackParamList = {
   LessonList: { chapters?: Chapter[] };
-  LessonFirstScreen: { chapterId: number };
-  LessonSecondScreen: { chapterId: number };
-  LessonThirdScreen: { chapterId: number };
+  LessonFirstScreen: { 
+    chapterId: number,
+    chapter_name: string,
+    step: number,
+   };
+  LessonSecondScreen: { 
+    chapterId: number,
+    chapter_name: string,
+    step: number,
+   };
+  LessonThirdScreen: { 
+    chapterId: number,
+    chapter_name: string,
+    step: number,
+   };
 }
 export type ChapterScreenNavigationProp = NativeStackNavigationProp<
 ChapterStackParamList,
@@ -68,33 +92,24 @@ export interface LessonListProps {
 }
 
 //LessonFirstScreen
-type LessonFirstScreenRouteProp = RouteProp<HomeStackParamList, 'LessonFirstScreen'>;
-type LessonFirstScreenNavigationProp = NativeStackNavigationProp<
-  HomeStackParamList,
-  'LessonFirstScreen'
->;
+type LessonFirstScreenRouteProp = RouteProp<HomeStackParamList | ChapterStackParamList, 'LessonFirstScreen'> ;
+type LessonFirstScreenNavigationProp = NativeStackNavigationProp<HomeStackParamList | ChapterStackParamList, 'LessonFirstScreen'> ;
 export interface LessonFirstProps {
   navigation: LessonFirstScreenNavigationProp;
   route: LessonFirstScreenRouteProp;
 }
 
 //LessonSecondScreen
-type LessonSecondScreenRouteProp = RouteProp<HomeStackParamList, 'LessonSecondScreen'>;
-type LessonSecondScreenNavigationProp = NativeStackNavigationProp<
-  HomeStackParamList,
-  'LessonSecondScreen'
->;
+type LessonSecondScreenRouteProp = RouteProp<HomeStackParamList | ChapterStackParamList, 'LessonSecondScreen'> ;
+type LessonSecondScreenNavigationProp = NativeStackNavigationProp<HomeStackParamList | ChapterStackParamList,'LessonSecondScreen'>;
 export interface LessonSecondProps {
   navigation: LessonSecondScreenNavigationProp;
   route: LessonSecondScreenRouteProp;
 }
 
 //LessonThirdScreen
-type LessonThirdScreenRouteProp = RouteProp<HomeStackParamList, 'LessonThirdScreen'>;
-type LessonThirdScreenNavigationProp = NativeStackNavigationProp<
-  HomeStackParamList,
-  'LessonThirdScreen'
->;
+type LessonThirdScreenRouteProp = RouteProp<HomeStackParamList | ChapterStackParamList, 'LessonThirdScreen'> ;
+type LessonThirdScreenNavigationProp = NativeStackNavigationProp<HomeStackParamList | ChapterStackParamList, 'LessonThirdScreen'> ;
 export interface LessonThirdProps {
   navigation: LessonThirdScreenNavigationProp;
   route: LessonThirdScreenRouteProp;

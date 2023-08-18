@@ -18,7 +18,7 @@ import CustomAlert from '../../components/Alert';
 import VoiceRecordButton from '../../components/VoiceFuncComp';
 import { stopSpeech } from '../../utilities/TextToSpeech';
 import { LessonSecondProps } from '../../utilities/NavigationTypes';
-import { calculateSecondStepAccuracyWithSentenceId, fetchChapterDialogueSecondStepById } from '../../utilities/ServerFunc';
+import { calculateSecondStepAccuracyWithSentenceId, completeChapter, fetchChapterDialogueSecondStepById } from '../../utilities/ServerFunc';
 
 const { StatusBarManager } = NativeModules;
 
@@ -95,9 +95,16 @@ export default function LessonSecond({ navigation, route }: LessonSecondProps) {
   } = state;
 
   useEffect(() => {
+    completeChapter(route.params.chapterId, 2)
     return () => {
       stopSpeech();
     };
+  }, []);
+
+  useEffect(() => {
+    if (route.params && route.params.chapter_name) {
+      navigation.setOptions({ title: route.params.chapter_name });
+    }
   }, []);
 
   useEffect(() => {
@@ -208,8 +215,9 @@ export default function LessonSecond({ navigation, route }: LessonSecondProps) {
   };
 
   const handleNext = () => {
+    completeChapter(route.params.chapterId, 2)
     navigation.pop();
-    navigation.navigate("LessonThirdScreen", { chapterId: route.params.chapterId });
+    navigation.navigate("LessonThirdScreen", { chapterId: route.params.chapterId, chapter_name: route.params.chapter_name, step: 3 });
   };
   const handleCancle = () => {
     dispatch({ type: 'SET_SHOW_NEXT_ALERT', payload: false });

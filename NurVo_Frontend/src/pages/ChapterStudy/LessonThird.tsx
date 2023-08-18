@@ -17,7 +17,7 @@ import CustomAlert from '../../components/Alert';
 import VoiceRecordButton from '../../components/VoiceFuncComp';
 import { stopSpeech } from '../../utilities/TextToSpeech';
 import { LessonThirdProps } from '../../utilities/NavigationTypes';
-import { calculateThirdStepAccuracyWithSentenceId, fetchChapterDialogueThirdStepById } from '../../utilities/ServerFunc';
+import { calculateThirdStepAccuracyWithSentenceId, completeChapter, fetchChapterDialogueThirdStepById } from '../../utilities/ServerFunc';
 
 const { StatusBarManager } = NativeModules;
 
@@ -84,6 +84,12 @@ export default function LessonThird({ navigation, route }: LessonThirdProps) {
     return () => {
       stopSpeech();
     };
+  }, []);
+
+  useEffect(() => {
+    if (route.params && route.params.chapter_name) {
+      navigation.setOptions({ title: route.params.chapter_name });
+    }
   }, []);
 
   useEffect(() => {
@@ -193,6 +199,7 @@ export default function LessonThird({ navigation, route }: LessonThirdProps) {
     flatListRef.current?.scrollToEnd({ animated: true });
   };
   const handleNext = () => {
+    completeChapter(route.params.chapterId, 3)
     navigation.popToTop();
   };
   const handleCancle = () => {

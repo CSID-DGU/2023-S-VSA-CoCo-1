@@ -13,7 +13,7 @@ import Colors from '../../utilities/Color';
 import ChatBubble from '../../components/ChatBubble';
 import CustomAlert from '../../components/Alert';
 import { speech, stopSpeech } from '../../utilities/TextToSpeech';
-import { fetchChapterDialogueById } from '../../utilities/ServerFunc';
+import { completeChapter, fetchChapterDialogueById } from '../../utilities/ServerFunc';
 import { LessonFirstProps } from '../../utilities/NavigationTypes';
 
 const { StatusBarManager } = NativeModules;
@@ -55,6 +55,12 @@ export default function LessonFirst({ navigation, route }: LessonFirstProps) {
     return () => {
       stopSpeech();
     };
+  }, []);
+
+  useEffect(() => {
+    if (route.params && route.params.chapter_name) {
+      navigation.setOptions({ title: route.params.chapter_name });
+    }
   }, []);
 
   useEffect(() => {
@@ -108,8 +114,9 @@ export default function LessonFirst({ navigation, route }: LessonFirstProps) {
   };
 
   const handleNext = () => {
+    completeChapter(route.params.chapterId, 1)
     navigation.pop();
-    navigation.navigate("LessonSecondScreen", { chapterId: route.params.chapterId });
+    navigation.navigate("LessonSecondScreen", { chapterId: route.params.chapterId, chapter_name: route.params.chapter_name, step: 2 });
   };
 
   const handleCancle = () => {
