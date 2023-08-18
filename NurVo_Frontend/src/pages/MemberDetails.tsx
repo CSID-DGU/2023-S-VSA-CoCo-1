@@ -16,26 +16,12 @@ const MenberDetails = ({ navigation, route }) => {
   const [alertOpen, setAlertOpen] = useState('');
 
   useEffect(() => {
-    async function getUserData() {
-      try {
-        const user = await fetchMypage();
-        user.obj_date = formatDate(user.obj_date)
-        setUserdate(user);
-      } catch (error) {
-        console.error('Error fetching user info:', error);
-      }
-    }
-    
     getUserData();
   }, []);
 
   useEffect(() => {
     if (route.params) {
-      setUserdate((prev) => ({
-        ...prev,
-        obj: route.params.data.obj,
-        obj_date: route.params.data.obj_date,
-      }));
+      getUserData();
     }
   }, [route.params]);
 
@@ -47,6 +33,16 @@ const MenberDetails = ({ navigation, route }) => {
   
     const formattedDate = `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}`;
     return formattedDate;
+  }
+
+  const getUserData = async() => {
+    try {
+      const user = await fetchMypage();
+      user.obj_date = formatDate(user.obj_date)
+      setUserdate(user);
+    } catch (error) {
+      console.error('Error fetching user info:', error);
+    }
   }
 
   const openSetUserGoal = () => {
