@@ -18,8 +18,8 @@ import { useNavigation } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
 import { stopSpeech } from '../utilities/TextToSpeech';
 import { HomeScreenProps } from '../utilities/NavigationTypes';
-import { fetchAllTopic } from '../utilities/ServerFunc';
-import { Section } from './LessonsList';
+import { fetchAllTopic, fetchReviews } from '../utilities/ServerFunc';
+import { Chapter, Section } from './LessonsList';
 
 const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -119,16 +119,24 @@ function UserInfoHeader() {
   );
 }
 
-
-
+interface Review {
+  chapter_id: number;
+  chapter_name: string;
+  date: string;
+  step: number;
+  topic_name: string;
+}
 export default function Home({ navigation, route }: HomeScreenProps) {
 
   const [sections, setSections] = useState<Section[]>([]);
+  const [todays, setTodays] = useState<Chapter[]>([]);
+  const [reviews, setReviews] = useState<Chapter[]>([]);
 
   useEffect(() => {
     stopSpeech();
   }, []);
 
+  //TODO: fetch today's lesson data로 변경 필요
   useEffect(() => {
     const getData = async () => {
       try {
@@ -151,6 +159,27 @@ export default function Home({ navigation, route }: HomeScreenProps) {
     }
     getData();
   }, []);
+  //fetch reviews
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const data = await fetchReviews();
+        if (!data) return;
+        console.log("home reviews", data);
+        const sectionData: Chapter[] = data.map((item: Review) => ({
+          id: item.chapter_id,
+          name: item.chapter_name,
+          description: item.topic_name,
+          step: item.step
+        }));
+        setReviews(sectionData);
+
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getData();
+  }, []);
 
   const handleUserPage = () => {
     navigation.navigate('MemberDetails');
@@ -166,21 +195,19 @@ export default function Home({ navigation, route }: HomeScreenProps) {
           <MenuTitle text='Today’s Lesson' onPress={() => {
             navigation.navigate('LessonList', { title: "Today’s Lesson", chapters: sections[1].chapter });
           }} />
-          { sections.length>0 && (<CarouselList gap={8} offset={12} pages={sections[1].chapter} pageWidth={screenWidth - (8 + 12) * 2} />)}
+          {sections.length > 0 && (<CarouselList gap={8} offset={12} pages={sections[1].chapter} pageWidth={screenWidth - (8 + 12) * 2} />)}
           <MenuTitle text='Review' onPress={() => {
-            navigation.navigate('LessonList', { title: "Review", chapters: sections[0].chapter });
+            navigation.navigate('LessonList', { title: "Review", chapters: reviews });
           }} />
           <View style={[layoutStyles.VStackContainer, { marginTop: 4, marginBottom: 28, paddingHorizontal: 20 }]}>
-            {sections.length>0 && sections[0].chapter.slice(0, 2).map((lesson, index) => (
+            {reviews.length > 0 && reviews.slice(0, 2).map((lesson, index) => (
               <ListCell
                 key={index}
                 item={lesson}
-                checked={true}
                 style={{ width: screenWidth - 20 * 2, marginVertical: 4 }}
               />
             ))}
           </View>
-
         </View>
       </View>
     </ScrollView>

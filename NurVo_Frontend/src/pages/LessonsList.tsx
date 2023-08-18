@@ -92,7 +92,7 @@ export default function LessonsList({ navigation, route }: LessonListProps) {
       {listData && (<SectionList
         sections={listData}
         keyExtractor={(item, index) => item.id.toString()}
-        renderItem={({ item }) => ListCell({ item: item, checked: true, style: { marginBottom: 16, marginHorizontal: 20 } })}
+        renderItem={({ item }) => ListCell({ item: item, style: { marginBottom: 16, marginHorizontal: 20 } })}
         renderSectionHeader={({ section: { title } }) => (
           <>
             {(title !== '') && ( <Subtitle011 text={title} style={{ paddingBottom: 12, marginHorizontal: 20 }} color={Colors.BLACK} /> )}

@@ -13,5 +13,7 @@ const Colors =
     SHADOW: '#BFBFBF',
     NAVY: '#042940',
     YELLOW: '#FFB30D',
+    BEIGE: '#D6D58E',
+    LIGHTGREEN: '#A6C04C',
 }
 export default Colors;
