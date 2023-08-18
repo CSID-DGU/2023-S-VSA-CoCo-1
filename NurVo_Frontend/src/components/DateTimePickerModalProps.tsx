@@ -25,7 +25,7 @@ const DateTimePickerModal = ({ isAction, onDate, onDisable, onAlertAction }: Dat
       const year = pickedDate.getFullYear().toString();
       const month = (pickedDate.getMonth() + 1).toString();
       const day = pickedDate.getDate().toString();
-      onDate(`${year}. ${month}. ${day}.`);
+      onDate(`${year}-${month}-${day}`);
     } else {
       onAlertAction(true);
     }
