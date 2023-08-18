@@ -17,13 +17,13 @@ export async function FilterDialogues(list_id) {
   return result;
 };
 
-export async function FilterNurse(list_id) {
+export async function FilterNurse(list_id, user_id) {
   const secondStep = await getDialogues(list_id);
-  const bookmark = await getBookmark();
+  const bookmark = await getBookmark(user_id);
 
   const filterSecondStep = secondStep.map((secondStep) => {
     if(secondStep.speaker === "Nurse" || secondStep.speaker === "nurse") {
-      const isBookmarked = bookmark.some((bookmark) => bookmark.conversation_id === firstStep.id);
+      const isBookmarked = bookmark.some((bookmark) => bookmark.conversation_id === secondStep.id);
       return {
         id: secondStep.id,
         speaker: secondStep.speaker,
@@ -91,12 +91,12 @@ export async function Accuracy(id, reply){ // 문장별 id와 reply(클라이언
 }
 
 // 대화학습 3단계 클라이언트로 보낼 데이터
-export async function FilterNurse_ThirdStep(list_id) {  
+export async function FilterNurse_ThirdStep(list_id, user_id) {  
   const thirdStep = await getDialogues(list_id);
-  const bookmark = await getBookmark();
+  const bookmark = await getBookmark(user_id);
   const filterThirdStep = thirdStep.map((thirdStep) => {
     if(thirdStep.speaker === "Nurse" || thirdStep.speaker === "nurse") {  // speaker가 간호사일 경우 대화 비움
-      const isBookmarked = bookmark.some((bookmark) => bookmark.conversation_id === firstStep.id);
+      const isBookmarked = bookmark.some((bookmark) => bookmark.conversation_id === thirdStep.id);
       return {
         id: thirdStep.id,
         speaker: thirdStep.speaker,

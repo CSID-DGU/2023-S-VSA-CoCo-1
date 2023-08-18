@@ -23,7 +23,8 @@ async function getChapters (req, res) {
 
 async function getDialogues (req, res) {
   try {
-    const conversation = await FilterDialogues(req.params.thema);
+    const user_id = req.user.id;
+    const conversation = await FilterDialogues(req.params.thema, user_id);
     res.status(200).send(conversation);
   }
   catch (err) {
@@ -34,7 +35,8 @@ async function getDialogues (req, res) {
 
 async function getSecondStep (req, res) {
   try {
-    const secondStep = await FilterNurse(req.params.thema);
+    const user_id = req.user.id
+    const secondStep = await FilterNurse(req.params.thema, user_id);
     res.status(200).send(secondStep);
   } catch (err) {
     console.error(err);
@@ -43,7 +45,8 @@ async function getSecondStep (req, res) {
 
 async function getThirdStep (req, res) {
   try{
-    const thirdStep = await FilterNurse_ThirdStep(req.params.thema);
+    const user_id = req.user.id;
+    const thirdStep = await FilterNurse_ThirdStep(req.params.thema, user_id);
     res.status(200).send(thirdStep);
   }
   catch (err) {
