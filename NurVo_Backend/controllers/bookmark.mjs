@@ -11,6 +11,7 @@ router.post('/delete', deleteBookmarks);
 async function getBookmark(req, res) {
   try {
     const user_id = req.user.id;
+    console.log(user_id);
     const bookmark = await getDialogueOfBookemark(user_id);
 
     console.log(bookmark);
