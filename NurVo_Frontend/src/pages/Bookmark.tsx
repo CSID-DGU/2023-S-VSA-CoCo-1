@@ -6,51 +6,69 @@ import Colors from '../utilities/Color';
 import { Body011 } from '../utilities/Fonts';
 import { screenWidth } from '../utilities/Layout';
 import BookMarkList from '../components/BookMarkList';
-
-// 데이터 불러오기 http://10.0.2.2:5000
-async function getBookmark() {
-  const response = await axios.get<{ data: [] }>('/api/bookmark');
-  try {
-    console.log('들어온 데이터', response.data);
-  } catch (e) {
-    console.log(e);
-  }
-  return response.data;
-}
-
-// 데이터 내보내기
-async function deleteBookmark(data: []) {
-  try {
-    const response = await axios.post('/api/bookmark/delete', data, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    console.log(response.data.message);
-  } catch (e) {
-    console.error('Error sending POST request:', e);
-  }
-}
+import { deleteLibraryBookmark, fetchBookmark } from '../utilities/ServerFunc';
 
 const Bookmark = ({ navigation, route }) => {
   const DeleteAction = route.params;
   const [libraryData, setLibraryData] = useState([]);
+  const [fixed, setFixed] = useState([]);
   const [trueCount, setTrueCount] = useState(0);
   const [seletedList, setSeletedList] = useState([]);
   const [initialIsDelete, setInitialIsDelete] = useState(DeleteAction ? route.params.data : false);
+  const [isDisable, setIsDisable] = useState(false);
+
+  // 데이터 불러오기
+  useEffect(() => {
+    async function getBookmark() {
+      try {
+        const bookmark = await fetchBookmark();
+        setLibraryData(bookmark);
+        setFixed(bookmark);
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+      }
+    }
+
+    getBookmark();
+  }, []);
 
   useEffect(() => {
-    const getData = async () => {
-      const data = await getBookmark();
-      setLibraryData(data);
+    async function getBookmark() {
+      try {
+        const bookmark = await fetchBookmark();
+        setLibraryData(bookmark);
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+      }
     }
-    getData();
-  }, []);
+
+    if (!compareArrays(libraryData, fixed)) {
+      getBookmark();
+      setFixed(libraryData);
+    }
+  }, [libraryData, fixed]);
+
+  // 데이터 삭제
+  useEffect(() => {
+    async function deleteBookmark() {
+      try {
+        const newdata = await deleteLibraryBookmark(seletedList);
+        setLibraryData(newdata);
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+      }
+    }
+    if (isDisable) {
+      deleteBookmark();
+      setIsDisable(false);
+    }
+  }, [isDisable]);
 
   // 삭제 버튼 클릭 시 삭제 모드로 전환
   useEffect(() => {
     if (DeleteAction) {
       setInitialIsDelete(route.params.data);
+
     }
   }, [DeleteAction]);
 
@@ -75,11 +93,23 @@ const Bookmark = ({ navigation, route }) => {
     };
   }
 
-  // 데이터 삭제
-  const bookmarkDelete = () => {
-    deleteBookmark(seletedList);
+  const deleteBookmark = () => {
+    setIsDisable(true);
     setInitialIsDelete(false);
-  };
+  }
+
+  // 배열 비교
+  const compareArrays = (array1: [], array2: []) => {
+    if (!array1 || !array2) {
+      return true; // 하나라도 배열이 정의되지 않았을 경우 불일치로 판단
+    }
+
+    if (array1.length !== array2.length) {
+      return false; // 배열 길이가 다르면 불일치로 판단
+    }
+
+    return true;
+  }
 
   return (
     <View style={styles.container}>
@@ -97,7 +127,7 @@ const Bookmark = ({ navigation, route }) => {
           />
         </TouchableOpacity>
         :
-        <TouchableOpacity style={styles.btn} onPress={bookmarkDelete}>
+        <TouchableOpacity style={styles.btn} onPress={deleteBookmark}>
           <Body011
             text={`${trueCount} 개를 삭제합니다`}
             color={Colors.WHITE}

@@ -1,9 +1,10 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 
 import Colors from '../utilities/Color';
 import { Body011, Title01, Title02 } from '../utilities/Fonts';
 import { screenHeight } from '../utilities/Layout';
+import { updateUserInfo } from '../utilities/ServerFunc';
 import Sliders from '../components/Sliders';
 import DateTimePickerModalProps from '../components/DateTimePickerModalProps';
 import CustomAlert from '../components/Alert';
@@ -14,6 +15,23 @@ const App = ({ navigation, route }) => {
   const [date, setDate] = useState(goals.obj_date);
   const [isModalAction, setIsModalAction] = useState(false);
   const [isAlretAction, setIsAlretAction] = useState(false);
+  const [isSave, setIsSave] = useState(false);
+
+  useEffect(() => {
+    async function updateUser() {
+      try {
+        const stringDate = "" + number;
+        const ipdateUserInfo = await updateUserInfo({obj: stringDate, obj_date: date});
+        navigation.navigate('MemberDetails', { date: ipdateUserInfo });
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+      }
+    }
+
+    if (isSave) {
+      updateUser();
+    }
+  }, [isSave]);
 
   const handleChangeNumber = (value: number) => {
     setNumber(value);
@@ -24,13 +42,13 @@ const App = ({ navigation, route }) => {
   }
 
   const dataSave = () => {
-    navigation.navigate('MemberDetails', { data: { obj: number, obj_date: date } });
+    setIsSave(true);
   }
 
   const modalAction = () => {
     setIsModalAction(true);
   }
-  
+
   const handleModalAction = (value: boolean) => {
     setIsModalAction(value);
   }

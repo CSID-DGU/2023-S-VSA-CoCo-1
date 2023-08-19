@@ -9,31 +9,42 @@ import MemberDetailCell from '../components/MemberDetailCell';
 import CustomAlert from '../components/Alert';
 
 import img1 from '../assets/images/기본이미지.png';
-
-const member = {
-  id: 'ajtwoddl0425',
-  name: '박혜림',
-  phone_number: '010-2202-2878',
-  email: 'ajtwoddl0425@naver.com',
-  nickname: 'nalteng',
-  obj: 6,
-  obj_date: '2020.12.19',
-}
+import { fetchMypage } from '../utilities/ServerFunc';
 
 const MenberDetails = ({ navigation, route }) => {
-  const [userdata, setUserdate] = useState(member);
+  const [userdata, setUserdate] = useState({});
   const [alertOpen, setAlertOpen] = useState('');
 
   useEffect(() => {
+    getUserData();
+  }, []);
+
+  useEffect(() => {
     if (route.params) {
-      setUserdate((prev) => ({
-        ...prev,
-        obj: route.params.data.obj,
-        obj_date: route.params.data.obj_date,
-      }));
+      getUserData();
     }
   }, [route.params]);
+
+  const formatDate = (dateString: Date) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1; // 월은 0부터 시작하므로 1을 더해줍니다.
+    const day = date.getDate();
   
+    const formattedDate = `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}`;
+    return formattedDate;
+  }
+
+  const getUserData = async() => {
+    try {
+      const user = await fetchMypage();
+      user.obj_date = formatDate(user.obj_date)
+      setUserdate(user);
+    } catch (error) {
+      console.error('Error fetching user info:', error);
+    }
+  }
+
   const openSetUserGoal = () => {
     navigation.navigate('SetUserGoal', { data: { obj: userdata.obj, obj_date: userdata.obj_date } });
   }
@@ -69,7 +80,7 @@ const MenberDetails = ({ navigation, route }) => {
           </TouchableOpacity>
           <MemberDetailCell title='이름' infor={userdata.name} />
           <MemberDetailCell title='닉네임' infor={userdata.nickname} />
-          <MemberDetailCell title='아이디(이메일)' infor={`${userdata.id} (${userdata.email})`} />
+          <MemberDetailCell title='아이디(이메일)' infor={userdata.id} />
           <MemberDetailCell title='휴대폰 번호' infor={userdata.phone_number} />
 
           <TouchableOpacity style={styles.alertButton} onPress={logoutAction}>
