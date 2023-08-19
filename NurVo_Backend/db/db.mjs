@@ -1,6 +1,7 @@
 import pg from 'pg';
 import express from 'express';
 import dotenv from 'dotenv';
+import { dateToDay, stringDate } from '../services/attendance.mjs';
 
 dotenv.config();
 
@@ -131,15 +132,8 @@ export const getSentences = async(id) => {
 export const saveBookemark = async (dialogue_id, user) => {
   const user_id = user || "coco1234"; // test할 때 사용할 계정이 coco1234
   const client = await pool.connect();
-  // 오늘 날짜 객체 생성
-  const today = new Date();
 
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, '0');
-  const day = String(today.getDate()).padStart(2, '0'); 
-
-  // YYYY.MM.DD 형태로 날짜 문자열 생성
-  const formattedDate = `${year}.${month}.${day}`;
+  const formattedDate = stringDate();
 
   let result;
 
@@ -234,6 +228,36 @@ export const getCompletedChapter = async (user_id) => {
   } finally {
     client.release();
   }
+};
+
+export const saveAttendance = async (user_id) => {
+  const date = stringDate();
+  const day = dateToDay();
+  const client = await pool.connect();
+
+  try{
+    await client.query('insert into attendance (user_id, date, day) values ($1, $2, $3)', [user_id, date, day]);
+  }catch(err) {
+    console.error(err);
+  }finally {
+    client.release();
+  };
+
+};
+
+export const getAttendance = async (user_id) => {
+  const client = await pool.connect();
+
+  try{
+    const result = await client.query('select * from attendance where user_id=$1',[user_id]);
+    return result.rows;
+  }catch(err){
+    console.error(err);
+  }finally{
+    client.release();
+  }
+};
+
 }
 
 // 전체 chapter중 해당 user의 step이 3인 경우를 제외하고 chapter 불러오기(단 이번주에 step3가 된 것은)
@@ -265,3 +289,4 @@ export const getAllTodayLessons = async (user_id, day) => {
     client.release();
   }
 }
+

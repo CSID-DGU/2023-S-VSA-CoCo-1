@@ -5,7 +5,8 @@ import { router as dialoguesRouter } from './controllers/dialogues.mjs';
 import { router as bookmarkRouter} from './controllers/bookmark.mjs'
 import {router as signupRouter} from './controllers/signup.mjs'
 import { router as authRouter} from './controllers/login.mjs';
-import { router as eduRouter} from './controllers/edu.mjs'
+import { router as eduRouter} from './controllers/edu.mjs';
+import {router as attendanceRouter} from './controllers/attendance.mjs'
 import passport from './services/auth.mjs';
 
 const app = express();
@@ -33,5 +34,6 @@ app.use('/api/bookmark', passport.authenticate("jwt", { session: false }), bookm
 app.use('/api/signup', signupRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/edu', passport.authenticate("jwt", { session: false }), eduRouter);
+app.use('/api/attendance',passport.authenticate("jwt", {session: false}) ,attendanceRouter)
 
 
