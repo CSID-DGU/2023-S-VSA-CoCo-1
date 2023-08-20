@@ -17,7 +17,7 @@ async function login(req, res, next) {
   try{
     passport.authenticate("local", (err, user, info) => {
       if (info) { // 에러 발생 시 이유
-        return res.status(410).send(info.message);
+        return res.status(200).send(info.message);
       }
       return req.login(user, { session: false }, (loginErr) => {  
         if (loginErr) {
