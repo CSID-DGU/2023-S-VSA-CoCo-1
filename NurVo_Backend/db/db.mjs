@@ -258,7 +258,6 @@ export const getAttendance = async (user_id) => {
   }
 };
 
-}
 
 // 전체 chapter중 해당 user의 step이 3인 경우를 제외하고 chapter 불러오기(단 이번주에 step3가 된 것은)
 export const getAllTodayLessons = async (user_id, day) => {
