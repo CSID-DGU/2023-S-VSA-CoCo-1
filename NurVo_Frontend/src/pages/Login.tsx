@@ -43,7 +43,7 @@ const MainPage = ({ navigation, route }) => {
           "userId": userId,
           "password": userPassword,
         });
-        if (result.message === "Invalid username or password") {
+        if (result === "Invalid username or password") {
           setAlertMessage('아이디 혹은 비밀번호를 올바르게 입력해주세요.');
           setIsAlert(true);
         } else {
@@ -76,8 +76,8 @@ const MainPage = ({ navigation, route }) => {
     setIsAlert(false);
   }
 
-  const firstLogin = (obj: any, obj_date: any) => {
-    if (obj === undefined && obj_date === undefined) {
+  const firstLogin = (value: any, value2: any) => {
+    if (value === null && value2 === null) {
       navigation.navigate('SetUserGoalInital', { data: { obj: 1, obj_date: formatDate(Date.now()) }, prevScreen: 'Login' });
     } else {
       navigation.navigate('HomeScreen');
