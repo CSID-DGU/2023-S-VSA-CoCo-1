@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Platform } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 
 import Colors from '../utilities/Color';
 import { Body011, Title01, Title02 } from '../utilities/Fonts';
@@ -9,8 +9,9 @@ import Sliders from '../components/Sliders';
 import DateTimePickerModalProps from '../components/DateTimePickerModalProps';
 import CustomAlert from '../components/Alert';
 
-const App = ({ navigation, route }) => {
+const App = ({ navigation, route }: any) => {
   const goals = route.params.data;
+  const prevScreen = route.params?.prevScreen || '';
   const [number, setNumber] = useState(goals.obj);
   const [date, setDate] = useState(goals.obj_date);
   const [isModalAction, setIsModalAction] = useState(false);
@@ -20,9 +21,13 @@ const App = ({ navigation, route }) => {
   useEffect(() => {
     async function updateUser() {
       try {
-        const stringDate = "" + number;
-        const ipdateUserInfo = await updateUserInfo({obj: stringDate, obj_date: date});
-        navigation.navigate('MemberDetails', { date: ipdateUserInfo });
+        const stringNumber = "" + number;
+        const ipdateUserInfo = await updateUserInfo({ obj: stringNumber, obj_date: date });
+        if (prevScreen === 'Login') {
+          navigation.navigate('HomeScreen', { data: ipdateUserInfo });
+        } else {
+          navigation.navigate(prevScreen, { data: ipdateUserInfo });
+        }
       } catch (error) {
         console.error('Error fetching user info:', error);
       }
@@ -30,6 +35,7 @@ const App = ({ navigation, route }) => {
 
     if (isSave) {
       updateUser();
+      setIsSave(false);
     }
   }, [isSave]);
 
