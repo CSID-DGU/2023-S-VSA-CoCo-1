@@ -86,8 +86,17 @@ const HomeStackScreen = ({ navigation, route }: any) => {
   );
 }
 
-const LibraryStack = createNativeStackNavigator();
-const LibraryStackScreen = () => {
+const LibraryStack = createNativeStackNavigator<LibraryStackParamList>();
+const LibraryStackScreen = ({ navigation, route }: any) => {
+  useLayoutEffect(() => {
+    const routeName = getFocusedRouteNameFromRoute(route);
+    if (routeName === 'StudyPage') {
+      navigation.setOptions({ tabBarStyle: { display: 'none' } });
+    } else {
+      navigation.setOptions({ tabBarStyle: { display: undefined } });
+    }
+  });
+
   return (
     <LibraryStack.Navigator
       screenOptions={{
@@ -131,57 +140,104 @@ const ChapterStackScreen = ({ navigation, route }: any) => {
   );
 }
 
+function AutoBottomTabs() {
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ color, size }) => {
+          let iconName: string = route.name.toLowerCase();
+
+          if (route.name === 'Home') {
+            iconName = 'home';
+          } else if (route.name === 'Chapter') {
+            iconName = 'book';
+          } else if (route.name === 'Library') {
+            iconName = 'folder';
+          } else if (route.name === 'Main') {
+            return null; // MainStack 탭의 아이콘을 만들지 않음
+          }
+
+          // You can return any component that you like here!
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: Colors.MAINGREEN,
+        tabBarInactiveTintColor: 'gray',
+      })}
+    >
+      <Tab.Screen name="Main" component={MainStackScreen} options={{ headerShown: false }} />
+      <Tab.Screen name="Home" component={HomeStackScreen} options={{ headerShown: false }} />
+      <Tab.Screen name="Chapter" component={ChapterStackScreen} options={{ headerShown: false }} />
+      <Tab.Screen name="Library" component={LibraryStackScreen} options={{ headerShown: false }} />
+    </Tab.Navigator>
+  );
+}
+
 const MainStack = createNativeStackNavigator<MainStackParamList>();
-const MainStackScreen = () => {
+const MainStackScreen = ({ navigation, route }: any) => {
+  useLayoutEffect(() => {
+    const routeName = getFocusedRouteNameFromRoute(route);
+    const shouldHideTabBar =
+      routeName === 'MainPage' ||
+      routeName === 'Login' ||
+      routeName === 'SignUp' ||
+      routeName === 'SetUserGoalinital';
+
+    navigation.setOptions({ tabBarStyle: { display: shouldHideTabBar ? 'none' : undefined } });
+
+    // 컴포넌트가 언마운트될 때 탭바를 다시 보이도록 설정
+    return () => {
+      navigation.setOptions({ tabBarStyle: { display: undefined } });
+    };
+  });
 
   return (
     <MainStack.Navigator
       screenOptions={{
-        headerShown: false,
         headerTintColor: Colors.BLACK,
         headerBackTitleVisible: false,
       }}
     >
-      <MainStack.Screen name="MainPage" component={MainPage} />
-      <MainStack.Screen name="Login" component={Login} />
-      <MainStack.Screen name="SignUp" component={SignUp} />
+      <MainStack.Screen name="MainPage" component={MainPage} options={{ headerShown: false }} />
+      <MainStack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+      <MainStack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }} />
+      <MainStack.Screen name="SetUserGoalinital" component={SetUserGoal} />
+      <MainStack.Screen name="HomeScreen" component={Home} options={{ headerShown: false }} />
+      <MainStack.Screen name="LessonList" component={LessonsList} />
+      <MainStack.Screen name="LessonFirstScreen" component={LessonFirst} />
+      <MainStack.Screen name="LessonSecondScreen" component={LessonSecond} />
+      <MainStack.Screen name="LessonThirdScreen" component={LessonThird} />
+      <MainStack.Screen name="MemberDetails" component={MemberDetails} />
+      <MainStack.Screen name="SetUserGoal" component={SetUserGoal} />
     </MainStack.Navigator>
   );
 }
 
 
 function App(): JSX.Element {
-  // Main screen 보고싶으면 'MainStackScreen'으로 우선 입력
-  const initialRoute = 'HomeScreen';
+  const [initialRoute, setInitialRoute] = useState('MainStackScreen');
 
-  // 계속 로그인
-  // const [initialRoute, setInitialRoute] = useState('Home');
+  useLayoutEffect(() => {
+    const checkTokenAndSetInitialRoute = async () => {
+      const accessToken = await retrieveUserSession('ACCESS_SECRET');
+      console.log("시작: ", accessToken)
 
-  // useEffect(() => {
-  //   const checkTokenAndSetInitialRoute = async () => {
-  //     try {
-  //       const accessToken = await EncryptedStorage.getItem('accessToken');
-
-  //       if (accessToken) {
-  //         setInitialRoute('Home');
-  //       } 
-  //     } catch (error) {
-  //       // 에러 메세지
-  //     }
-  //   };
-
-  //   checkTokenAndSetInitialRoute();
-  // }, [initialRoute]);
+      if (accessToken) {
+        setInitialRoute('Home');
+        console.log("시작: ", initialRoute)
+      }
+    };
+    checkTokenAndSetInitialRoute();
+  });
 
   return (
     <NavigationContainer>
-      {initialRoute === 'MainStackScreen' ? (
-        <MainStackScreen />
-      ) : (
+      {initialRoute === "MainStackScreen" ?
+        <AutoBottomTabs />
+        :
         <BottomTabs />
-      )}
+      }
     </NavigationContainer>
-  );
+  ); s
 };
 
 export default App;
