@@ -32,7 +32,7 @@ async function login(req, res, next) {
             id: user.id,
             name: user.name,
             phone_number: user.phone_number, 
-            nickname: user.nickname
+            nickname: user.nickname,
           },
           ACCESS_SECRET,
         );
@@ -55,9 +55,11 @@ async function mypage(req, res){
 
       const responseData = {
         id : userInfo.id,
+        name : userInfo.name,
         nickname : userInfo.nickname,
         obj : userInfo.obj,
-        obj_date : formattedDate
+        obj_date : formattedDate,
+        phone_number: userInfo.phone_number
       }
 
       res.status(200).send(responseData);
