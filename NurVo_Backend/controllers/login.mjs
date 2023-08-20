@@ -16,12 +16,8 @@ router.post("/mypage", passport.authenticate("jwt", { session: false }), updateU
 async function login(req, res, next) {
   try{
     passport.authenticate("local", (err, user, info) => {
-      if (err || !user) { // 에러나 user정보 없을때
-        console.log(info)
-        return next(err);
-      }
       if (info) { // 에러 발생 시 이유
-        return res.status(410).send(info.reason);
+        return res.status(410).send(info.message);
       }
       return req.login(user, { session: false }, (loginErr) => {  
         if (loginErr) {
@@ -32,7 +28,7 @@ async function login(req, res, next) {
             id: user.id,
             name: user.name,
             phone_number: user.phone_number, 
-            nickname: user.nickname
+            nickname: user.nickname,
           },
           ACCESS_SECRET,
         );
@@ -55,9 +51,11 @@ async function mypage(req, res){
 
       const responseData = {
         id : userInfo.id,
+        name : userInfo.name,
         nickname : userInfo.nickname,
         obj : userInfo.obj,
-        obj_date : formattedDate
+        obj_date : formattedDate,
+        phone_number: userInfo.phone_number
       }
 
       res.status(200).send(responseData);
@@ -81,7 +79,9 @@ async function updateUserInfo(req, res){
 
     const responseData = {
       id : result.id,
+      name : result.name,
       nickname : result.nickname,
+      phone_number: result.phone_number,
       obj : result.obj,
       obj_date : formattedDate
     }
