@@ -96,6 +96,29 @@ export const getChapter = async () => {
   };
 };
 
+//chapter를 학습한 step과 함께 가지고 오는 함수
+export const getChapterWithStep = async (user_id) => {
+  const client = await pool.connect();
+  try {
+    const query = `
+    SELECT
+      c.id,
+      c.name,
+      e.step
+    FROM edu e
+    JOIN chapter c ON e.chapter_id = c.id
+    WHERE e.user_id = $1
+    ORDER BY e.chapter_id ASC
+    `
+    const chapters = await client.query(query, [user_id])
+    return chapters.rows;
+  } catch (err) {
+    console.error(err);
+  } finally {
+    client.release();
+  };
+};
+
 //대화문 가지고 오는 함수
 export const getDialogues = async (chapter_id) => {
   const client = await pool.connect();

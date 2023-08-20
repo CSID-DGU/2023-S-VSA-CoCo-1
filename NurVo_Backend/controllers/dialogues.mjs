@@ -12,7 +12,8 @@ router.post('/:thema/step3',checkAnswerThirdStep)
 
 async function getChapters (req, res) {
   try {
-    const thema = await ChapterByTopic();
+    const id = req.user.id;
+    const thema = await ChapterByTopic(id);
     res.status(200).send(thema);
   }
   catch (err) {

@@ -100,7 +100,8 @@ export async function FilterNurse_ThirdStep(list_id, user_id) {
       return {
         id: thirdStep.id,
         speaker: thirdStep.speaker,
-        dialogue: "",
+        dialogue: thirdStep.dialogue,
+        third_step: "",
         korean: thirdStep.korean,
         bookmark: isBookmarked,
       };

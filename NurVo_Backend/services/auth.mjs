@@ -40,10 +40,10 @@ passport.use(
           if(passwordMatch){  // 비밀번호 일치하는 경우
             return done(null, user);
           }
-            return done(null, false, { reason: "Invalid username or password" }); // 비밀번호 일치하지 않는 경우
+            return done(null, false, { message: "Invalid username or password" }); // 비밀번호 일치하지 않는 경우
 
         } // user정보 없을경우
-        return done(null, false, { reason: "Invalid username or password" }); // false:로그인 실패
+        return done(null, false, { message: "Invalid username or password" }); // false:로그인 실패
       }
       catch(err){
         console.error(err);
