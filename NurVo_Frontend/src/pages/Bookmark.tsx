@@ -1,47 +1,28 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import axios from 'axios';
 
 import Colors from '../utilities/Color';
 import { Body011 } from '../utilities/Fonts';
 import { screenWidth } from '../utilities/Layout';
-import BookMarkList from '../components/BookMarkList';
 import { deleteLibraryBookmark, fetchBookmark } from '../utilities/ServerFunc';
+import BookMarkList from '../components/BookMarkList';
+import HeaderButton from '../components/HeaderButton';
 
 const Bookmark = ({ navigation, route }) => {
-  const DeleteAction = route.params;
-  const [libraryData, setLibraryData] = useState([]);
-  const [fixed, setFixed] = useState([]);
-  const [trueCount, setTrueCount] = useState(0);
-  const [seletedList, setSeletedList] = useState([]);
-  const [initialIsDelete, setInitialIsDelete] = useState(DeleteAction ? route.params.data : false);
-  const [isDisable, setIsDisable] = useState(false);
+  const [libraryData, setLibraryData] = useState([]); // 실제 북마크 표현 데이터
+  const [fixed, setFixed] = useState([]); // 북마크 삭제 시 비교하는 데이터 
+  const [trueCount, setTrueCount] = useState(0); // 선택된 북마크 개수
+  const [seletedList, setSeletedList] = useState([]); // 선택된 북마크
+  const [initialIsDelete, setInitialIsDelete] = useState(false); // 네비게이션 바 모드 설정
+  const [isDisable, setIsDisable] = useState(false); // 삭제 버튼 클릭 시 백엔드에 전달
 
   // 데이터 불러오기
   useEffect(() => {
-    async function getBookmark() {
-      try {
-        const bookmark = await fetchBookmark();
-        setLibraryData(bookmark);
-        setFixed(bookmark);
-      } catch (error) {
-        console.error('Error fetching user info:', error);
-      }
-    }
-
     getBookmark();
+    setFixed(libraryData);
   }, []);
 
   useEffect(() => {
-    async function getBookmark() {
-      try {
-        const bookmark = await fetchBookmark();
-        setLibraryData(bookmark);
-      } catch (error) {
-        console.error('Error fetching user info:', error);
-      }
-    }
-
     if (!compareArrays(libraryData, fixed)) {
       getBookmark();
       setFixed(libraryData);
@@ -64,13 +45,24 @@ const Bookmark = ({ navigation, route }) => {
     }
   }, [isDisable]);
 
-  // 삭제 버튼 클릭 시 삭제 모드로 전환
-  useEffect(() => {
-    if (DeleteAction) {
-      setInitialIsDelete(route.params.data);
+  // 네비게이션 바 커스텀 컴포넌트
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <HeaderButton types='delete' isDeleteAction={initialIsDelete} ondelete={(value)=> setInitialIsDelete(value)} />
+      ),
+    });
+  }, [navigation, initialIsDelete]);
 
+  // 데이터 불러오는 함수
+  async function getBookmark() {
+    try {
+      const bookmark = await fetchBookmark();
+      setLibraryData(bookmark);
+    } catch (error) {
+      console.error('Error fetching bookmark:', error);
     }
-  }, [DeleteAction]);
+  }
 
   // 선택된 북마크 저장
   const handleSeletedID = (value: any) => {
@@ -93,6 +85,7 @@ const Bookmark = ({ navigation, route }) => {
     };
   }
 
+  // 삭제모드로 변환
   const deleteBookmark = () => {
     setIsDisable(true);
     setInitialIsDelete(false);
@@ -101,13 +94,11 @@ const Bookmark = ({ navigation, route }) => {
   // 배열 비교
   const compareArrays = (array1: [], array2: []) => {
     if (!array1 || !array2) {
-      return true; // 하나라도 배열이 정의되지 않았을 경우 불일치로 판단
+      return true;
     }
-
     if (array1.length !== array2.length) {
-      return false; // 배열 길이가 다르면 불일치로 판단
+      return false;
     }
-
     return true;
   }
 
