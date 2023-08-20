@@ -7,14 +7,13 @@
 
 import React, { useLayoutEffect, useState, useEffect } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NavigationContainer, getFocusedRouteNameFromRoute } from '@react-navigation/native';
+import { NavigationContainer, getFocusedRouteNameFromRoute, useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import Colors from './src/utilities/Color';
 import StudyPageInfor from './src/utilities/Infor.mjs';
-import LibraryHeader from './src/components/LibraryHeader';
 import Home from './src/pages/Home';
 import LessonsList from './src/pages/LessonsList';
 import LessonFirst from './src/pages/ChapterStudy/LessonFirst';
@@ -27,8 +26,8 @@ import SetUserGoal from './src/pages/SetUserGoal';
 import MainPage from './src/pages/MainPage';
 import Login from './src/pages/Login';
 import SignUp from './src/pages/SignUp';
+import HeaderButton from './src/components/HeaderButton';
 import { ChapterStackParamList, HomeStackParamList, MainStackParamList, RootStackParamList } from './src/utilities/NavigationTypes';
-
 
 const Tab = createBottomTabNavigator<RootStackParamList>();
 function BottomTabs() {
@@ -96,17 +95,12 @@ const LibraryStackScreen = () => {
         headerBackTitleVisible: false,
       }}
     >
-      <LibraryStack.Screen name="Library" component={Bookmark}
-        options={{
-          header: ({ scene }) => {
-            return <LibraryHeader title='Library' isDelete={true} />;
-          },
-        }} />
+      <LibraryStack.Screen name="Library" component={Bookmark} />
       <LibraryStack.Screen name="StudyPage" component={StudyPage}
         options={{
-          header: ({ scene }) => {
-            return <LibraryHeader title='StudyPage' image={StudyPageInfor} isBack={true} />;
-          },
+          headerRight: () => (
+            <HeaderButton types='useInfor' image={StudyPageInfor} />
+          ),
         }} />
     </LibraryStack.Navigator>
   );
@@ -158,7 +152,7 @@ const MainStackScreen = () => {
 
 function App(): JSX.Element {
   // Main screen 보고싶으면 'MainStackScreen'으로 우선 입력
-  const initialRoute = 'Home';
+  const initialRoute = 'HomeScreen';
 
   // 계속 로그인
   // const [initialRoute, setInitialRoute] = useState('Home');
