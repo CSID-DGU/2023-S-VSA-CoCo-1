@@ -83,7 +83,9 @@ async function updateUserInfo(req, res){
 
     const responseData = {
       id : result.id,
+      name : result.name,
       nickname : result.nickname,
+      phone_number: result.phone_number,
       obj : result.obj,
       obj_date : formattedDate
     }
