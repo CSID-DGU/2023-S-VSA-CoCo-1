@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import passport from '../services/auth.mjs';
 import { getUser, updateUser } from '../db/db.mjs';
+import { stringDate } from '../services/attendance.mjs';
 
 dotenv.config();
 const ACCESS_SECRET = process.env.ACCESS_SECRET;
@@ -49,7 +50,20 @@ async function mypage(req, res){
     const id = req.user.id;
     const userInfo = await getUser(id);
     delete userInfo.password;
-    res.status(200).send(userInfo);
+    if(userInfo.obj_date !== ''){
+      const formattedDate = stringDate(userInfo.obj_date);
+
+      const responseData = {
+        id : userInfo.id,
+        nickname : userInfo.nickname,
+        obj : userInfo.obj,
+        obj_date : formattedDate
+      }
+
+      res.status(200).send(responseData);
+    } else {
+      res.status(200).send(userInfo);
+    }
   }
   catch(err){
     console.error(err);
@@ -63,8 +77,16 @@ async function updateUserInfo(req, res){
     const updateData = {id, obj, obj_date};
     const result = await updateUser(updateData);
     delete result.password;
-    console.log(result);
-    res.status(200).send(result);
+    const formattedDate = stringDate(result.obj_date);
+
+    const responseData = {
+      id : result.id,
+      nickname : result.nickname,
+      obj : result.obj,
+      obj_date : formattedDate
+    }
+
+    res.status(200).send(responseData);
   }
   catch(err){
     console.error(err);
