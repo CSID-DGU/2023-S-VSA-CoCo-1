@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { differenceInDays } from 'date-fns';
 
 import Colors from '../utilities/Color';
 import { Title01, Title02, Subtitle011, Subtext013, Body022, Body023, Body024 } from '../utilities/Fonts';
@@ -18,7 +19,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
 import { play, stopSpeech } from '../utilities/TextToSpeech';
 import { HomeScreenProps } from '../utilities/NavigationTypes';
-import { fetchAllTopic, fetchReviews, fetchTodaysLesson } from '../utilities/ServerFunc';
+import { fetchMypage, fetchReviews, fetchTodaysLesson } from '../utilities/ServerFunc';
 import { Chapter, Section } from './LessonsList';
 
 const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -35,8 +36,37 @@ const MenuTitle = ({ text, onPress }: { text: string, onPress: () => void }) => 
   );
 }
 
-function UserInfoHeader() {
+interface UserInfo {
+  id: string;
+  name: string;
+  nickname: string;
+  phone: string;
+  obj: string;
+  obj_date: string;
+}
+
+function UserInfoHeader({numOfReview}: {numOfReview: number}) {
   const navigation = useNavigation();
+
+  const [userdata, setUserdata] = useState({});
+  const [progress, setProgress] = useState(0);
+  const [dueDate, setDueDate] = useState(0);
+
+  useEffect(() => {
+    async function getUserData() {
+      try {
+        const user = await fetchMypage();
+        setUserdata(user);
+        setDueDate(getDueDate(user.obj_date));
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+      }
+    }
+    
+    setProgress((numOfReview / 24) * 100);
+    getUserData();
+  }, []);
+
 
   interface CircleTextProps {
     text: string;
@@ -63,6 +93,12 @@ function UserInfoHeader() {
     );
   };
 
+  function getDueDate(dateString: string): number {
+    const date = new Date(dateString.replace(/\./g, '-'));
+    const today = new Date();
+    return differenceInDays(date, today);
+  }
+
 
   return (
     <View style={styles.headerBackground}>
@@ -71,17 +107,19 @@ function UserInfoHeader() {
           <View style={layoutStyles.VStackContainer}>
             <View style={[styles.headerText]}>
               <Title01 text="Hi," color={Colors.BLACK} />
-              <Title02 text="Jimin" color={Colors.BLACK} />
+              <Title02 text={userdata?.name} color={Colors.BLACK} />
               <Ionicons name="settings" size={20} color={Colors.MAINLIGHTGREEN} style={{ marginHorizontal: 5 }} />
             </View>
-            <View style={styles.tagBackground}>
-              <Body023 text="D-100days" color={Colors.WHITE} />
+            <View style={layoutStyles.HStackContainer}>
+              <View style={styles.tagBackground}>
+                <Body023 text={`D-${dueDate}days`} color={Colors.WHITE} />
+              </View>
             </View>
           </View>
           <AnimatedCircularProgress
             size={102}
             width={16}
-            fill={100}
+            fill={progress}
             rotation={0}
             tintColor={Colors.MAINGREEN}
             lineCap='round'
@@ -117,6 +155,7 @@ export default function Home({ navigation, route }: HomeScreenProps) {
 
   const [todays, setTodays] = useState<Chapter[]>([]);
   const [reviews, setReviews] = useState<Chapter[]>([]);
+  const [numOfReview, setNumOfReview] = useState<number>(0);
 
   useEffect(() => {
     stopSpeech();
@@ -128,7 +167,6 @@ export default function Home({ navigation, route }: HomeScreenProps) {
       try {
         const data = await fetchReviews();
         if (!data) return;
-        console.log("home reviews", data);
         const sectionData: Chapter[] = data.map((item: Review) => ({
           id: item.chapter_id,
           name: item.chapter_name,
@@ -144,13 +182,16 @@ export default function Home({ navigation, route }: HomeScreenProps) {
     getData();
   }, []);
 
+  useEffect(() => {
+    setNumOfReview(reviews.length);
+  }, [reviews]);
+
   //fetch today's lessons
   useEffect(() => {
     const getData = async () => {
       try {
         const data = await fetchTodaysLesson();
         if (!data) return;
-        console.log("todays reviews", data);
         const sectionData: Chapter[] = data.map((item: Todays) => ({
           id: item.chapter_id,
           name: item.name,
@@ -174,7 +215,7 @@ export default function Home({ navigation, route }: HomeScreenProps) {
     <ScrollView>
       <View style={layoutStyles.VStackContainer}>
         <TouchableHighlight onPress={handleUserPage}>
-          <UserInfoHeader />
+          <UserInfoHeader numOfReview={reviews.length}/>
         </TouchableHighlight>
         <View style={[layoutStyles.VStackContainer]}>
           <MenuTitle text='Today’s Lesson' onPress={() => {
@@ -229,6 +270,7 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
   },
   tagBackground: {
+    flex: 0,
     backgroundColor: Colors.MAINGREEN,
     borderRadius: 6,
     paddingVertical: 5,
