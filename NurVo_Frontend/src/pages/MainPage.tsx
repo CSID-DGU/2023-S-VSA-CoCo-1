@@ -34,10 +34,10 @@ const MainPage = ({ navigation }: { navigation: any }) => {
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={[styles.btn, styles.loginBtn]} onPress={goLogin}>
-          <Body011 text='로그인' color={Colors.WHITE} style={{ textAlign: 'center' }} />
+          <Body011 text='로그인' color={Colors.WHITE}/>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.btn, styles.signUpBtn]} onPress={goSignUp}>
-          <Body011 text='회원가입' color={Colors.MAINGREEN} style={{ textAlign: 'center' }} />
+          <Body011 text='회원가입' color={Colors.BLACK} />
         </TouchableOpacity>
       </View>
 
@@ -67,6 +67,8 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     borderWidth: 2,
     borderColor: Colors.MAINGREEN,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   loginBtn: {
     backgroundColor: Colors.MAINGREEN,

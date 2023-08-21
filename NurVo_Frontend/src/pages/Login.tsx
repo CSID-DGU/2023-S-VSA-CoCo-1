@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { View, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 
 import Colors from '../utilities/Color';
@@ -8,6 +8,7 @@ import { storeUserSession } from '../utilities/EncryptedStorage';
 import { fetchLogin, fetchMypage } from '../utilities/ServerFunc';
 import SignUpCell from '../components/SignUpCell';
 import CustomAlert from '../components/Alert';
+import UserContext from '../utilities/UserContext';
 
 function formatDate(date: string) {
   const dateObject = new Date(date);
@@ -38,19 +39,22 @@ const MainPage = ({ navigation, route }) => {
   // 로그인
   useEffect(() => {
     async function Login() {
+      console.log("login")
       try {
+        console.log("userId: ", userId, "userPassword: ", userPassword);
         const result = await fetchLogin({
           "userId": userId,
           "password": userPassword,
         });
-        if (result === "Invalid username or password") {
+        if (!result) {
           setAlertMessage('아이디 혹은 비밀번호를 올바르게 입력해주세요.');
           setIsAlert(true);
         } else {
           console.log("받은 토큰: ", result.token);
           await storeUserSession(result.token);
           const userdate = await getUserData();
-          firstLogin(userdate.obj, userdate.obj_date);
+          // firstLogin(userdate.obj, userdate.obj_date);
+          handleLogin();
         }
       } catch (error) {
         console.error('Error fetching user info:', error);
@@ -75,6 +79,12 @@ const MainPage = ({ navigation, route }) => {
   const handleAlertClose = () => {
     setIsAlert(false);
   }
+
+  const { isLogged, setIsLogged } = useContext(UserContext);
+  const handleLogin = () => {
+    // 로그인 처리
+    setIsLogged(true);
+  };
 
   const firstLogin = (value: any, value2: any) => {
     if (value === null && value2 === null) {

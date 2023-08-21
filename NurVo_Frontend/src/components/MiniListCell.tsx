@@ -1,9 +1,11 @@
-import { Platform, StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Body011, Body012, Body021 } from "../utilities/Fonts";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { layoutStyles, screenWidth } from "../utilities/Layout";
 import Colors from "../utilities/Color";
 import { Chapter } from "./ListCellComp";
+import { useNavigation } from "@react-navigation/core";
+import { ChapterStackNavigationProp, HomeStackNavigationProp } from "../utilities/NavigationTypes";
 
 interface miniCellProp {
     step: string;
@@ -40,15 +42,29 @@ function fetchIconColor(item: Chapter) {
     }
 }
 export function MiniListCell({ step, item }: miniCellProp) {
+    const navigation = useNavigation<ChapterStackNavigationProp>();
+
     return (
-        <View style={[miniListCellStyles.Container, { marginRight: 8 , marginBottom: 12}]}>
+        <TouchableOpacity style={[miniListCellStyles.Container, { marginRight: 8 , marginBottom: 12}]} onPress={() => {
+            switch (item.step) {
+                case 1:
+                    navigation.navigate("LessonSecondScreen", { chapterId: item.id, chapter_name: item.name,step: 2 });
+                    return;
+                case 2:
+                    navigation.navigate("LessonThirdScreen", { chapterId: item.id, chapter_name: item.name ,step: 3 });
+                    return;
+                default:
+                    navigation.navigate('LessonFirstScreen', { chapterId: item.id, chapter_name: item.name ,step: 1 });
+                    return;
+            }
+        }}>
             <View style={[layoutStyles.VStackContainer]}>
                 <View style={[miniListCellStyles.Circle, { borderColor: fetchIconColor(item), backgroundColor: fetchBackgroundColor(item), marginBottom: 12}]}>
                     <Ionicons name={"checkmark-outline"} size={24} color={fetchIconColor(item)} />
                 </View>
                 <Body011 text={item.name} color={Colors.GRAY05} />
             </View>
-        </View>
+        </TouchableOpacity>
     )
 }
 

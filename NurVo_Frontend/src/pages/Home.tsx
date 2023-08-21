@@ -103,11 +103,10 @@ function UserInfoHeader() {
           <AnimatedCircularProgress
             size={102}
             width={16}
-            fill={10}
+            fill={100}
             rotation={0}
             tintColor={Colors.MAINGREEN}
             lineCap='round'
-            onAnimationComplete={() => console.log('onAnimationComplete')}
             backgroundColor={Colors.GRAY09} />
         </View>
         <View style={layoutStyles.VStackContainer}>
@@ -203,7 +202,7 @@ export default function Home({ navigation, route }: HomeScreenProps) {
           <MenuTitle text='Today’s Lesson' onPress={() => {
             navigation.navigate('LessonList', { title: "Today’s Lesson", chapters: todays });
           }} />
-          {todays.length > 0 && (<CarouselList gap={8} offset={12} pages={todays} pageWidth={screenWidth - (8 + 12) * 2} />)}
+          {todays.length > 0 && (<CarouselList gap={8} offset={12} pages={todays.slice(0, 3)} pageWidth={screenWidth - (8 + 12) * 2} />)}
           <MenuTitle text='Review' onPress={() => {
             navigation.navigate('LessonList', { title: "Review", chapters: reviews });
           }} />

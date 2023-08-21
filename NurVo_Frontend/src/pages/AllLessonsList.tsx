@@ -1,12 +1,9 @@
 import {
   FlatList,
   ScrollView,
-  SectionList,
-  View
 } from 'react-native';
 import { Fragment, useEffect, useState } from 'react';
-import { ListCell } from '../components/ListCellComp';
-import { Body012, Subtitle011 } from '../utilities/Fonts';
+import { Subtitle011 } from '../utilities/Fonts';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { stopSpeech } from '../utilities/TextToSpeech';
 import { ChapterStackScreenProps, LessonListProps } from '../utilities/NavigationTypes';
@@ -23,6 +20,7 @@ export interface Chapter {
   name: string;
   description?: string;
   topic_id: number;
+  step: number;
 }
 
 export interface Section {
@@ -58,7 +56,8 @@ export default function AllLessonsList({ navigation, route }: ChapterStackScreen
             id: chapter.id,
             name: chapter.name,
             description: chapter.description,
-            topic_id: item.topic.id
+            topic_id: chapter.topic_id,
+            step: chapter.step
           }))
         }));
         setSections(sectionData);
