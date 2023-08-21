@@ -32,16 +32,16 @@ const StudyCard = ({ id, item, style, isAction }: StudyCardProps) => {
   const handleSpeak = async () => {
     if (!isSpeaking) {
       setIsSpeaking(true);
-      speech(item.dialogue, id, item.conversation_id, true, stopSpeech());
+      speech(item.dialogue, item.conversation_id, true, () => { setIsSpeaking(false) });
     }
   }
 
-  useEffect(()=>{
-    if (isAction === 'remove' || isAction === 'keep'){
+  useEffect(() => {
+    if (isAction === 'remove' || isAction === 'keep') {
       stopSpeech();
       setIsSpeaking(false);
     }
-  },[isAction]);
+  }, [isAction]);
 
   return (
     <TouchableOpacity onPress={turnCard} style={styles.container}>
