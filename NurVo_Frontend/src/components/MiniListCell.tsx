@@ -6,9 +6,10 @@ import Colors from "../utilities/Color";
 import { Chapter } from "./ListCellComp";
 import { useNavigation } from "@react-navigation/core";
 import { ChapterStackNavigationProp, HomeStackNavigationProp } from "../utilities/NavigationTypes";
+import { useEffect } from "react";
 
 interface miniCellProp {
-    step: string;
+    step: number;
     item: Chapter;
 }
 
@@ -43,21 +44,25 @@ function fetchIconColor(item: Chapter) {
 }
 export function MiniListCell({ step, item }: miniCellProp) {
     const navigation = useNavigation<ChapterStackNavigationProp>();
+    useEffect(() => {
+        console.log(item.step, step);
+    }, []);
 
     return (
         <TouchableOpacity style={[miniListCellStyles.Container, { marginRight: 8, marginBottom: 12 }]} onPress={() => {
+            console.log(item.step);
             switch (item.step) {
                 case 1:
-                    navigation.navigate("LessonSecondScreen", { chapterId: item.id, chapter_name: item.name, step: item.step });
+                    navigation.navigate("LessonSecondScreen", { chapterId: item.id, chapter_name: item.name, step: step });
                     return;
                 case 2:
-                    navigation.navigate("LessonThirdScreen", { chapterId: item.id, chapter_name: item.name, step: item.step });
+                    navigation.navigate("LessonThirdScreen", { chapterId: item.id, chapter_name: item.name, step: step });
                     return;
                 case 3:
                     navigation.navigate("SelectStepScreen", { chapter: item });
                     return;
                 default:
-                    navigation.navigate('LessonFirstScreen', { chapterId: item.id, chapter_name: item.name, step: item.step });
+                    navigation.navigate('LessonFirstScreen', { chapterId: item.id, chapter_name: item.name, step: step });
                     return;
             }
         }}>

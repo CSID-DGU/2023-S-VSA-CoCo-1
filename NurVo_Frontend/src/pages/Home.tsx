@@ -20,7 +20,7 @@ import { useEffect, useState } from 'react';
 import { play, stopSpeech } from '../utilities/TextToSpeech';
 import { HomeScreenProps } from '../utilities/NavigationTypes';
 import { fetchAttendance, fetchMypage, fetchReviews, fetchTodaysLesson } from '../utilities/ServerFunc';
-import { Chapter, Section } from './LessonsList';
+import { Chapter } from './LessonsList';
 
 const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -45,7 +45,7 @@ interface UserInfo {
   obj_date: string;
 }
 
-function UserInfoHeader({numOfReview}: {numOfReview: number}) {
+function UserInfoHeader(numOfReview: number) {
   const navigation = useNavigation();
 
   const [userdata, setUserdata] = useState({});
@@ -64,6 +64,7 @@ function UserInfoHeader({numOfReview}: {numOfReview: number}) {
       }
     }
     
+    console.log(numOfReview);
     setProgress((numOfReview / 24) * 100);
     getUserData();
   }, []);
@@ -207,6 +208,9 @@ export default function Home({ navigation, route }: HomeScreenProps) {
     setNumOfReview(reviews.length);
   }, [reviews]);
 
+useEffect(() => {
+    console.log(numOfReview);
+  }, [numOfReview]);
   //fetch today's lessons
   useEffect(() => {
     const getData = async () => {
@@ -236,7 +240,7 @@ export default function Home({ navigation, route }: HomeScreenProps) {
     <ScrollView>
       <View style={layoutStyles.VStackContainer}>
         <TouchableHighlight onPress={handleUserPage}>
-          <UserInfoHeader numOfReview={reviews.length}/>
+          <UserInfoHeader numOfReview={numOfReview}/>
         </TouchableHighlight>
         <View style={[layoutStyles.VStackContainer]}>
           <MenuTitle text='Today’s Lesson' onPress={() => {

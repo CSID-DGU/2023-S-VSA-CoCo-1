@@ -67,7 +67,7 @@ const HomeStack = createNativeStackNavigator<HomeStackParamList>();
 const HomeStackScreen = ({ navigation, route }: any) => {
   useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route);
-    if (routeName === 'LessonFirstScreen' || routeName === 'LessonSecondScreen' || routeName === 'LessonThirdScreen') {
+    if (routeName === 'LessonFirstScreen' || routeName === 'LessonSecondScreen' || routeName === 'LessonThirdScreen' || routeName === 'LaunchFirstScreen' || routeName === 'MainPage' || routeName === 'Login' || routeName === 'SignUp') {
       navigation.setOptions({ tabBarStyle: { display: 'none' } });
     } else {
       navigation.setOptions({ tabBarStyle: { display: undefined } });

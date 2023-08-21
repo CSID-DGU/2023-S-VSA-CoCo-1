@@ -1,12 +1,10 @@
 import axios, { AxiosError } from "axios";
-import { RN_HOST_URL, RN_IOS_HOST_URL, TEST_TOKEN, TEST_USERID } from "@env";
+import { RN_HOST_URL, RN_IOS_HOST_URL } from "@env";
 import { Section } from "../pages/LessonsList";
 import { Platform } from "react-native";
 import { retrieveUserSession } from "./EncryptedStorage";
 
 const HOST_URL = (Platform.OS === 'ios') ? RN_IOS_HOST_URL : RN_HOST_URL;
-const TOKEN = TEST_TOKEN;
-const USER_ID = TEST_USERID;
 
 export interface ResponseProps {
     [x: string]: any;
@@ -16,11 +14,12 @@ export interface ResponseProps {
 //topic과 chpater 요청
 export async function fetchAllTopic(): Promise<Section[] | undefined> {
     const url = `${HOST_URL}/api/dialogues`;
+    const USER_TOKEN = await retrieveUserSession();
     try {
         const response = await fetch(url, {
             method: 'GET',
             headers: {
-                'Authorization': 'Bearer ' + TEST_TOKEN
+                'Authorization': 'Bearer ' + USER_TOKEN
             }
         });
         const responseData = await response.json();
@@ -33,11 +32,12 @@ export async function fetchAllTopic(): Promise<Section[] | undefined> {
 //아이디로 챕터에 대한 설명 요청
 export async function fetchChapterDescriptionById(chapterId: string): Promise<ResponseProps | undefined> {
     const url = `${HOST_URL}/api/dialogues/${chapterId}`;
+    const USER_TOKEN = await retrieveUserSession();
     try {
         const response = await fetch(url, {
             method: 'GET',
             headers: {
-                'Authorization': 'Bearer ' + TOKEN
+                'Authorization': 'Bearer ' + USER_TOKEN
             }
         });
         const responseData = await response.json();
@@ -49,11 +49,12 @@ export async function fetchChapterDescriptionById(chapterId: string): Promise<Re
 
 export async function fetchChapterDialogueById(chapterId: number): Promise<ResponseProps | undefined> {
     const url = `${HOST_URL}/api/dialogues/${chapterId}`;
+    const USER_TOKEN = await retrieveUserSession();
     try {
         const response = await fetch(url, {
             method: 'GET',
             headers: {
-                'Authorization': 'Bearer ' + TOKEN
+                'Authorization': 'Bearer ' + USER_TOKEN
             }
         });
         const responseData = await response.json();
@@ -65,11 +66,13 @@ export async function fetchChapterDialogueById(chapterId: number): Promise<Respo
 
 export async function fetchChapterDialogueSecondStepById(chapterId: number): Promise<ResponseProps | undefined> {
     const url = `${HOST_URL}/api/dialogues/${chapterId}/step2`;
+    const USER_TOKEN = await retrieveUserSession();
+
     try {
         const response = await fetch(url, {
             method: 'GET',
             headers: {
-                'Authorization': 'Bearer ' + TOKEN
+                'Authorization': 'Bearer ' + USER_TOKEN
             }
         });
         const responseData = await response.json();
@@ -81,11 +84,12 @@ export async function fetchChapterDialogueSecondStepById(chapterId: number): Pro
 
 export async function fetchChapterDialogueThirdStepById(chapterId: number): Promise<ResponseProps | undefined> {
     const url = `${HOST_URL}/api/dialogues/${chapterId}/step3`;
+    const USER_TOKEN = await retrieveUserSession();
     try {
         const response = await fetch(url, {
             method: 'GET',
             headers: {
-                'Authorization': 'Bearer ' + TOKEN
+                'Authorization': 'Bearer ' + USER_TOKEN
             }
         });
         const responseData = await response.json();
@@ -98,8 +102,9 @@ export async function fetchChapterDialogueThirdStepById(chapterId: number): Prom
 //2단계 정확도 계산(post)
 export async function calculateSecondStepAccuracyWithSentenceId(chapterId: number, sentenceId: string, reply: string): Promise<ResponseProps | undefined> {
     const url = `${HOST_URL}/api/dialogues/${chapterId}/step2?id=${sentenceId}`;
+    const USER_TOKEN = await retrieveUserSession();
     const data = { "reply": reply };
-    const headers = { 'Authorization': `Bearer ${TOKEN}` };
+    const headers = { 'Authorization': `Bearer ${USER_TOKEN}` };
     try {
         const response = await axios.post<ResponseProps>(url, data, { headers });
         return response.data;
@@ -115,8 +120,9 @@ export async function calculateSecondStepAccuracyWithSentenceId(chapterId: numbe
 //3단계 정확도 계산(post)
 export async function calculateThirdStepAccuracyWithSentenceId(chapterId: number, sentenceId: string, reply: string): Promise<ResponseProps | undefined> {
     const url = `${HOST_URL}/api/dialogues/${chapterId}/step3?id=${sentenceId}`;
+    const USER_TOKEN = await retrieveUserSession();
     const data = { "reply": reply };
-    const headers = { 'Authorization': `Bearer ${TOKEN}` };
+    const headers = { 'Authorization': `Bearer ${USER_TOKEN}` };
     try {
         const response = await axios.post<ResponseProps>(url, data, { headers });
         console.log(response.data);
@@ -134,8 +140,9 @@ export async function calculateThirdStepAccuracyWithSentenceId(chapterId: number
 //문장 북마크 저장
 export async function addSentenceBookmark(sentenceId: number): Promise<ResponseProps | undefined> {
     const url = `${HOST_URL}/api/bookmark/`;
+    const USER_TOKEN = await retrieveUserSession();
     const data = { "conversation_id": `${sentenceId}` };
-    const headers = { 'Authorization': `Bearer ${TOKEN}` };
+    const headers = { 'Authorization': `Bearer ${USER_TOKEN}` };
     try {
         const response = await axios.post<ResponseProps>(url, data, { headers });
         return response.data;
@@ -152,8 +159,9 @@ export async function addSentenceBookmark(sentenceId: number): Promise<ResponseP
 //문장 북마크 삭제
 export async function deleteSentenceBookmark(sentenceId: number): Promise<ResponseProps | undefined> {
     const url = `${HOST_URL}/api/bookmark/delete`;
+    const USER_TOKEN = await retrieveUserSession();
     const data = [sentenceId];
-    const headers = { 'Authorization': `Bearer ${TOKEN}` };
+    const headers = { 'Authorization': `Bearer ${USER_TOKEN}` };
     try {
         const response = await axios.post<ResponseProps>(url, data, { headers });
         return response.data;
@@ -207,6 +215,7 @@ export async function fetchBookmark() {
 //학습완료
 export async function completeChapter(chapterId: number, step: number): Promise<ResponseProps | undefined> {
     const url = `${HOST_URL}/api/edu`;
+    const USER_TOKEN = await retrieveUserSession();
     const today = new Date();
     const year = today.getFullYear();
     const month = (today.getMonth() + 1).toString().padStart(2, '0');
@@ -218,7 +227,7 @@ export async function completeChapter(chapterId: number, step: number): Promise<
         "date": date
     };
     console.log(data);
-    const headers = { 'Authorization': `Bearer ${TOKEN}` };
+    const headers = { 'Authorization': `Bearer ${USER_TOKEN}` };
     try {
         const response = await axios.post<ResponseProps>(url, data, { headers });
         return response.data;
@@ -234,11 +243,12 @@ export async function completeChapter(chapterId: number, step: number): Promise<
 
 export async function fetchTodaysLesson(): Promise<ResponseProps | undefined> {
     const url = `${HOST_URL}/api/edu/todayLessons`;
+    const USER_TOKEN = await retrieveUserSession();
     try {
         const response = await fetch(url, {
             method: 'GET',
             headers: {
-                'Authorization': 'Bearer ' + TOKEN
+                'Authorization': 'Bearer ' + USER_TOKEN
             }
         });
         const responseData = await response.json();
@@ -251,11 +261,12 @@ export async function fetchTodaysLesson(): Promise<ResponseProps | undefined> {
 //Reviews
 export async function fetchReviews(): Promise<ResponseProps | undefined> {
     const url = `${HOST_URL}/api/edu/review`;
+    const USER_TOKEN = await retrieveUserSession();
     try {
         const response = await fetch(url, {
             method: 'GET',
             headers: {
-                'Authorization': 'Bearer ' + TOKEN
+                'Authorization': 'Bearer ' + USER_TOKEN
             }
         });
         const responseData = await response.json();

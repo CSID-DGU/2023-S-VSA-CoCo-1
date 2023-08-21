@@ -19,7 +19,7 @@ export interface Chapter {
   id: number;
   name: string;
   description?: string;
-  topic_id: number;
+  topic_id?: number;
   step: number;
 }
 
@@ -86,7 +86,7 @@ export default function AllLessonsList({ navigation, route }: ChapterStackScreen
               data={section.chapter}
               horizontal={true}
               keyExtractor={(item) => item.id.toString()}
-              renderItem={({ item }) => <MiniListCell step="1" item={item} />}
+              renderItem={({ item }) => <MiniListCell step={item.step} item={item} />}
               style={{ flexGrow: 0 }}
               showsHorizontalScrollIndicator={false}
 

@@ -95,7 +95,6 @@ export default function LessonSecond({ navigation, route }: LessonSecondProps) {
   } = state;
 
   useEffect(() => {
-    completeChapter(route.params.chapterId, 2)
     return () => {
       stopSpeech();
     };

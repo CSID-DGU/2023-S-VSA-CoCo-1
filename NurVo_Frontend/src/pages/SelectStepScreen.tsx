@@ -20,6 +20,7 @@ export default function SelectStepScreen({ navigation, route }: SelectStepProp) 
           navigation.navigate("LessonFirstScreen", { chapterId: item.id, chapter_name: item.name, step: item.step });
           return;
         case 2:
+          console.log(item.id, item.name, item.step);
           navigation.navigate("LessonSecondScreen", { chapterId: item.id, chapter_name: item.name, step: item.step });
           return;
         case 3:
@@ -35,7 +36,7 @@ export default function SelectStepScreen({ navigation, route }: SelectStepProp) 
       <ListCell item={item} style={{ backgroundColor: Colors.WHITE }} />
 
       <View style={styles.contentContainer}>
-        <Body012 text={`학습을 완료한 챕터입니다.\n\n학습할 단계를 선택해주세요.`} color={Colors.BLACK} style={{ textAlign: 'center' }} />
+        <Body012 text={`학습을 완료한 챕터입니다.\n\n학습할 단계를 선택해주세요.`} color={Colors.BLACK}/>
 
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={[styles.button, selectedStep === 1 ? styles.selectedButton : null]} onPress={() => handlePress(1)}>
