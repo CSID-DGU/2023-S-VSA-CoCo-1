@@ -32,6 +32,7 @@ import AllLessonsList from './src/pages/AllLessonsList';
 import UserContext, { UserProvider } from './src/utilities/UserContext';
 import SelectStepScreen from './src/pages/SelectStepScreen';
 import { retrieveUserSession } from './src/utilities/EncryptedStorage';
+import LaunchFirstScreen from './src/pages/LaunchFirstScreen';
 
 const Tab = createBottomTabNavigator<RootStackParamList>();
 function BottomTabs() {
@@ -103,7 +104,7 @@ const HomeStackScreen = ({ navigation, route }: any) => {
           <>
             <HomeStack.Screen name="HomeScreen" component={Home} options={{ headerShown: false }} />
             <HomeStack.Screen name="LessonList" component={LessonsList} />
-            <HomeStack.Screen name="SelectStepScreen" component={SelectStepScreen}/>
+            <HomeStack.Screen name="SelectStepScreen" component={SelectStepScreen} />
             <HomeStack.Screen name="LessonFirstScreen" component={LessonFirst} />
             <HomeStack.Screen name="LessonSecondScreen" component={LessonSecond} />
             <HomeStack.Screen name="LessonThirdScreen" component={LessonThird} />
@@ -112,7 +113,8 @@ const HomeStackScreen = ({ navigation, route }: any) => {
           </>
         ) : (
           <>
-            <HomeStack.Screen name="MainPage" component={MainPage} options={{ headerShown: false }}/>
+            <HomeStack.Screen name="LaunchFirstScreen" component={LaunchFirstScreen} options={{ headerShown: false }} />
+            <HomeStack.Screen name="MainPage" component={MainPage} options={{ headerShown: false }} />
             <HomeStack.Screen name="Login" component={Login} />
             <HomeStack.Screen name="SignUp" component={SignUp} />
 
@@ -171,7 +173,7 @@ const ChapterStackScreen = ({ navigation, route }: any) => {
       }}
     >
       <ChapterStack.Screen name="AllLessonsList" component={AllLessonsList} />
-      <ChapterStack.Screen name="SelectStepScreen" component={SelectStepScreen}/>
+      <ChapterStack.Screen name="SelectStepScreen" component={SelectStepScreen} />
       <ChapterStack.Screen name="LessonFirstScreen" component={LessonFirst} />
       <ChapterStack.Screen name="LessonSecondScreen" component={LessonSecond} />
       <ChapterStack.Screen name="LessonThirdScreen" component={LessonThird} />

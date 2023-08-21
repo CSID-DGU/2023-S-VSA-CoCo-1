@@ -10,31 +10,32 @@ export type RootStackParamList = {
 };
 
 export type HomeStackParamList = {
+  LaunchFirstScreen: undefined;
   MainPage: undefined;
   Login: undefined;
   SignUp: undefined;
   HomeScreen: undefined;
-  LessonList: { 
+  LessonList: {
     title?: string,
     chapters?: Chapter[],
-   };
-   SelectStepScreen: {
+  };
+  SelectStepScreen: {
     chapter: Chapter
-   }
-  LessonFirstScreen: { 
+  }
+  LessonFirstScreen: {
     chapterId: number,
     chapter_name: string,
     step: number,
-   };
-  LessonSecondScreen: { 
+  };
+  LessonSecondScreen: {
     chapterId: number,
     chapter_name: string,
     step: number,
-   };
-  LessonThirdScreen: { 
+  };
+  LessonThirdScreen: {
     chapterId: number,
     chapter_name: string,
-    step: number, 
+    step: number,
   };
   MemberDetails: undefined;
   SetUserGoal: undefined;
@@ -52,25 +53,25 @@ export type ChapterStackParamList = {
   AllLessonsList: undefined;
   SelectStepScreen: {
     chapter: Chapter
-   }
-  LessonFirstScreen: { 
+  }
+  LessonFirstScreen: {
     chapterId: number,
     chapter_name: string,
     step: number,
-   };
-  LessonSecondScreen: { 
+  };
+  LessonSecondScreen: {
     chapterId: number,
     chapter_name: string,
     step: number,
-   };
-  LessonThirdScreen: { 
+  };
+  LessonThirdScreen: {
     chapterId: number,
     chapter_name: string,
     step: number,
-   };
+  };
 }
 export type ChapterStackNavigationProp = NativeStackNavigationProp<
-ChapterStackParamList,
+  ChapterStackParamList,
   'AllLessonsList'
 >;
 export interface ChapterStackScreenProps {
@@ -101,31 +102,31 @@ export interface LessonListProps {
 }
 
 //LessonFirstScreen
-type LessonFirstScreenRouteProp = RouteProp<HomeStackParamList | ChapterStackParamList, 'LessonFirstScreen'> ;
-type LessonFirstScreenNavigationProp = NativeStackNavigationProp<HomeStackParamList | ChapterStackParamList, 'LessonFirstScreen'> ;
+type LessonFirstScreenRouteProp = RouteProp<HomeStackParamList | ChapterStackParamList, 'LessonFirstScreen'>;
+type LessonFirstScreenNavigationProp = NativeStackNavigationProp<HomeStackParamList | ChapterStackParamList, 'LessonFirstScreen'>;
 export interface LessonFirstProps {
   navigation: LessonFirstScreenNavigationProp;
   route: LessonFirstScreenRouteProp;
 }
 
 //LessonSecondScreen
-type LessonSecondScreenRouteProp = RouteProp<HomeStackParamList | ChapterStackParamList, 'LessonSecondScreen'> ;
-type LessonSecondScreenNavigationProp = NativeStackNavigationProp<HomeStackParamList | ChapterStackParamList,'LessonSecondScreen'>;
+type LessonSecondScreenRouteProp = RouteProp<HomeStackParamList | ChapterStackParamList, 'LessonSecondScreen'>;
+type LessonSecondScreenNavigationProp = NativeStackNavigationProp<HomeStackParamList | ChapterStackParamList, 'LessonSecondScreen'>;
 export interface LessonSecondProps {
   navigation: LessonSecondScreenNavigationProp;
   route: LessonSecondScreenRouteProp;
 }
 
 //LessonThirdScreen
-type LessonThirdScreenRouteProp = RouteProp<HomeStackParamList | ChapterStackParamList, 'LessonThirdScreen'> ;
-type LessonThirdScreenNavigationProp = NativeStackNavigationProp<HomeStackParamList | ChapterStackParamList, 'LessonThirdScreen'> ;
+type LessonThirdScreenRouteProp = RouteProp<HomeStackParamList | ChapterStackParamList, 'LessonThirdScreen'>;
+type LessonThirdScreenNavigationProp = NativeStackNavigationProp<HomeStackParamList | ChapterStackParamList, 'LessonThirdScreen'>;
 export interface LessonThirdProps {
   navigation: LessonThirdScreenNavigationProp;
   route: LessonThirdScreenRouteProp;
 }
 
-type SelectStepScreenRouteProp = RouteProp<HomeStackParamList | ChapterStackParamList, 'SelectStepScreen'> ;
-type SelectStepScreenNavigationProp = NativeStackNavigationProp<HomeStackParamList | ChapterStackParamList, 'SelectStepScreen'> ;
+type SelectStepScreenRouteProp = RouteProp<HomeStackParamList | ChapterStackParamList, 'SelectStepScreen'>;
+type SelectStepScreenNavigationProp = NativeStackNavigationProp<HomeStackParamList | ChapterStackParamList, 'SelectStepScreen'>;
 export interface SelectStepProp {
   navigation: SelectStepScreenNavigationProp;
   route: SelectStepScreenRouteProp;
