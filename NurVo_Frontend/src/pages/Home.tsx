@@ -19,10 +19,10 @@ import { useNavigation } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
 import { play, stopSpeech } from '../utilities/TextToSpeech';
 import { HomeScreenProps } from '../utilities/NavigationTypes';
-import { fetchMypage, fetchReviews, fetchTodaysLesson } from '../utilities/ServerFunc';
+import { fetchAttendance, fetchMypage, fetchReviews, fetchTodaysLesson } from '../utilities/ServerFunc';
 import { Chapter, Section } from './LessonsList';
 
-const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 const MenuTitle = ({ text, onPress }: { text: string, onPress: () => void }) => {
   return (
@@ -51,6 +51,7 @@ function UserInfoHeader({numOfReview}: {numOfReview: number}) {
   const [userdata, setUserdata] = useState({});
   const [progress, setProgress] = useState(0);
   const [dueDate, setDueDate] = useState(0);
+  const [attendance, setAttendance] = useState<boolean[]>([]);
 
   useEffect(() => {
     async function getUserData() {
@@ -67,18 +68,38 @@ function UserInfoHeader({numOfReview}: {numOfReview: number}) {
     getUserData();
   }, []);
 
+  useEffect(() => {
+    async function getData() {
+      try {
+        const data = await fetchAttendance();
+        setAttendance(convertAttendance(data));
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+      }
+    }
+    
+    setProgress((numOfReview / 24) * 100);
+    getData();
+  }, []);
+
+  type Day = { day: string };
+  function convertAttendance(days: Day[]) {
+    return daysOfWeek.map(dayOfWeek => days.some(d => d.day === dayOfWeek));
+  }
+
 
   interface CircleTextProps {
     text: string;
     backgroundColor?: string;
+    isAttend: boolean;
   }
 
 
 
-  const CircleText = ({ text, backgroundColor }: CircleTextProps) => {
+  const CircleText = ({ text, backgroundColor, isAttend }: CircleTextProps) => {
     return (
       <View style={[styles.circleBackground, { backgroundColor }]}>
-        <Subtext013 text={text} color={Colors.MAINGREEN} />
+        <Subtext013 text={text} color={isAttend ? Colors.WHITE : Colors.MAINGREEN} />
       </View>
     );
   };
@@ -86,8 +107,8 @@ function UserInfoHeader({numOfReview}: {numOfReview: number}) {
   const DaysRow = () => {
     return (
       <View style={[layoutStyles.HStackContainer, { width: screenWidth - 40, paddingTop: 12 }]}>
-        {days.map(day => (
-          <CircleText key={day} text={day} backgroundColor={Colors.WHITE} />
+        {daysOfWeek.map((day, index) => (
+          <CircleText key={day} text={day} backgroundColor={attendance[index] ? Colors.MAINGREEN : Colors.WHITE} isAttend={attendance[index]}/>
         ))}
       </View>
     );

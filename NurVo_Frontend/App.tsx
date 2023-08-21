@@ -31,6 +31,7 @@ import { ChapterStackParamList, HomeStackParamList, MainStackParamList, RootStac
 import AllLessonsList from './src/pages/AllLessonsList';
 import UserContext, { UserProvider } from './src/utilities/UserContext';
 import SelectStepScreen from './src/pages/SelectStepScreen';
+import { retrieveUserSession } from './src/utilities/EncryptedStorage';
 
 const Tab = createBottomTabNavigator<RootStackParamList>();
 function BottomTabs() {
@@ -77,9 +78,11 @@ const HomeStackScreen = ({ navigation, route }: any) => {
   useEffect(() => {
     const checkLogin = async () => {
       try {
-        const value = await EncryptedStorage.getItem('isLogin');
+        const value = await retrieveUserSession();
         if (value !== null) {
           setIsLogged(true);
+        } else {
+          console.log("token", value);
         }
       } catch (error) {
         console.log("token", error);
@@ -109,7 +112,7 @@ const HomeStackScreen = ({ navigation, route }: any) => {
           </>
         ) : (
           <>
-            <HomeStack.Screen name="MainPage" component={MainPage} />
+            <HomeStack.Screen name="MainPage" component={MainPage} options={{ headerShown: false }}/>
             <HomeStack.Screen name="Login" component={Login} />
             <HomeStack.Screen name="SignUp" component={SignUp} />
 

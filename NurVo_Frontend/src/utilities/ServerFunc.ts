@@ -322,3 +322,21 @@ export async function fetchLogin(loginData: {}) {
         }
     }
 }
+
+// 출석
+export async function fetchAttendance() {
+    const url = `${HOST_URL}/api/attendance`;
+    const USER_TOKEN = await retrieveUserSession(); // 자동 로그인 시 스토리지에 있는 토큰 가져온 후 데이터 불러오기
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + USER_TOKEN
+            }
+        });
+        const responseData = await response.json();
+        return responseData;
+    } catch (error) {
+        console.log(error);
+    }
+}
