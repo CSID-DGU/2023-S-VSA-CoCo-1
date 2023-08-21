@@ -124,6 +124,13 @@ export interface LessonThirdProps {
   route: LessonThirdScreenRouteProp;
 }
 
+type SelectStepScreenRouteProp = RouteProp<HomeStackParamList | ChapterStackParamList, 'SelectStepScreen'> ;
+type SelectStepScreenNavigationProp = NativeStackNavigationProp<HomeStackParamList | ChapterStackParamList, 'SelectStepScreen'> ;
+export interface SelectStepProp {
+  navigation: SelectStepScreenNavigationProp;
+  route: SelectStepScreenRouteProp;
+}
+
 
 export type MainStackParamList = {
   MainPage: undefined;

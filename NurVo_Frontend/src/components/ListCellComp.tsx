@@ -22,7 +22,7 @@ export interface Chapter {
     description?: string;
     topic_id?: number;
     topic_name?: string;
-    step?: number;
+    step: number;
     date?: string;
 }
 
@@ -31,17 +31,24 @@ export function ListCell({ item, style }: ListCellProps) {
 
     return (
         <TouchableOpacity style={[listStyles.listCell, style]} onPress={() => {
-            switch (item.step) {
-                case 1:
-                    navigation.navigate("LessonSecondScreen", { chapterId: item.id, chapter_name: item.name,step: 2 });
-                    return;
-                case 2:
-                    navigation.navigate("LessonThirdScreen", { chapterId: item.id, chapter_name: item.name ,step: 3 });
-                    return;
-                default:
-                    navigation.navigate('LessonFirstScreen', { chapterId: item.id, chapter_name: item.name ,step: 1 });
-                    return;
+            
+            if (item.step === 3) {
+                console.log("item.step === 3")
+                navigation.navigate("SelectStepScreen", { chapter: item });
+            } else {
+                switch (item.step) {
+                    case 1:
+                        navigation.navigate("LessonSecondScreen", { chapterId: item.id, chapter_name: item.name,step: 2 });
+                        return;
+                    case 2:
+                        navigation.navigate("LessonThirdScreen", { chapterId: item.id, chapter_name: item.name ,step: 3 });
+                        return;
+                    default:
+                        navigation.navigate('LessonFirstScreen', { chapterId: item.id, chapter_name: item.name ,step: 1 });
+                        return;
+                }
             }
+            
         }}>
             <View style={[layoutStyles.VStackContainer, style, { paddingHorizontal: 20, paddingVertical: 12, marginTop: 28 }]}>
                 <Subtitle011 text={item.name} color={Colors.GRAY03} numberOfLines={1} ellipsizeMode={'tail'} />
