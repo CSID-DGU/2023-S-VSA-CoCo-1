@@ -1,6 +1,5 @@
 import {
   SectionList,
-  View
 } from 'react-native';
 import { useEffect, useState } from 'react';
 import { ListCell } from '../components/ListCellComp';

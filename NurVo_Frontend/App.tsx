@@ -28,6 +28,7 @@ import Login from './src/pages/Login';
 import SignUp from './src/pages/SignUp';
 import HeaderButton from './src/components/HeaderButton';
 import { ChapterStackParamList, HomeStackParamList, MainStackParamList, RootStackParamList } from './src/utilities/NavigationTypes';
+import AllLessonsList from './src/pages/AllLessonsList';
 
 const Tab = createBottomTabNavigator<RootStackParamList>();
 function BottomTabs() {
@@ -132,7 +133,7 @@ const ChapterStackScreen = ({ navigation, route }: any) => {
         headerBackTitleVisible: false,
       }}
     >
-      <ChapterStack.Screen name="LessonList" component={LessonsList} />
+      <ChapterStack.Screen name="AllLessonsList" component={AllLessonsList} />
       <ChapterStack.Screen name="LessonFirstScreen" component={LessonFirst} />
       <ChapterStack.Screen name="LessonSecondScreen" component={LessonSecond} />
       <ChapterStack.Screen name="LessonThirdScreen" component={LessonThird} />

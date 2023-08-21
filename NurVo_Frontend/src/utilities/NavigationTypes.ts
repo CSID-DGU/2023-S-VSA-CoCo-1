@@ -11,6 +11,7 @@ export type RootStackParamList = {
 
 export type HomeStackParamList = {
   HomeScreen: undefined;
+  
   LessonList: { 
     title?: string,
     chapters?: Chapter[],
@@ -43,7 +44,7 @@ export interface HomeStackScreenProps {
 }
 
 export type ChapterStackParamList = {
-  LessonList: { chapters?: Chapter[] };
+  AllLessonsList: undefined;
   LessonFirstScreen: { 
     chapterId: number,
     chapter_name: string,
@@ -62,11 +63,11 @@ export type ChapterStackParamList = {
 }
 export type ChapterScreenNavigationProp = NativeStackNavigationProp<
 ChapterStackParamList,
-  'LessonList'
+  'AllLessonsList'
 >;
 export interface ChapterStackScreenProps {
-  navigation: NativeStackNavigationProp<ChapterStackParamList, 'LessonList'>;
-  route: RouteProp<HomeStackParamList, 'LessonList'>;
+  navigation: NativeStackNavigationProp<ChapterStackParamList, 'AllLessonsList'>;
+  route: RouteProp<ChapterStackParamList, 'AllLessonsList'>;
 }
 
 //HomeScreen

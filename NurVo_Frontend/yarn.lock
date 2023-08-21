@@ -6750,11 +6750,6 @@ react-native-sound@^0.11.2:
   resolved "https://registry.npmjs.org/react-native-sound/-/react-native-sound-0.11.2.tgz"
   integrity sha512-LmGc8lgOK3qecYMVQpyHvww/C+wgT6sWeMpVbOe4NCRGC2yKd4fo4U0KBUo9PO7AqKESO3I/2GZg1/C0+bwiiA==
 
-react-native-status-bar-height@^2.6.0:
-  version "2.6.0"
-  resolved "https://registry.npmjs.org/react-native-status-bar-height/-/react-native-status-bar-height-2.6.0.tgz"
-  integrity sha512-z3SGLF0mHT+OlJDq7B7h/jXPjWcdBT3V14Le5L2PjntjjWM3+EJzq2BcXDwV+v67KFNJic5pgA26cCmseYek6w==
-
 react-native-svg@^13.10.0, react-native-svg@>=7.0.0:
   version "13.11.0"
   resolved "https://registry.npmjs.org/react-native-svg/-/react-native-svg-13.11.0.tgz"
