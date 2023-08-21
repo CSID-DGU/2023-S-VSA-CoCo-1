@@ -1,52 +1,53 @@
 import React, { useEffect, useState } from 'react';
 import { View, Image, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import Restart from 'react-native-restart';
 
 import Colors from '../utilities/Color';
 import { Body012 } from '../utilities/Fonts';
 import { screenWidth, screenHeight } from '../utilities/Layout';
+import { fetchMypage } from '../utilities/ServerFunc';
+import { removeUserSession } from '../utilities/EncryptedStorage';
 import MemberDetailCell from '../components/MemberDetailCell';
 import CustomAlert from '../components/Alert';
 
 import img1 from '../assets/images/기본이미지.png';
-import { fetchMypage } from '../utilities/ServerFunc';
 
 const MenberDetails = ({ navigation, route }) => {
   const [userdata, setUserdate] = useState({});
   const [alertOpen, setAlertOpen] = useState('');
 
   useEffect(() => {
+    async function getUserData() {
+      try {
+        const user = await fetchMypage();
+        console.log(user);
+        setUserdate(user);
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+      }
+    }
+
     getUserData();
   }, []);
 
   useEffect(() => {
+    async function getUserData() {
+      try {
+        const user = await fetchMypage();
+        setUserdate(user);
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+      }
+    }
+
     if (route.params) {
       getUserData();
     }
   }, [route.params]);
 
-  const formatDate = (dateString: Date) => {
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1; // 월은 0부터 시작하므로 1을 더해줍니다.
-    const day = date.getDate();
-  
-    const formattedDate = `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}`;
-    return formattedDate;
-  }
-
-  const getUserData = async() => {
-    try {
-      const user = await fetchMypage();
-      user.obj_date = formatDate(user.obj_date)
-      setUserdate(user);
-    } catch (error) {
-      console.error('Error fetching user info:', error);
-    }
-  }
-
   const openSetUserGoal = () => {
-    navigation.navigate('SetUserGoal', { data: { obj: userdata.obj, obj_date: userdata.obj_date } });
+    navigation.navigate('SetUserGoal', { data: { obj: userdata.obj, obj_date: userdata.obj_date }, prevScreen: 'MemberDetails' });
   }
 
   const logoutAction = () => {
@@ -62,8 +63,13 @@ const MenberDetails = ({ navigation, route }) => {
   }
 
   const handleNext = (value: boolean) => {
-    if (value) console.log("로그아웃 되셨습니다.");
-    else console.log("회원 탈퇴가 완료되셨습니다.");
+    if (value) {
+      console.log("로그아웃 되셨습니다.");
+      removeUserSession();
+      Restart.Restart();
+    } else {
+      console.log("회원 탈퇴가 완료되셨습니다.");
+    }
     setAlertOpen('');
   }
 

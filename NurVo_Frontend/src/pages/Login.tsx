@@ -1,47 +1,87 @@
-import { useState, useCallback } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { useState, useEffect } from 'react';
+import { View, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 
 import Colors from '../utilities/Color';
 import { Body011, Title01 } from '../utilities/Fonts';
 import { screenWidth } from '../utilities/Layout';
+import { storeUserSession } from '../utilities/EncryptedStorage';
+import { fetchLogin, fetchMypage } from '../utilities/ServerFunc';
 import SignUpCell from '../components/SignUpCell';
 import CustomAlert from '../components/Alert';
-import EncryptedStorage from 'react-native-encrypted-storage';
+
+function formatDate(date: string) {
+  const dateObject = new Date(date);
+  const year = dateObject.getFullYear();
+  const month = (dateObject.getMonth() + 1).toString().padStart(2, "0");
+  const day = dateObject.getDate();
+
+  const formattedDate = `${year}.${month}.${day}`;
+  return formattedDate;
+}
+
+const getUserData = async () => {
+  try {
+    const user = await fetchMypage();
+    return user;
+  } catch (error) {
+    console.error('Error fetching user info:', error);
+  }
+}
 
 const MainPage = ({ navigation, route }) => {
-  const [loading, setLoading] = useState(false);
+  const [isLogin, setIsLogin] = useState(false);
   const [userId, setUserId] = useState('');
   const [userPassword, setUserPassword] = useState('');
   const [isAlret, setIsAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
 
-  const onSubmit = async() => {
-    console.log("로그인");
-    if (userId === "coco1111" && userPassword === "coco1111") {
-    //   try {
-    //     await EncryptedStorage.setItem(
-    //       "accessToken123",
-    //       JSON.stringify({
-    //         age: 22,
-    //         token: "ACCESS_sTOKEN",
-    //         username: "cocos",
-    //       })
-    //     );
-    //     // Congrats! You've just stored your first value!
-    //   } catch (error) {
-    //     // There was an error on the native side
-    //   }
-    } else if (userId === '' || userPassword === '') {
+  // 로그인
+  useEffect(() => {
+    async function Login() {
+      try {
+        const result = await fetchLogin({
+          "userId": userId,
+          "password": userPassword,
+        });
+        if (result === "Invalid username or password") {
+          setAlertMessage('아이디 혹은 비밀번호를 올바르게 입력해주세요.');
+          setIsAlert(true);
+        } else {
+          console.log("받은 토큰: ", result.token);
+          await storeUserSession(result.token);
+          const userdate = await getUserData();
+          firstLogin(userdate.obj, userdate.obj_date);
+        }
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+      }
+    }
+
+    if (isLogin) {
+      Login();
+      setIsLogin(false);
+    }
+  }, [isLogin]);
+
+  const onSubmit = async () => {
+    if (userId === '' || userPassword === '') {
       setAlertMessage('아이디와 비밀번호를 모두 입력해주세요.');
       setIsAlert(true);
     } else {
-      setAlertMessage('아이디나 비밀번호가 일치하지 않습니다.');
-      setIsAlert(true);
+      setIsLogin(true);
     }
   }
 
   const handleAlertClose = () => {
     setIsAlert(false);
+  }
+
+  const firstLogin = (value: any, value2: any) => {
+    if (value === null && value2 === null) {
+      navigation.navigate('SetUserGoalInital', { data: { obj: 1, obj_date: formatDate(Date.now()) }, prevScreen: 'Login' });
+    } else {
+      navigation.navigate('HomeScreen');
+    }
   }
 
   return (

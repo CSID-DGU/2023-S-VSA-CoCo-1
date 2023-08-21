@@ -10,6 +10,7 @@ interface DateTimePickerModalProps {
 
 const DateTimePickerModal = ({ isAction, onDate, onDisable, onAlertAction }: DateTimePickerModalProps) => {
   const [isDisable, setIsdisable] = useState(false);
+  const minimumDate = new Date();
 
   useEffect(() => {
     if (isAction) setIsdisable(true);
@@ -21,11 +22,11 @@ const DateTimePickerModal = ({ isAction, onDate, onDisable, onAlertAction }: Dat
   };
 
   const handleNext = (pickedDate) => {
-    if (pickedDate > Date.now()) {
+    if (pickedDate > minimumDate) {
       const year = pickedDate.getFullYear().toString();
-      const month = (pickedDate.getMonth() + 1).toString();
-      const day = pickedDate.getDate().toString();
-      onDate(`${year}-${month}-${day}`);
+      const month = (pickedDate.getMonth() + 1).toString().padStart(2, "0");
+      const day = pickedDate.getDate().toString().padStart(2, "0");
+      onDate(`${year}.${month}.${day}`);
     } else {
       onAlertAction(true);
     }
@@ -38,6 +39,7 @@ const DateTimePickerModal = ({ isAction, onDate, onDisable, onAlertAction }: Dat
         isVisible={isDisable}
         onConfirm={handleNext}
         onCancel={handleClosed}
+        minimumDate={minimumDate} // 최소 날짜 설정
       />
     </>
   );

@@ -1,8 +1,9 @@
 import axios, { AxiosError } from "axios";
 import { RN_HOST_URL, TEST_TOKEN } from "@env";
+import { retrieveUserSession } from "./EncryptedStorage";
 
 const HOST_URL = RN_HOST_URL;
-const TOKEN = TEST_TOKEN;
+const TOKEN = TEST_TOKEN; // 스토리지에 토큰을 저장할 거면 추후 지워도 될거 같아요!
 
 export interface ResponseProps {
     [x: string]: any;
@@ -108,6 +109,7 @@ export async function calculateSecondStepAccuracyWithSentenceId(chapterId:number
         }
     }
 } 
+
 //3단계 정확도 계산(post)
 export async function calculateThirdStepAccuracyWithSentenceId(chapterId:number, sentenceId: string, reply: string): Promise<ResponseProps | undefined> {
     const url = `${HOST_URL}/api/dialogues/${chapterId}/step3?id=${sentenceId}`;
@@ -167,8 +169,9 @@ export async function deleteSentenceBookmark( sentenceId: number, userId: string
 //라이브러리에서 북마크 삭제
 export async function deleteLibraryBookmark( sentenceId: [] ): Promise<ResponseProps | undefined> {
   const url = `${HOST_URL}/api/bookmark/delete`;
+  const USER_TOKEN = await retrieveUserSession(); // 자동 로그인 시 스토리지에 있는 토큰 가져온 후 데이터 불러오기
   const data = sentenceId;
-  const headers = { 'Authorization': `Bearer ${TOKEN}` };
+  const headers = { 'Authorization': `Bearer ${USER_TOKEN}` };
   try {
       const response = await axios.post<ResponseProps>(url, data, { headers });
       return response.data;
@@ -185,11 +188,12 @@ export async function deleteLibraryBookmark( sentenceId: [] ): Promise<ResponseP
 //북마크 불러오기
 export async function fetchBookmark() {
     const url = `${HOST_URL}/api/bookmark`;
+    const USER_TOKEN = await retrieveUserSession(); // 자동 로그인 시 스토리지에 있는 토큰 가져온 후 데이터 불러오기
     try {
       const response = await fetch(url, {
         method: 'GET',
         headers: {
-            'Authorization': 'Bearer ' + TOKEN
+            'Authorization': 'Bearer ' + USER_TOKEN
         }
       });
         const responseData = await response.json();
@@ -202,11 +206,13 @@ export async function fetchBookmark() {
 //회원 정보 불러오기
 export async function fetchMypage() {
   const url = `${HOST_URL}/api/auth/mypage`;
+  const USER_TOKEN = await retrieveUserSession(); // 자동 로그인 시 스토리지에 있는 토큰 가져온 후 데이터 불러오기
+  console.log(USER_TOKEN);
   try {
     const response = await fetch(url, {
       method: 'GET',
       headers: {
-          'Authorization': 'Bearer ' + TOKEN
+          'Authorization': 'Bearer ' + USER_TOKEN
       }
     });
     const userInfo = await response.json();
@@ -220,10 +226,28 @@ export async function fetchMypage() {
 // 사용자 목표 변경
 export async function updateUserInfo(updateData: {}) {
   const url = `${HOST_URL}/api/auth/mypage`;
+  const USER_TOKEN = await retrieveUserSession(); // 자동 로그인 시 스토리지에 있는 토큰 가져온 후 데이터 불러오기
   const data = updateData;
-  const headers = { 'Authorization': `Bearer ${TOKEN}` };
+  const headers = { 'Authorization': `Bearer ${USER_TOKEN}` };
   try {
       const response = await axios.post<ResponseProps>(url, data, { headers });
+      return response.data;
+  } catch (error) {
+      if (axios.isAxiosError(error)) {
+          const axiosError = error as AxiosError;
+          console.error(axiosError.message);
+      } else {
+          console.error(error);
+      }
+  }
+}
+
+// 로그인화면에서 로그인
+export async function fetchLogin(loginData: {}) {
+  const url = `${HOST_URL}/api/auth/login`;
+  const data = loginData;
+  try {
+      const response = await axios.post<ResponseProps>(url, data);
       return response.data;
   } catch (error) {
       if (axios.isAxiosError(error)) {
