@@ -32,20 +32,19 @@ export function ListCell({ item, style }: ListCellProps) {
     return (
         <TouchableOpacity style={[listStyles.listCell, style]} onPress={() => {
             
-            if (item.step === 3) {
-                navigation.navigate("SelectStepScreen", { chapter: item });
-            } else {
-                switch (item.step) {
-                    case 1:
-                        navigation.navigate("LessonSecondScreen", { chapterId: item.id, chapter_name: item.name, step: item.step });
-                        return;
-                    case 2:
-                        navigation.navigate("LessonThirdScreen", { chapterId: item.id, chapter_name: item.name, step: item.step });
-                        return;
-                    default:
-                        navigation.navigate('LessonFirstScreen', { chapterId: item.id, chapter_name: item.name, step: item.step });
-                        return;
-                }
+            switch (item.step) {
+                case 1:
+                    navigation.navigate("LessonSecondScreen", { chapterId: item.id, chapter_name: item.name, step: item.step });
+                    return;
+                case 2:
+                    navigation.navigate("LessonThirdScreen", { chapterId: item.id, chapter_name: item.name, step: item.step });
+                    return;
+                case 3:
+                    navigation.navigate("SelectStepScreen", { chapter: item });
+                    return;
+                default:
+                    navigation.navigate('LessonFirstScreen', { chapterId: item.id, chapter_name: item.name, step: item.step });
+                    return;
             }
             
         }}>
