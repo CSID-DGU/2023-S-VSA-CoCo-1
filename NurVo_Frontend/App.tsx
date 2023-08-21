@@ -194,51 +194,46 @@ const MainStackScreen = ({ navigation, route }: any) => {
   return (
     <MainStack.Navigator
       screenOptions={{
+        headerShown: true,
         headerTintColor: Colors.BLACK,
         headerBackTitleVisible: false,
       }}
     >
-      <MainStack.Screen name="MainPage" component={MainPage} options={{ headerShown: false }} />
-      <MainStack.Screen name="Login" component={Login} options={{ headerShown: false }} />
-      <MainStack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }} />
-      <MainStack.Screen name="SetUserGoalinital" component={SetUserGoal} />
-      <MainStack.Screen name="HomeScreen" component={Home} options={{ headerShown: false }} />
-      <MainStack.Screen name="LessonList" component={LessonsList} />
-      <MainStack.Screen name="LessonFirstScreen" component={LessonFirst} />
-      <MainStack.Screen name="LessonSecondScreen" component={LessonSecond} />
-      <MainStack.Screen name="LessonThirdScreen" component={LessonThird} />
-      <MainStack.Screen name="MemberDetails" component={MemberDetails} />
-      <MainStack.Screen name="SetUserGoal" component={SetUserGoal} />
+      <MainStack.Screen name="MainPage" component={MainPage} />
+      <MainStack.Screen name="Login" component={Login} />
+      <MainStack.Screen name="SignUp" component={SignUp} />
     </MainStack.Navigator>
   );
 }
 
-
 function App(): JSX.Element {
+  const [isLogin, setIsLogin] = useState<boolean>(false);
   const [initialRoute, setInitialRoute] = useState('MainStackScreen');
 
-  useLayoutEffect(() => {
-    const checkTokenAndSetInitialRoute = async () => {
-      const accessToken = await retrieveUserSession('ACCESS_SECRET');
-      console.log("시작: ", accessToken)
+  // 계속 로그인
+  // const [initialRoute, setInitialRoute] = useState('Home');
 
-      if (accessToken) {
-        setInitialRoute('Home');
-        console.log("시작: ", initialRoute)
-      }
-    };
-    checkTokenAndSetInitialRoute();
-  });
+  // useEffect(() => {
+  //   const checkTokenAndSetInitialRoute = async () => {
+  //     try {
+  //       const accessToken = await EncryptedStorage.getItem('accessToken');
+
+  //       if (accessToken) {
+  //         setInitialRoute('Home');
+  //       } 
+  //     } catch (error) {
+  //       // 에러 메세지
+  //     }
+  //   };
+
+  //   checkTokenAndSetInitialRoute();
+  // }, [initialRoute]);
 
   return (
     <NavigationContainer>
-      {initialRoute === "MainStackScreen" ?
-        <AutoBottomTabs />
-        :
-        <BottomTabs />
-      }
+      {isLogin ? <BottomTabs /> : <MainStackScreen />}
     </NavigationContainer>
-  ); s
+  );
 };
 
 export default App;
