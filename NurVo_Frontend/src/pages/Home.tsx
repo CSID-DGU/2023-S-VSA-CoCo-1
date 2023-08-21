@@ -16,9 +16,9 @@ import { CarouselList } from '../components/CarouselListComp';
 import { ListCell } from '../components/ListCellComp';
 import { useNavigation } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
-import { stopSpeech } from '../utilities/TextToSpeech';
+import { play, stopSpeech } from '../utilities/TextToSpeech';
 import { HomeScreenProps } from '../utilities/NavigationTypes';
-import { fetchAllTopic, fetchReviews } from '../utilities/ServerFunc';
+import { fetchAllTopic, fetchReviews, fetchTodaysLesson } from '../utilities/ServerFunc';
 import { Chapter, Section } from './LessonsList';
 
 const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -126,39 +126,25 @@ interface Review {
   step: number;
   topic_name: string;
 }
+
+interface Todays {
+  topic_id: number;
+  chapter_id: number;
+  name: string;
+  step: number;
+  date: string;
+}
+
+
 export default function Home({ navigation, route }: HomeScreenProps) {
 
-  const [sections, setSections] = useState<Section[]>([]);
   const [todays, setTodays] = useState<Chapter[]>([]);
   const [reviews, setReviews] = useState<Chapter[]>([]);
 
   useEffect(() => {
     stopSpeech();
-  }, []);
+  }, [play]);
 
-  //TODO: fetch today's lesson data로 변경 필요
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        const data = await fetchAllTopic();
-        if (!data) return;
-        const sectionData: Section[] = data.map(item => ({
-          topic: item.topic,
-          chapter: item.chapter.map(chapter => ({
-            id: chapter.id,
-            name: chapter.name,
-            description: chapter.description,
-            topic_id: chapter.topic_id
-          }))
-        }));
-        setSections(sectionData);
-
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    getData();
-  }, []);
   //fetch reviews
   useEffect(() => {
     const getData = async () => {
@@ -181,6 +167,28 @@ export default function Home({ navigation, route }: HomeScreenProps) {
     getData();
   }, []);
 
+  //fetch today's lessons
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const data = await fetchTodaysLesson();
+        if (!data) return;
+        console.log("todays reviews", data);
+        const sectionData: Chapter[] = data.map((item: Todays) => ({
+          id: item.chapter_id,
+          name: item.name,
+          description: item.topic_id.toString(),
+          step: item.step
+        }));
+        setTodays(sectionData);
+
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getData();
+  }, []);
+
   const handleUserPage = () => {
     navigation.navigate('MemberDetails');
   }
@@ -193,9 +201,9 @@ export default function Home({ navigation, route }: HomeScreenProps) {
         </TouchableHighlight>
         <View style={[layoutStyles.VStackContainer]}>
           <MenuTitle text='Today’s Lesson' onPress={() => {
-            navigation.navigate('LessonList', { title: "Today’s Lesson", chapters: sections[1].chapter });
+            navigation.navigate('LessonList', { title: "Today’s Lesson", chapters: todays });
           }} />
-          {sections.length > 0 && (<CarouselList gap={8} offset={12} pages={sections[1].chapter} pageWidth={screenWidth - (8 + 12) * 2} />)}
+          {todays.length > 0 && (<CarouselList gap={8} offset={12} pages={todays} pageWidth={screenWidth - (8 + 12) * 2} />)}
           <MenuTitle text='Review' onPress={() => {
             navigation.navigate('LessonList', { title: "Review", chapters: reviews });
           }} />

@@ -34,10 +34,13 @@ export function ListCell({ item, style }: ListCellProps) {
             switch (item.step) {
                 case 1:
                     navigation.navigate("LessonSecondScreen", { chapterId: item.id, chapter_name: item.name,step: 2 });
+                    return;
                 case 2:
                     navigation.navigate("LessonThirdScreen", { chapterId: item.id, chapter_name: item.name ,step: 3 });
+                    return;
                 default:
                     navigation.navigate('LessonFirstScreen', { chapterId: item.id, chapter_name: item.name ,step: 1 });
+                    return;
             }
         }}>
             <View style={[layoutStyles.VStackContainer, style, { paddingHorizontal: 20, paddingVertical: 12, marginTop: 28 }]}>

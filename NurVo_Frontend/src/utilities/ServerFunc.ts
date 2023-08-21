@@ -232,6 +232,22 @@ export async function completeChapter(chapterId: number, step: number): Promise<
     }
 }
 
+export async function fetchTodaysLesson(): Promise<ResponseProps | undefined> {
+    const url = `${HOST_URL}/api/edu/todayLessons`;
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + TOKEN
+            }
+        });
+        const responseData = await response.json();
+        return responseData;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 //Reviews
 export async function fetchReviews(): Promise<ResponseProps | undefined> {
     const url = `${HOST_URL}/api/edu/review`;
