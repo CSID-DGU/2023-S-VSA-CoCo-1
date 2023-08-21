@@ -3,6 +3,7 @@ import {
   StyleSheet,
   View,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Voice, {
@@ -188,10 +189,10 @@ class VoiceRecordButton extends Component<Props, State> {
             </View>
           </TouchableOpacity>
         )}
-        <TouchableOpacity style={voiceStyle.sideButton} onPress={this.onClickInputMode}>
+        {Platform.OS === 'ios' ?? (<TouchableOpacity style={voiceStyle.sideButton} onPress={this.onClickInputMode}>
           <Ionicons name={this.state.isVoiceMode ? 'keypad' : 'mic'} size={30} color={Colors.MAINGREEN} />
           <Subtext013 text={this.state.isVoiceMode ? "키보드 모드" : "음성 모드"} color={Colors.MAINGREEN} />
-        </TouchableOpacity>
+        </TouchableOpacity>)}
       </View>
     );
   }
