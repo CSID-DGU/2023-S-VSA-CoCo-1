@@ -71,7 +71,7 @@ export default function AllLessonsList({ navigation, route }: ChapterStackScreen
   }, []);
 
   useEffect(() => {
-    navigation.setOptions({ title: "전체 학습 리스트" });
+    navigation.setOptions({ title: "All Lessons" });
   }, []);
 
   return (

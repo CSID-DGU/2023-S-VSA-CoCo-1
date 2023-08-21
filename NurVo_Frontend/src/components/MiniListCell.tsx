@@ -46,7 +46,7 @@ export function MiniListCell({ step, item }: miniCellProp) {
                 <View style={[miniListCellStyles.Circle, { borderColor: fetchIconColor(item), backgroundColor: fetchBackgroundColor(item), marginBottom: 12}]}>
                     <Ionicons name={"checkmark-outline"} size={24} color={fetchIconColor(item)} />
                 </View>
-                <Body011 text="conversation1" color={Colors.GRAY05} />
+                <Body011 text={item.name} color={Colors.GRAY05} />
             </View>
         </View>
     )
