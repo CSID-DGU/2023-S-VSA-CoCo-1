@@ -37,7 +37,7 @@ const MainPage = ({ navigation }: { navigation: any }) => {
           <Body011 text='로그인' color={Colors.WHITE} style={{ textAlign: 'center' }} />
         </TouchableOpacity>
         <TouchableOpacity style={[styles.btn, styles.signUpBtn]} onPress={goSignUp}>
-          <Body011 text='회원가입' color={Colors.BLACK} style={{ textAlign: 'center' }} />
+          <Body011 text='회원가입' color={Colors.MAINGREEN} style={{ textAlign: 'center' }} />
         </TouchableOpacity>
       </View>
 
