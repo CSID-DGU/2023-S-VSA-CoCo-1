@@ -289,9 +289,10 @@ export const getAllTodayLessons = async (user_id, day) => {
     const obj = await client.query('select obj from public.user where id = $1', [user_id])  // user obj
     const query = `
     select 
-    c.topic_id, c.id as chapter_id, c.name, e.step, TO_CHAR(e.date, 'YYYY-MM-DD') as date
+    c.topic_id, t.name as topic_name, c.id as chapter_id, c.name as chapter_name, e.step, TO_CHAR(e.date, 'YYYY-MM-DD') as date
     from chapter c
     left join edu e on e.chapter_id = c.id
+    left join topic t on c.topic_id = t.id
     where not exists(
       select 1
       from edu e
