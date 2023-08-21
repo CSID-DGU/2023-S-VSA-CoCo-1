@@ -26,6 +26,7 @@ export default function LessonFirst({ navigation, route }: LessonFirstProps) {
     messages: [],
     showAlert: false,
     isSpeaking: [],
+    sound: true,
   };
 
   const reducer = (state: typeof initialState, action: { type: string; payload?: any }) => {
@@ -38,6 +39,8 @@ export default function LessonFirst({ navigation, route }: LessonFirstProps) {
         return { ...state, showAlert: action.payload };
       case 'SET_IS_SPEAKING':
         return { ...state, isSpeaking: action.payload };
+      case 'SET_SOUND':
+        return { ...state, sound: action.payload };
       default:
         return state;
     }
@@ -49,6 +52,7 @@ export default function LessonFirst({ navigation, route }: LessonFirstProps) {
     messages,
     showAlert,
     isSpeaking,
+    sound,
   } = state;
 
   useEffect(() => {
@@ -114,7 +118,7 @@ export default function LessonFirst({ navigation, route }: LessonFirstProps) {
   };
 
   const handleNext = () => {
-    completeChapter(route.params.chapterId, 1)
+    completeChapter(route.params.chapterId, route.params.step > 1 ? route.params.step : 1)
     navigation.pop();
     navigation.navigate("LessonSecondScreen", { chapterId: route.params.chapterId, chapter_name: route.params.chapter_name, step: 2 });
   };

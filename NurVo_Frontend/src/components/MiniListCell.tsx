@@ -45,21 +45,24 @@ export function MiniListCell({ step, item }: miniCellProp) {
     const navigation = useNavigation<ChapterStackNavigationProp>();
 
     return (
-        <TouchableOpacity style={[miniListCellStyles.Container, { marginRight: 8 , marginBottom: 12}]} onPress={() => {
+        <TouchableOpacity style={[miniListCellStyles.Container, { marginRight: 8, marginBottom: 12 }]} onPress={() => {
             switch (item.step) {
                 case 1:
-                    navigation.navigate("LessonSecondScreen", { chapterId: item.id, chapter_name: item.name,step: 2 });
+                    navigation.navigate("LessonSecondScreen", { chapterId: item.id, chapter_name: item.name, step: item.step });
                     return;
                 case 2:
-                    navigation.navigate("LessonThirdScreen", { chapterId: item.id, chapter_name: item.name ,step: 3 });
+                    navigation.navigate("LessonThirdScreen", { chapterId: item.id, chapter_name: item.name, step: item.step });
+                    return;
+                case 3:
+                    navigation.navigate("SelectStepScreen", { chapter: item });
                     return;
                 default:
-                    navigation.navigate('LessonFirstScreen', { chapterId: item.id, chapter_name: item.name ,step: 1 });
+                    navigation.navigate('LessonFirstScreen', { chapterId: item.id, chapter_name: item.name, step: item.step });
                     return;
             }
         }}>
             <View style={[layoutStyles.VStackContainer]}>
-                <View style={[miniListCellStyles.Circle, { borderColor: fetchIconColor(item), backgroundColor: fetchBackgroundColor(item), marginBottom: 12}]}>
+                <View style={[miniListCellStyles.Circle, { borderColor: fetchIconColor(item), backgroundColor: fetchBackgroundColor(item), marginBottom: 12 }]}>
                     <Ionicons name={"checkmark-outline"} size={24} color={fetchIconColor(item)} />
                 </View>
                 <Body011 text={item.name} color={Colors.GRAY05} />

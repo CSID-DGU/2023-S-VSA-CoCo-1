@@ -215,7 +215,7 @@ export default function LessonSecond({ navigation, route }: LessonSecondProps) {
   };
 
   const handleNext = () => {
-    completeChapter(route.params.chapterId, 2)
+    completeChapter(route.params.chapterId, route.params.step > 2 ? route.params.step : 2)
     navigation.pop();
     navigation.navigate("LessonThirdScreen", { chapterId: route.params.chapterId, chapter_name: route.params.chapter_name, step: 3 });
   };

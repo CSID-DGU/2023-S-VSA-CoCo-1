@@ -23,29 +23,6 @@ import { Chapter, Section } from './LessonsList';
 
 const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
-const todayLessons = [
-  {
-    id: 1,
-    name: 'Hospital life guidance',
-    description: 'location of call bell, meal times, shower times, etc.',
-    topic_id: 1,
-  },
-  {
-    id: 2,
-    name: '1 Hospital life guidance',
-    description: '1 location of call bell, meal times, shower times, etc.',
-    checked: true,
-    topic_id: 1,
-  },
-  {
-    id: 3,
-    name: '2 Hospital life guidance',
-    description: '2 location of call bell, meal times, shower times, etc.',
-    checked: true,
-    topic_id: 1,
-  }
-]
-
 const MenuTitle = ({ text, onPress }: { text: string, onPress: () => void }) => {
   return (
     <View style={[layoutStyles.HStackContainer, { marginTop: 20, paddingTop: 12, paddingHorizontal: 20 }]}>
@@ -85,6 +62,7 @@ function UserInfoHeader() {
       </View>
     );
   };
+
 
   return (
     <View style={styles.headerBackground}>

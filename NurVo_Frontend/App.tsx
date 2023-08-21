@@ -167,7 +167,7 @@ const ChapterStackScreen = ({ navigation, route }: any) => {
         headerBackTitleVisible: false,
       }}
     >
-      <ChapterStack.Screen name="AllLessonsList" component={AllLessonsList} options={{ headerShown: false }} />
+      <ChapterStack.Screen name="AllLessonsList" component={AllLessonsList} />
       <ChapterStack.Screen name="SelectStepScreen" component={SelectStepScreen}/>
       <ChapterStack.Screen name="LessonFirstScreen" component={LessonFirst} />
       <ChapterStack.Screen name="LessonSecondScreen" component={LessonSecond} />

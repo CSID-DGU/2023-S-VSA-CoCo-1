@@ -17,13 +17,13 @@ export default function SelectStepScreen({ navigation, route }: SelectStepProp) 
     if (selectedStep !== null) {
       switch (selectedStep) {
         case 1:
-          navigation.navigate("LessonFirstScreen", { chapterId: item.id, chapter_name: item.name, step: 1 });
+          navigation.navigate("LessonFirstScreen", { chapterId: item.id, chapter_name: item.name, step: item.step });
           return;
         case 2:
-          navigation.navigate("LessonSecondScreen", { chapterId: item.id, chapter_name: item.name, step: 2 });
+          navigation.navigate("LessonSecondScreen", { chapterId: item.id, chapter_name: item.name, step: item.step });
           return;
         case 3:
-          navigation.navigate('LessonThirdScreen', { chapterId: item.id, chapter_name: item.name, step: 3 });
+          navigation.navigate('LessonThirdScreen', { chapterId: item.id, chapter_name: item.name, step: item.step });
           return;
         default:
           return;
