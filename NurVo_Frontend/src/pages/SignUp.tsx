@@ -5,6 +5,7 @@ import axios from 'axios';
 
 import Colors from '../utilities/Color';
 import { Body011 } from '../utilities/Fonts';
+import { RN_HOST_URL } from "@env";
 
 import SignUpCell from '../components/SignUpCell';
 import IndentifyModal from '../components/IndentifyModal';
@@ -64,7 +65,7 @@ const SignUp = ({ navigation }) => {
         id,
       }
       try {
-        const result = await axios.post('http://10.0.2.2:5000/api/signup/id', checkIdData);
+        const result = await axios.post(`${RN_HOST_URL}/api/signup/id`, checkIdData);
         if (result.data.message === '사용 가능한 아이디입니다.') {
           setCheckId(true);
           setAlretMessages(result.data.message);
@@ -86,7 +87,7 @@ const SignUp = ({ navigation }) => {
       phone_number,
     }
     try {
-      const result = await axios.post('http://10.0.2.2:5000/api/signup/identify', identifyData);
+      const result = await axios.post(`${RN_HOST_URL}/api/signup/identify`, identifyData);
       setIdentifyNumber(result.data.Number);
     } catch (e) {
       console.log(e);
@@ -117,7 +118,7 @@ const SignUp = ({ navigation }) => {
     try {
       await validationSchema.validate(signUpData, { abortEarly: false });
       // 유효성 검사를 통과한 경우, 회원가입 처리 로직을 실행합니다.
-      const result = await axios.post('http://10.0.2.2:5000/api/signup', signUpData);
+      const result = await axios.post(`${RN_HOST_URL}/api/signup`, signUpData);
       if (result.data.message === '회원가입 성공') {
         navigation.navigate('MainPage');
       }
