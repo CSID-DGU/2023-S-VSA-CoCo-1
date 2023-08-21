@@ -32,16 +32,13 @@ const StudyCard = ({ id, item, style, isAction }: StudyCardProps) => {
   const handleSpeak = async () => {
     if (!isSpeaking) {
       setIsSpeaking(true);
-      speech(item.dialogue, id, item.conversation_id, true, async () => {
-        await stopSpeech(); // Assuming stopSpeech is an async function
-        await setIsSpeaking(false);
-      });
+      speech(item.dialogue, id, item.conversation_id, true, stopSpeech());
     }
   }
 
   useEffect(()=>{
     if (isAction === 'remove' || isAction === 'keep'){
-      stopSpeech(); // Assuming stopSpeech is an async function
+      stopSpeech();
       setIsSpeaking(false);
     }
   },[isAction]);
