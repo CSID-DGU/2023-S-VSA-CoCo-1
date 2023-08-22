@@ -95,7 +95,7 @@ function UserInfoHeader({ numOfReview }: { numOfReview: number }) {
   //최초 로그인 검사 -> 목표가 설정되어 있는지 확인
   useEffect(() => {
     async function checkFirstLogin() {
-      if((userdata.obj === null || userdata.obj === "") && (userdata.obj === null || userdata.obj === "")) {
+      if((userdata.obj === null || userdata.obj === "") || (userdata.obj_date === null || userdata.obj_date === "")) {
         navigation.navigate('SetUserGoal', { data: { obj: 1, obj_date: formatDate(Date.now()) }, prevScreen: 'HomeScreen' });
       }
     }
