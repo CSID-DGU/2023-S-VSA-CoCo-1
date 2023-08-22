@@ -82,15 +82,26 @@ function UserInfoHeader({ numOfReview }: { numOfReview: number }) {
     }, [])
   );
 
+  function formatDate(date: string) {
+    const dateObject = new Date(date);
+    const year = dateObject.getFullYear();
+    const month = (dateObject.getMonth() + 1).toString().padStart(2, "0");
+    const day = dateObject.getDate();
+  
+    const formattedDate = `${year}.${month}.${day}`;
+    return formattedDate;
+  }
+
+  //최초 로그인 검사 -> 목표가 설정되어 있는지 확인
   useEffect(() => {
     async function checkFirstLogin() {
-      const firstLogin = await isFirstLogin(userdata.id);
-      if (firstLogin) {
-        navigation.navigate('SetUserGoalInital', { data: { obj: 1, obj_date: formatDate(Date.now()) }, prevScreen: 'HomeScreen' });
+      if((userdata.obj === null || userdata.obj === "") && (userdata.obj === null || userdata.obj === "")) {
+        navigation.navigate('SetUserGoal', { data: { obj: 1, obj_date: formatDate(Date.now()) }, prevScreen: 'HomeScreen' });
       }
     }
     checkFirstLogin();
-  }, [userdata.id])
+  }, [userdata])
+
   useEffect(() => {
     setProgress((numOfReview / 24) * 100);
   }, [numOfReview]);
