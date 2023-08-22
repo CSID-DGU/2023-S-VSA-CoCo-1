@@ -193,7 +193,7 @@ export function ChatBubbleInputAll({ index, item, onEnterValue, onChagneText, in
   useEffect(() => {
     setIsBookmark(item.bookmark);
   }, []);
-
+  
   const [isBookmark, setIsBookmark] = useState(false);
   const [isShowTranslation, setIsShowTranslation] = useState(false);
 
@@ -237,7 +237,7 @@ export function ChatBubbleInputAll({ index, item, onEnterValue, onChagneText, in
                 showSoftInputOnFocus={!isVoiceMode}
                 multiline={true}
               /> :
-              inputValues && checkInputWord(index, inputValues[item.id], item.second_step)
+              inputValues && checkInputWord(index, inputValues[item.id], item.dialogue)
             ) :
             (<Body012 key={index} text={item.dialogue} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} />)}
           {isShowTranslation && <Body023 text={item.korean} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.GRAY09 : Colors.GRAY03} style={bubbleStyles.translation}/>}
@@ -282,13 +282,13 @@ function replaceWithInput(text: string, textToReplace?: string) {
 }
 
 function checkInputWord(index: number, inputValue: string, second_step?: string) {
-  const jsonValue = JSON.parse(inputValue);
-  return (
-    <View key={index} style={[layoutStyles.VStackContainer, { paddingVertical: 10 }]}>
-      <Body012 text={jsonValue.text} color={Colors.GRAY07} />
-      <Body011 text={`${second_step}`} color={jsonValue.isOver ? Colors.NAVY : Colors.YELLOW} />
-    </View>
-  )
+    const jsonValue = JSON.parse(inputValue);
+    return (
+      <View key={index} style={[layoutStyles.VStackContainer, { paddingVertical: 10 }]}>
+        <Body012 text={jsonValue.text} color={Colors.GRAY07} />
+        <Body011 text={`${second_step}`} color={jsonValue.isOver ? Colors.NAVY : Colors.YELLOW} />
+      </View>
+    )
 }
 
 const bubbleStyles = StyleSheet.create({

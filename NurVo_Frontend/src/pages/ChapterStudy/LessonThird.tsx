@@ -158,7 +158,7 @@ export default function LessonThird({ navigation, route }: LessonThirdProps) {
   const handlePress = async () => {
     if (!(isSpeaking.some((value: boolean) => value))) {
       if (messages.length < allMessages.length) {
-        if (messages[messages.length - 1].speaker.trim().toLowerCase() === 'nurse' && messages[messages.length - 1].second_step) {
+        if (messages[messages.length - 1].speaker.trim().toLowerCase() === 'nurse' && messages[messages.length - 1].dialogue) {
           if (inputText.trim().length === 0) {
             inputRef.current?.focus();
             return;
@@ -171,7 +171,7 @@ export default function LessonThird({ navigation, route }: LessonThirdProps) {
           setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100);
         }
       } else {
-        if (messages[messages.length - 1].speaker.trim().toLowerCase() === 'nurse' && messages[messages.length - 1].second_step) {
+        if (messages[messages.length - 1].speaker.trim().toLowerCase() === 'nurse' && messages[messages.length - 1].dialogue) {
           await calculateCorrectPercent();
           dispatch({ type: 'SET_SHOW_CHECK_ALERT', payload: true });
         }
