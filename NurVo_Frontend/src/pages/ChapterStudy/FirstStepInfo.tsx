@@ -8,14 +8,18 @@ import { layoutStyles, screenWidth } from '../../utilities/Layout';
 import { View } from 'react-native-animatable';
 import { Body011, Body012, Body013, Body022, Body024, Subtitle011, Subtitle012 } from '../../utilities/Fonts';
 import { FirstStepInfoProp } from '../../utilities/NavigationTypes';
-import { speech } from '../../utilities/TextToSpeech';
+import { speech, stopSpeech } from '../../utilities/TextToSpeech';
 import { set } from 'date-fns';
+import { is } from 'date-fns/locale';
 
 
 export default function FirstStepInfo({ navigation, route }: FirstStepInfoProp) {
     const item = route.params.chapter;
     const handleStart = () => {
-        navigation.navigate('LessonFirstScreen', { chapterId: item.id, chapter_name: item.name, step: item.step, isVoiceMode: isSound });
+        if (!isSpeaking) {
+            stopSpeech();
+            navigation.navigate('LessonFirstScreen', { chapterId: item.id, chapter_name: item.name, step: item.step, isVoiceMode: isSound });
+        }
     }
     const handleSpeaker = () => {
         setIsSpeakingByIndex(true);
