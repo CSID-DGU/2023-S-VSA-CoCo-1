@@ -54,23 +54,14 @@ const MenberDetails = ({ navigation, route }) => {
     setAlertOpen('logout');
   }
 
-  const deleteAction = () => {
-    setAlertOpen('deleteUser');
-  }
-
   const handleCancle = () => {
     setAlertOpen('');
   }
 
-  const handleNext = (value: boolean) => {
-    if (value) {
-      console.log("로그아웃 되셨습니다.");
-      removeUserSession();
-      Restart.Restart();
-    } else {
-      console.log("회원 탈퇴가 완료되셨습니다.");
-    }
+  const handleNext = () => {
     setAlertOpen('');
+    removeUserSession();
+    Restart.Restart();
   }
 
   return (
@@ -96,31 +87,15 @@ const MenberDetails = ({ navigation, route }) => {
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.alertButton} onPress={deleteAction}>
-            <View style={styles.buttonInner} >
-              <Body012 text='회원탈퇴' color={Colors.GRAY03} />
-              <Ionicons name='chevron-forward-outline' size={14} color={Colors.GRAY05} />
-            </View>
-          </TouchableOpacity>
-
         </View>
       </ScrollView>
-      {alertOpen === 'logout' ? (
+      {alertOpen === 'logout' && (
         <CustomAlert
           onCancle={handleCancle}
-          onConfirm={() => handleNext(true)}
+          onConfirm={handleNext}
           content='로그아웃 하시겠습니까?'
           cancleText='취소'
           confirmText='확인' />
-      ) : (
-        alertOpen === 'deleteUser' ? (
-          <CustomAlert
-            onCancle={handleCancle}
-            onConfirm={() => handleNext(false)}
-            content='정말로 탈퇴 하시겠습니까?'
-            cancleText='취소'
-            confirmText='확인' />
-        ) : null
       )}
     </>
   );
