@@ -1,5 +1,5 @@
 import {
-  SectionList,
+  SectionList, View,
 } from 'react-native';
 import { useEffect, useState } from 'react';
 import { ListCell } from '../components/ListCellComp';
@@ -99,7 +99,8 @@ export default function LessonsList({ navigation, route }: LessonListProps) {
             {(title !== '') && ( <Subtitle011 text={title} style={{ paddingBottom: 12, marginHorizontal: 20 }} color={Colors.BLACK} /> )}
           </>
         )}
-        style={{ paddingTop: 16, paddingBottom: 100 }}
+        style={{ paddingTop: 16}}
+        ListFooterComponent={<View style={{marginBottom: 30}}/>}
       />)}
     </>
   )

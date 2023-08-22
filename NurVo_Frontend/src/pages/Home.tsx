@@ -11,7 +11,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { differenceInDays } from 'date-fns';
 
 import Colors from '../utilities/Color';
-import { Title01, Title02, Subtitle011, Subtext013, Body022, Body023, Body024, Title012, Body013 } from '../utilities/Fonts';
+import { Title01, Title02, Subtitle011, Subtext013, Body022, Body023, Body024, Body013 } from '../utilities/Fonts';
 import { layoutStyles, screenWidth } from '../utilities/Layout';
 import { CarouselList } from '../components/CarouselListComp';
 import { ListCell } from '../components/ListCellComp';
