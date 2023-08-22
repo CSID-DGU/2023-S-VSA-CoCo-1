@@ -15,10 +15,11 @@ interface Topic {
   name: string;
 }
 export interface Chapter {
+  step: number;
   id: number;
   name: string;
   description?: string;
-  topic_id: number;
+  topic_id?: number;
 }
 
 export interface Section {
@@ -58,7 +59,8 @@ export default function LessonsList({ navigation, route }: LessonListProps) {
               id: chapter.id,
               name: chapter.name,
               description: chapter.description,
-              topic_id: item.topic.id
+              topic_id: item.topic.id,
+              step: chapter.step
             }))
           }));
           setSections(sectionData);

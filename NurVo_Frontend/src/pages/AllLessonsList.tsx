@@ -2,13 +2,14 @@ import {
   FlatList,
   ScrollView,
 } from 'react-native';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useCallback, useEffect, useState } from 'react';
 import { Subtitle011 } from '../utilities/Fonts';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { stopSpeech } from '../utilities/TextToSpeech';
 import { ChapterStackScreenProps, LessonListProps } from '../utilities/NavigationTypes';
 import { fetchAllTopic } from '../utilities/ServerFunc';
 import { MiniListCell } from '../components/MiniListCell';
+import { useFocusEffect } from '@react-navigation/core';
 
 
 interface Topic {
@@ -45,29 +46,31 @@ export default function AllLessonsList({ navigation, route }: ChapterStackScreen
     stopSpeech();
   }, []);
 
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        const data = await fetchAllTopic();
-        if (!data) return;
-        const sectionData: Section[] = data.map(item => ({
-          topic: item.topic,
-          chapter: item.chapter.map(chapter => ({
-            id: chapter.id,
-            name: chapter.name,
-            description: chapter.description,
-            topic_id: chapter.topic_id,
-            step: chapter.step
-          }))
-        }));
-        setSections(sectionData);
-
-      } catch (error) {
-        console.log(error);
+  useFocusEffect(
+    useCallback(() => {
+      const getData = async () => {
+        try {
+          const data = await fetchAllTopic();
+          if (!data) return;
+          const sectionData: Section[] = data.map(item => ({
+            topic: item.topic,
+            chapter: item.chapter.map(chapter => ({
+              id: chapter.id,
+              name: chapter.name,
+              description: chapter.description,
+              topic_id: chapter.topic_id,
+              step: chapter.step
+            }))
+          }));
+          setSections(sectionData);
+  
+        } catch (error) {
+          console.log(error);
+        }
       }
-    }
-    getData();
-  }, []);
+      getData();
+    }, [])
+  );
 
   useEffect(() => {
     navigation.setOptions({ title: "All Lessons" });

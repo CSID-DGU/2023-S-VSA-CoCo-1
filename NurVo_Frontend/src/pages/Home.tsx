@@ -11,12 +11,12 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { differenceInDays } from 'date-fns';
 
 import Colors from '../utilities/Color';
-import { Title01, Title02, Subtitle011, Subtext013, Body022, Body023, Body024 } from '../utilities/Fonts';
+import { Title01, Title02, Subtitle011, Subtext013, Body022, Body023, Body024, Title012, Body013 } from '../utilities/Fonts';
 import { layoutStyles, screenWidth } from '../utilities/Layout';
 import { CarouselList } from '../components/CarouselListComp';
 import { ListCell } from '../components/ListCellComp';
-import { useNavigation } from '@react-navigation/native';
-import { useEffect, useState } from 'react';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useCallback, useEffect, useState } from 'react';
 import { play, stopSpeech } from '../utilities/TextToSpeech';
 import { HomeScreenProps } from '../utilities/NavigationTypes';
 import { fetchAttendance, fetchMypage, fetchReviews, fetchTodaysLesson } from '../utilities/ServerFunc';
@@ -46,14 +46,13 @@ interface UserInfo {
   obj_date: string;
 }
 
-function UserInfoHeader({numOfReview}: {numOfReview: number}) {
+function UserInfoHeader({ numOfReview }: { numOfReview: number }) {
   const navigation = useNavigation();
 
   const [userdata, setUserdata] = useState({});
   const [progress, setProgress] = useState(0);
   const [dueDate, setDueDate] = useState(0);
   const [attendance, setAttendance] = useState<boolean[]>([]);
-  const [firstLogin, setFirstLogin] = useState(true);
 
 
   //첫 로그인인지 검사
@@ -61,31 +60,29 @@ function UserInfoHeader({numOfReview}: {numOfReview: number}) {
     const checkFirstLogin = async () => {
       const value = await AsyncStorage.getItem('firstLogin');
       if (value === null) {
-        setFirstLogin(true);
         await AsyncStorage.setItem('firstLogin', 'false');
-        navigation.navigate('SetUserGoal', {  data: { obj: userdata.obj, obj_date: userdata.obj_date }});
-      } else {
-        setFirstLogin(false);
+        navigation.navigate('SetUserGoal', { data: { obj: userdata.obj, obj_date: userdata.obj_date } });
       }
     };
     checkFirstLogin();
   }, []);
-
-  useEffect(() => {
-    async function getUserData() {
-      try {
-        const user = await fetchMypage();
-        setUserdata(user);
-        setDueDate(getDueDate(user.obj_date));
-      } catch (error) {
-        console.error('Error fetching user info:', error);
+  useFocusEffect(
+    useCallback(() => {
+      async function getUserData() {
+        try {
+          const user = await fetchMypage();
+          setUserdata(user);
+          setDueDate(getDueDate(user.obj_date));
+        } catch (error) {
+          console.error('Error fetching user info:', error);
+        }
       }
-    }
-    
-    console.log(numOfReview);
-    setProgress((numOfReview / 24) * 100);
-    getUserData();
-  }, []);
+  
+      console.log(numOfReview);
+      setProgress((numOfReview / 24) * 100);
+      getUserData();
+    }, [])
+  );
 
   useEffect(() => {
     async function getData() {
@@ -96,7 +93,7 @@ function UserInfoHeader({numOfReview}: {numOfReview: number}) {
         console.error('Error fetching user info:', error);
       }
     }
-    
+
     setProgress((numOfReview / 24) * 100);
     getData();
   }, []);
@@ -126,7 +123,7 @@ function UserInfoHeader({numOfReview}: {numOfReview: number}) {
     return (
       <View style={[layoutStyles.HStackContainer, { width: screenWidth - 40, paddingTop: 12 }]}>
         {daysOfWeek.map((day, index) => (
-          <CircleText key={day} text={day} backgroundColor={attendance[index] ? Colors.MAINGREEN : Colors.WHITE} isAttend={attendance[index]}/>
+          <CircleText key={day} text={day} backgroundColor={attendance[index] ? Colors.MAINGREEN : Colors.WHITE} isAttend={attendance[index]} />
         ))}
       </View>
     );
@@ -200,6 +197,28 @@ export default function Home({ navigation, route }: HomeScreenProps) {
     stopSpeech();
   }, [play]);
 
+  useFocusEffect(
+    useCallback(() => {
+      const getData = async () => {
+        try {
+          const data = await fetchTodaysLesson();
+          if (!data) return;
+          const sectionData: Chapter[] = data.map((item: Todays) => ({
+            id: item.chapter_id,
+            name: item.name,
+            description: item.topic_id.toString(),
+            step: item.step
+          }));
+          setTodays([]);
+          setTodays(sectionData);
+  
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      getData();
+    }, [])
+  );
   //fetch reviews
   useEffect(() => {
     const getData = async () => {
@@ -225,29 +244,9 @@ export default function Home({ navigation, route }: HomeScreenProps) {
     setNumOfReview(reviews.length);
   }, [reviews]);
 
-useEffect(() => {
+  useEffect(() => {
     console.log(numOfReview);
   }, [numOfReview]);
-  //fetch today's lessons
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        const data = await fetchTodaysLesson();
-        if (!data) return;
-        const sectionData: Chapter[] = data.map((item: Todays) => ({
-          id: item.chapter_id,
-          name: item.name,
-          description: item.topic_id.toString(),
-          step: item.step
-        }));
-        setTodays(sectionData);
-
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    getData();
-  }, []);
 
   const handleUserPage = () => {
     navigation.navigate('MemberDetails');
@@ -257,7 +256,7 @@ useEffect(() => {
     <ScrollView>
       <View style={layoutStyles.VStackContainer}>
         <TouchableHighlight onPress={handleUserPage}>
-          <UserInfoHeader numOfReview={numOfReview}/>
+          <UserInfoHeader numOfReview={numOfReview} />
         </TouchableHighlight>
         <View style={[layoutStyles.VStackContainer]}>
           <MenuTitle text='Today’s Lesson' onPress={() => {
@@ -275,6 +274,13 @@ useEffect(() => {
                 style={{ width: screenWidth - 20 * 2, marginVertical: 4 }}
               />
             ))}
+            {
+              reviews.length === 0 && (
+                <View style={{ height: 100, justifyContent: 'center', alignItems:'center' }}>
+                  <Body013 text="아직 복습할 내용이 없어요" color={Colors.GRAY05} />
+                </View>
+              )
+            }
           </View>
         </View>
       </View>
