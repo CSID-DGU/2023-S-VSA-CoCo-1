@@ -78,7 +78,7 @@ export function MiniListCell({ step, item }: miniCellProp) {
                     navigation.navigate("SelectStepScreen", { chapter: item });
                     return;
                 default:
-                    navigation.navigate('LessonFirstScreen', { chapterId: item.id, chapter_name: item.name, step: step });
+                    navigation.navigate("FirstStepInfoScreen", {chapter: item});
                     return;
             }
         }}>

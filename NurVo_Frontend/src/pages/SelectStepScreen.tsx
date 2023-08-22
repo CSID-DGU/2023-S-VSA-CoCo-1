@@ -17,7 +17,7 @@ export default function SelectStepScreen({ navigation, route }: SelectStepProp) 
     if (selectedStep !== null) {
       switch (selectedStep) {
         case 1:
-          navigation.navigate("LessonFirstScreen", { chapterId: item.id, chapter_name: item.name, step: item.step });
+          navigation.navigate('FirstStepInfoScreen', {chapter: item});
           return;
         case 2:
           navigation.navigate("LessonSecondScreen", { chapterId: item.id, chapter_name: item.name, step: item.step });
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginVertical: 10,
-    paddingVertical: 15,
+    paddingVertical: 16,
     borderRadius: 25,
     shadowColor: Colors.GRAY09,
     shadowOffset: { width: 0, height: 0 },
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginVertical: 10,
-    paddingVertical: 15,
+    paddingVertical: 16,
     borderRadius: 25,
     shadowColor: Colors.GRAY09,
     shadowOffset: { width: 0, height: 0 },

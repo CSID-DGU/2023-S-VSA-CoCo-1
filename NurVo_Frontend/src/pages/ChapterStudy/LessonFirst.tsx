@@ -21,12 +21,13 @@ LogBox.ignoreLogs(['new NativeEventEmitter']);
 
 export default function LessonFirst({ navigation, route }: LessonFirstProps) {
   const flatListRef = useRef<FlatList>(null);
+  const isSoundMode = route.params.isVoiceMode;
+
   const initialState = {
     allMessages: [],
     messages: [],
     showAlert: false,
     isSpeaking: [],
-    sound: true,
   };
 
   const reducer = (state: typeof initialState, action: { type: string; payload?: any }) => {
@@ -39,8 +40,6 @@ export default function LessonFirst({ navigation, route }: LessonFirstProps) {
         return { ...state, showAlert: action.payload };
       case 'SET_IS_SPEAKING':
         return { ...state, isSpeaking: action.payload };
-      case 'SET_SOUND':
-        return { ...state, sound: action.payload };
       default:
         return state;
     }
@@ -52,7 +51,6 @@ export default function LessonFirst({ navigation, route }: LessonFirstProps) {
     messages,
     showAlert,
     isSpeaking,
-    sound,
   } = state;
 
   useEffect(() => {
@@ -81,12 +79,15 @@ export default function LessonFirst({ navigation, route }: LessonFirstProps) {
   useEffect(() => {
     if (allMessages.length > 0) {
       dispatch({ type: 'SET_MESSAGES', payload: [allMessages[0]] });
-      setIsSpeakingByIndex(0, true);
-      speech(
-        allMessages[0].dialogue,
-        allMessages[0].id,
-        allMessages[0].speaker.trim().toLowerCase() === 'nurse',
-        () => setIsSpeakingByIndex(0, false));    //speech함수가 끝나면 setIsSpeaking(false)로 바꿔줌
+      
+      if (isSoundMode) {
+        setIsSpeakingByIndex(0, true);
+        speech(
+          allMessages[0].dialogue,
+          allMessages[0].id,
+          allMessages[0].speaker.trim().toLowerCase() === 'nurse',
+          () => setIsSpeakingByIndex(0, false));    //speech함수가 끝나면 setIsSpeaking(false)로 바꿔줌
+      }
     }
   }, [allMessages]);
 
@@ -97,14 +98,15 @@ export default function LessonFirst({ navigation, route }: LessonFirstProps) {
       if (messages.length < allMessages.length) {
         dispatch({ type: 'SET_MESSAGES', payload: allMessages.slice(0, messages.length + 1) });
         setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100);
-
-        setIsSpeakingByIndex(messages.length, true);
-
-        speech(
-          allMessages[messages.length].dialogue,
-          allMessages[messages.length].id,
-          allMessages[messages.length].speaker.trim().toLowerCase() === 'nurse',
-          () => setIsSpeakingByIndex(messages.length, false));    //speech함수가 끝나면 setIsSpeaking(false)로 바꿔줌
+        
+        if (isSoundMode) {
+          setIsSpeakingByIndex(messages.length, true);
+          speech(
+            allMessages[messages.length].dialogue,
+            allMessages[messages.length].id,
+            allMessages[messages.length].speaker.trim().toLowerCase() === 'nurse',
+            () => setIsSpeakingByIndex(messages.length, false));    //speech함수가 끝나면 setIsSpeaking(false)로 바꿔줌
+        }
       } else {
         dispatch({ type: 'SET_SHOW_ALERT', payload: true });
       }

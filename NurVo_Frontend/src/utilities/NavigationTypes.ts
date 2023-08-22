@@ -21,11 +21,15 @@ export type HomeStackParamList = {
   };
   SelectStepScreen: {
     chapter: Chapter
-  }
+  };
+  FirstStepInfoScreen: {
+    chapter: Chapter
+  };
   LessonFirstScreen: {
     chapterId: number,
     chapter_name: string,
     step: number,
+    isVoiceMode: boolean,
   };
   LessonSecondScreen: {
     chapterId: number,
@@ -53,11 +57,15 @@ export type ChapterStackParamList = {
   AllLessonsList: undefined;
   SelectStepScreen: {
     chapter: Chapter
-  }
+  };
+  FirstStepInfoScreen: {
+    chapter: Chapter
+  };
   LessonFirstScreen: {
     chapterId: number,
     chapter_name: string,
     step: number,
+    isVoiceMode: boolean,
   };
   LessonSecondScreen: {
     chapterId: number,
@@ -130,6 +138,13 @@ type SelectStepScreenNavigationProp = NativeStackNavigationProp<HomeStackParamLi
 export interface SelectStepProp {
   navigation: SelectStepScreenNavigationProp;
   route: SelectStepScreenRouteProp;
+}
+
+type FirstStepInfoRouteProp = RouteProp<HomeStackParamList | ChapterStackParamList, 'FirstStepInfoScreen'>;
+type FirtstStepInfoNavigationProp = NativeStackNavigationProp<HomeStackParamList | ChapterStackParamList, 'FirstStepInfoScreen'>;
+export interface FirstStepInfoProp {
+  navigation: FirtstStepInfoNavigationProp;
+  route: FirstStepInfoRouteProp;
 }
 
 

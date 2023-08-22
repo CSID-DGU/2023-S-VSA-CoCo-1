@@ -43,7 +43,7 @@ export function ListCell({ item, style }: ListCellProps) {
                     navigation.navigate("SelectStepScreen", { chapter: item });
                     return;
                 default:
-                    navigation.navigate('LessonFirstScreen', { chapterId: item.id, chapter_name: item.name, step: item.step });
+                    navigation.navigate('FirstStepInfoScreen', {chapter: item});
                     return;
             }
             

@@ -32,6 +32,7 @@ import UserContext, { UserProvider } from './src/utilities/UserContext';
 import SelectStepScreen from './src/pages/SelectStepScreen';
 import { retrieveUserSession } from './src/utilities/EncryptedStorage';
 import LaunchFirstScreen from './src/pages/LaunchFirstScreen';
+import FirstStepInfo from './src/pages/ChapterStudy/FirstStepInfo';
 
 const Tab = createBottomTabNavigator<RootStackParamList>();
 function BottomTabs() {
@@ -66,7 +67,9 @@ const HomeStack = createNativeStackNavigator<HomeStackParamList>();
 const HomeStackScreen = ({ navigation, route }: any) => {
   useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route);
-    if (routeName === 'LessonFirstScreen' || routeName === 'LessonSecondScreen' || routeName === 'LessonThirdScreen' || routeName === 'LaunchFirstScreen' || routeName === 'MainPage' || routeName === 'Login' || routeName === 'SignUp') {
+    if (routeName === 'FirstStepInfoScreen' || routeName === 'SelectStepScreen' || routeName === 'LessonFirstScreen' || 
+    routeName === 'LessonSecondScreen' || routeName === 'LessonThirdScreen' || routeName === 'LaunchFirstScreen' || 
+    routeName === 'MainPage' || routeName === 'Login' || routeName === 'SignUp') {
       navigation.setOptions({ tabBarStyle: { display: 'none' } });
     } else {
       navigation.setOptions({ tabBarStyle: { display: undefined } });
@@ -105,6 +108,7 @@ const HomeStackScreen = ({ navigation, route }: any) => {
             <HomeStack.Screen name="HomeScreen" component={Home} options={{ headerShown: false }} />
             <HomeStack.Screen name="LessonList" component={LessonsList} />
             <HomeStack.Screen name="SelectStepScreen" component={SelectStepScreen} options={{title:""}}/>
+            <HomeStack.Screen name="FirstStepInfoScreen" component={FirstStepInfo} options={{title:""}}/>
             <HomeStack.Screen name="LessonFirstScreen" component={LessonFirst} />
             <HomeStack.Screen name="LessonSecondScreen" component={LessonSecond} />
             <HomeStack.Screen name="LessonThirdScreen" component={LessonThird} />
@@ -159,7 +163,8 @@ const ChapterStack = createNativeStackNavigator<ChapterStackParamList>();
 const ChapterStackScreen = ({ navigation, route }: any) => {
   useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route);
-    if (routeName === 'LessonFirstScreen' || routeName === 'LessonSecondScreen' || routeName === 'LessonThirdScreen') {
+    if (routeName === 'FirstStepInfoScreen' || routeName === 'SelectStepScreen' || routeName === 'LessonFirstScreen' || 
+    routeName === 'LessonSecondScreen' || routeName === 'LessonThirdScreen') {
       navigation.setOptions({ tabBarStyle: { display: 'none' } });
     } else {
       navigation.setOptions({ tabBarStyle: { display: undefined } });
@@ -174,6 +179,7 @@ const ChapterStackScreen = ({ navigation, route }: any) => {
     >
       <ChapterStack.Screen name="AllLessonsList" component={AllLessonsList} />
       <ChapterStack.Screen name="SelectStepScreen" component={SelectStepScreen} options={{title:""}}/>
+      <ChapterStack.Screen name="FirstStepInfoScreen" component={FirstStepInfo} options={{title:""}}/>
       <ChapterStack.Screen name="LessonFirstScreen" component={LessonFirst} />
       <ChapterStack.Screen name="LessonSecondScreen" component={LessonSecond} />
       <ChapterStack.Screen name="LessonThirdScreen" component={LessonThird} />
