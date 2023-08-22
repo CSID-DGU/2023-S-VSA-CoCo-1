@@ -35,6 +35,7 @@ const MainPage = ({ navigation, route }) => {
   const [userPassword, setUserPassword] = useState('');
   const [isAlret, setIsAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
+  const { isLogged, setIsLogged } = useContext(UserContext);
 
   // 로그인
   useEffect(() => {
@@ -79,8 +80,6 @@ const MainPage = ({ navigation, route }) => {
   const handleAlertClose = () => {
     setIsAlert(false);
   }
-
-  const { isLogged, setIsLogged } = useContext(UserContext);
   const handleLogin = () => {
     // 로그인 처리
     setIsLogged(true);

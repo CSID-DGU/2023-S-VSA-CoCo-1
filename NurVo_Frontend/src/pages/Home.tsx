@@ -79,12 +79,14 @@ function UserInfoHeader({ numOfReview }: { numOfReview: number }) {
           console.error('Error fetching user info:', error);
         }
       }
-  
-      console.log(numOfReview);
-      setProgress((numOfReview / 24) * 100);
       getUserData();
     }, [])
   );
+
+  useEffect(() => {
+    console.log("unserInfoHeader",numOfReview);
+    setProgress((numOfReview / 24) * 100);
+  }, [numOfReview]);
 
   useEffect(() => {
     async function getData() {
@@ -246,6 +248,7 @@ export default function Home({ navigation, route }: HomeScreenProps) {
   }, []);
 
   useEffect(() => {
+    console.log(reviews.length);
     setNumOfReview(reviews.length);
   }, [reviews]);
 
