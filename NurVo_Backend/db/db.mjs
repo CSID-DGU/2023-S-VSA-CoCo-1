@@ -282,7 +282,7 @@ export const getAttendance = async (user_id) => {
 };
 
 
-// 전체 chapter중 해당 user의 step이 3인 경우를 제외하고 chapter 불러오기(단 이번주에 step3가 된 것은)
+// 전체 chapter중 해당 user의 step이 3인 경우를 제외하고 chapter 불러오기(단 이번주에 step3가 된 것은 포함해서 보냄)
 export const getAllTodayLessons = async (user_id, day) => {
   const client = await pool.connect();
   try{
@@ -291,16 +291,9 @@ export const getAllTodayLessons = async (user_id, day) => {
     select 
     c.topic_id, t.name as topic_name, c.id as chapter_id, c.name as chapter_name, e.step, TO_CHAR(e.date, 'YYYY-MM-DD') as date
     from chapter c
-    left join edu e on e.chapter_id = c.id
+    left join edu e on e.chapter_id = c.id and e.user_id = $1
     left join topic t on c.topic_id = t.id
-    where not exists(
-      select 1
-      from edu e
-      where e.chapter_id = c.id and e.step = 3 and e.user_id = $1
-    )
-    or (
-      e.step = 3 and e.user_id = $1 and e.date between $3 and $4
-    )
+    where (e.step <>3 or e.step is null) or (e.date between $3 and $4)
     ORDER BY c.id ASC
     limit $2;
   `;
