@@ -9,7 +9,7 @@ import Sliders from '../components/Sliders';
 import DateTimePickerModalProps from '../components/DateTimePickerModalProps';
 import CustomAlert from '../components/Alert';
 
-const App = ({ navigation, route }: any) => {
+const SetUserGoal = ({ navigation, route }: any) => {
   const goals = route.params.data;
   const prevScreen = route.params?.prevScreen || '';
   const [number, setNumber] = useState(goals.obj);
@@ -26,7 +26,7 @@ const App = ({ navigation, route }: any) => {
         if (prevScreen === 'Login') {
           navigation.navigate('HomeScreen', { data: ipdateUserInfo });
         } else {
-          navigation.navigate(prevScreen, { data: ipdateUserInfo });
+          navigation.pop();
         }
       } catch (error) {
         console.error('Error fetching user info:', error);
@@ -191,7 +191,7 @@ const buttonStyles = StyleSheet.create({
   },
 });
 
-export default App;
+export default SetUserGoal;
 
 
 // {/*

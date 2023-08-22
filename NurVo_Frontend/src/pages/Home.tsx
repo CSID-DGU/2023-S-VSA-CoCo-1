@@ -21,6 +21,7 @@ import { play, stopSpeech } from '../utilities/TextToSpeech';
 import { HomeScreenProps } from '../utilities/NavigationTypes';
 import { fetchAttendance, fetchMypage, fetchReviews, fetchTodaysLesson } from '../utilities/ServerFunc';
 import { Chapter } from './LessonsList';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -45,13 +46,30 @@ interface UserInfo {
   obj_date: string;
 }
 
-function UserInfoHeader(numOfReview: number) {
+function UserInfoHeader({numOfReview}: {numOfReview: number}) {
   const navigation = useNavigation();
 
   const [userdata, setUserdata] = useState({});
   const [progress, setProgress] = useState(0);
   const [dueDate, setDueDate] = useState(0);
   const [attendance, setAttendance] = useState<boolean[]>([]);
+  const [firstLogin, setFirstLogin] = useState(true);
+
+
+  //첫 로그인인지 검사
+  useEffect(() => {
+    const checkFirstLogin = async () => {
+      const value = await AsyncStorage.getItem('firstLogin');
+      if (value === null) {
+        setFirstLogin(true);
+        await AsyncStorage.setItem('firstLogin', 'false');
+        navigation.navigate('SetUserGoal', {  data: { obj: userdata.obj, obj_date: userdata.obj_date }});
+      } else {
+        setFirstLogin(false);
+      }
+    };
+    checkFirstLogin();
+  }, []);
 
   useEffect(() => {
     async function getUserData() {
@@ -87,7 +105,6 @@ function UserInfoHeader(numOfReview: number) {
   function convertAttendance(days: Day[]) {
     return daysOfWeek.map(dayOfWeek => days.some(d => d.day === dayOfWeek));
   }
-
 
   interface CircleTextProps {
     text: string;
@@ -129,7 +146,7 @@ function UserInfoHeader(numOfReview: number) {
           <View style={layoutStyles.VStackContainer}>
             <View style={[styles.headerText]}>
               <Title01 text="Hi," color={Colors.BLACK} />
-              <Title02 text={userdata?.name} color={Colors.BLACK} />
+              <Title02 text={userdata?.nickname} color={Colors.BLACK} />
               <Ionicons name="settings" size={20} color={Colors.MAINLIGHTGREEN} style={{ marginHorizontal: 5 }} />
             </View>
             <View style={layoutStyles.HStackContainer}>
