@@ -4,6 +4,7 @@ import {
   View,
   TouchableOpacity,
   Platform,
+  SafeAreaView,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Voice, {
@@ -189,11 +190,14 @@ class VoiceRecordButton extends Component<Props, State> {
             </View>
           </TouchableOpacity>
         )}
-        {Platform.OS === 'ios' ?? (<TouchableOpacity style={voiceStyle.sideButton} onPress={this.onClickInputMode}>
-          <Ionicons name={this.state.isVoiceMode ? 'keypad' : 'mic'} size={30} color={Colors.MAINGREEN} />
-          <Subtext013 text={this.state.isVoiceMode ? "키보드 모드" : "음성 모드"} color={Colors.MAINGREEN} />
-        </TouchableOpacity>)}
+        {Platform.OS === 'ios' && (
+          <TouchableOpacity style={voiceStyle.sideButton} onPress={this.onClickInputMode}>
+            <Ionicons name={this.state.isVoiceMode ? 'keypad' : 'mic'} size={30} color={Colors.MAINGREEN} />
+            <Subtext013 text={this.state.isVoiceMode ? '키보드 모드' : '음성 모드'} color={Colors.MAINGREEN} />
+          </TouchableOpacity>
+        )}
       </View>
+
     );
   }
 }
@@ -213,7 +217,7 @@ const voiceStyle = StyleSheet.create({
     shadowOpacity: 1,
     shadowRadius: 10,
     elevation: 10,
-    height: 59,
+    height: Platform.OS === 'ios' ? 100 : 59,
     width: '100%',
   },
   button: {
@@ -229,7 +233,7 @@ const voiceStyle = StyleSheet.create({
     shadowOpacity: 1,
     shadowRadius: 10,
     elevation: 10,
-    marginBottom: 10,
+    marginBottom: Platform.OS === 'ios' ? 40 : 10,
   },
   innerButton: {
     width: 70,
@@ -248,7 +252,7 @@ const voiceStyle = StyleSheet.create({
   sideButton: {
     position: 'absolute',
     alignItems: 'center',
-    bottom: 0,
+    bottom: Platform.OS === 'ios' ? 40 : 0,
     right: 0,
     marginRight: 30,
   }
