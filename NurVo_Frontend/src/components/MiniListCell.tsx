@@ -42,6 +42,22 @@ function fetchIconColor(item: Chapter) {
         return Colors.GRAY07;
     }
 }
+function fetchborderColor(item: Chapter) {
+    if (item.step) {
+        switch (item.step) {
+            case 1:
+                return Colors.BEIGE;
+            case 2:
+                return Colors.LIGHTGREEN;
+            case 3:
+                return Colors.MAINGREEN
+            default:
+                return Colors.GRAY07;
+        }
+    } else {
+        return Colors.GRAY07;
+    }
+}
 export function MiniListCell({ step, item }: miniCellProp) {
     const navigation = useNavigation<ChapterStackNavigationProp>();
     useEffect(() => {
@@ -67,7 +83,7 @@ export function MiniListCell({ step, item }: miniCellProp) {
             }
         }}>
             <View style={[layoutStyles.VStackContainer]}>
-                <View style={[miniListCellStyles.Circle, { borderColor: fetchIconColor(item), backgroundColor: fetchBackgroundColor(item), marginBottom: 12 }]}>
+                <View style={[miniListCellStyles.Circle, { borderColor: fetchborderColor(item), backgroundColor: fetchBackgroundColor(item), marginBottom: 12, borderStyle: item.step == 0 ? 'dashed' : 'solid' }]}>
                     <Ionicons name={"checkmark-outline"} size={24} color={fetchIconColor(item)} />
                 </View>
                 <Body011 text={item.name} color={Colors.GRAY05} />
@@ -78,7 +94,7 @@ export function MiniListCell({ step, item }: miniCellProp) {
 
 const miniListCellStyles = StyleSheet.create({
     Container: {
-        width: screenWidth / 3 - 20,
+        width: screenWidth / 3 + 25,
         height: 152,
         backgroundColor: Colors.WHITE,
         borderRadius: 12,
@@ -98,7 +114,6 @@ const miniListCellStyles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
 
-        borderStyle: 'dashed',
         borderWidth: 2,
-    }
+    },
 });

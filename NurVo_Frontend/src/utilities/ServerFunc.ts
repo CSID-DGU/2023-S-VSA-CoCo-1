@@ -318,6 +318,7 @@ export async function updateUserInfo(updateData: {}) {
 export async function fetchLogin(loginData: {}) {
     const url = `${HOST_URL}/api/auth/login`;
     const data = loginData;
+    console.log("loginData", data);
     try {
         const response = await axios.post<ResponseProps>(url, data);
         return response.data;

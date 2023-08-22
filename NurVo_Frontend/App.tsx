@@ -104,7 +104,7 @@ const HomeStackScreen = ({ navigation, route }: any) => {
           <>
             <HomeStack.Screen name="HomeScreen" component={Home} options={{ headerShown: false }} />
             <HomeStack.Screen name="LessonList" component={LessonsList} />
-            <HomeStack.Screen name="SelectStepScreen" component={SelectStepScreen} />
+            <HomeStack.Screen name="SelectStepScreen" component={SelectStepScreen} options={{title:""}}/>
             <HomeStack.Screen name="LessonFirstScreen" component={LessonFirst} />
             <HomeStack.Screen name="LessonSecondScreen" component={LessonSecond} />
             <HomeStack.Screen name="LessonThirdScreen" component={LessonThird} />
@@ -173,7 +173,7 @@ const ChapterStackScreen = ({ navigation, route }: any) => {
       }}
     >
       <ChapterStack.Screen name="AllLessonsList" component={AllLessonsList} />
-      <ChapterStack.Screen name="SelectStepScreen" component={SelectStepScreen} />
+      <ChapterStack.Screen name="SelectStepScreen" component={SelectStepScreen} options={{title:""}}/>
       <ChapterStack.Screen name="LessonFirstScreen" component={LessonFirst} />
       <ChapterStack.Screen name="LessonSecondScreen" component={LessonSecond} />
       <ChapterStack.Screen name="LessonThirdScreen" component={LessonThird} />
