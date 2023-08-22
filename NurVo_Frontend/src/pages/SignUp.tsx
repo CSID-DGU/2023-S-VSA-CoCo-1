@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Platform, StyleSheet, TouchableOpacity, KeyboardAvoidingView, ScrollView } from 'react-native';
+import { Platform, StyleSheet, TouchableOpacity, KeyboardAvoidingView, ScrollView, NativeModules } from 'react-native';
 import * as yup from 'yup';
 import axios from 'axios';
 
@@ -34,6 +34,8 @@ const SignUp = ({ navigation }) => {
   const [isIdentifyModal, setIsIdentifyModal] = useState(false); // 인증번호 확인 모달창
   const [isAlretAction, setIsAlretAction] = useState(false); // 회원가입 가능 여부 확인 Alert창
   const [alretMessages, setAlretMessages] = useState(''); // Alert창에 들어갈 메세지
+
+  const { StatusBarManager } = NativeModules;
 
   // 유효성 검사를 위한 스키마 정의
   const validationSchema = yup.object().shape({
@@ -152,11 +154,12 @@ const SignUp = ({ navigation }) => {
 
   return (
     <>
-      <ScrollView>
-        <KeyboardAvoidingView
-          behavior={Platform.select({ ios: 'padding', android: 'padding' })}
-          style={styles.container}
-        >
+      <KeyboardAvoidingView
+        style={[styles.container]}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? StatusBarManager.HEIGHT + 44 : undefined}>
+        <ScrollView>
+
           <SignUpCell
             title="아이디"
             initialText="아이디"
@@ -202,12 +205,11 @@ const SignUp = ({ navigation }) => {
             onText={value => setNickname(value)}
             isFocused={false}
           />
-        </KeyboardAvoidingView>
-
-        <TouchableOpacity style={[styles.buttonContainer,{marginTop: 70}]} onPress={handleSignUp}>
-          <Body011 text='NurVo 시작하기' color={Colors.WHITE} style={{ textAlign: 'center' }} />
-        </TouchableOpacity>
-      </ScrollView>
+          <TouchableOpacity style={[styles.buttonContainer, { marginTop: 70 }]} onPress={handleSignUp}>
+            <Body011 text='NurVo 시작하기' color={Colors.WHITE} style={{ textAlign: 'center' }} />
+          </TouchableOpacity>
+        </ScrollView>
+      </KeyboardAvoidingView>
       <IndentifyModal
         isAction={isIdentifyModal}
         onText={(value: string) => setCheckIdentifyNumber(value)}

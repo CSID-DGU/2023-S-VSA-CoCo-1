@@ -1,5 +1,5 @@
-import { useState, useEffect, useContext } from 'react';
-import { View, TouchableOpacity, StyleSheet, Alert, KeyboardAvoidingView } from 'react-native';
+import { useState, useEffect, useContext, useRef } from 'react';
+import { View, TouchableOpacity, StyleSheet, Alert, KeyboardAvoidingView, Platform, NativeModules } from 'react-native';
 
 import Colors from '../utilities/Color';
 import { Body011, Title01 } from '../utilities/Fonts';
@@ -9,6 +9,8 @@ import { fetchLogin, fetchMypage } from '../utilities/ServerFunc';
 import SignUpCell from '../components/SignUpCell';
 import CustomAlert from '../components/Alert';
 import UserContext from '../utilities/UserContext';
+
+const { StatusBarManager } = NativeModules;
 
 const getUserData = async () => {
   try {
@@ -84,41 +86,45 @@ const MainPage = ({ navigation, route }) => {
   }
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      style={[styles.container]}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? StatusBarManager.HEIGHT + 44 : undefined}>
+      <View style={styles.container}>
 
-      <View style={styles.textContainer}>
-        <Title01 text='Welcome Back NURVO!' color={Colors.BLACK} />
+        <View style={styles.textContainer}>
+          <Title01 text='Welcome Back NURVO!' color={Colors.BLACK} />
+        </View>
+
+        <View style={{ display: 'flex', marginHorizontal: 10, width: screenWidth }}>
+          <SignUpCell
+            title='아이디'
+            initialText='아이디'
+            onText={setUserId}
+            isFocused={true}
+          />
+          <SignUpCell
+            title='비밀번호'
+            initialText='비밀번호'
+            onText={setUserPassword}
+            isFocused={false}
+          />
+        </View>
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={[styles.btn, styles.loginBtn]} onPress={onSubmit}>
+            <Body011 text='로그인' color={Colors.WHITE} style={{ textAlign: 'center' }} />
+          </TouchableOpacity>
+        </View>
+
+        {isAlret &&
+          <CustomAlert
+            onConfirm={handleAlertClose}
+            content={alertMessage}
+            confirmText='확인' />
+        }
       </View>
-
-      <View style={{ display: 'flex', marginHorizontal: 10, width: screenWidth }}>
-        <SignUpCell
-          title='아이디'
-          initialText='아이디'
-          onText={setUserId}
-          isFocused={true}
-        />
-        <SignUpCell
-          title='비밀번호'
-          initialText='비밀번호'
-          onText={setUserPassword}
-          isFocused={false}
-        />
-      </View>
-
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={[styles.btn, styles.loginBtn]} onPress={onSubmit}>
-          <Body011 text='로그인' color={Colors.WHITE} style={{ textAlign: 'center' }} />
-        </TouchableOpacity>
-      </View>
-
-      {isAlret &&
-        <CustomAlert
-          onConfirm={handleAlertClose}
-          content={alertMessage}
-          confirmText='확인' />
-      }
-
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
