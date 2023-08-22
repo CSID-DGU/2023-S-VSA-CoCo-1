@@ -66,6 +66,8 @@ function UserInfoHeader({ numOfReview }: { numOfReview: number }) {
     };
     checkFirstLogin();
   }, []);
+
+
   useFocusEffect(
     useCallback(() => {
       async function getUserData() {
@@ -179,11 +181,12 @@ interface Review {
 }
 
 interface Todays {
-  topic_id: number;
   chapter_id: number;
-  name: string;
-  step: number;
+  chapter_name: string;
   date: string;
+  step: number;
+  topic_id: number;
+  topic_name: string;
 }
 
 
@@ -197,16 +200,18 @@ export default function Home({ navigation, route }: HomeScreenProps) {
     stopSpeech();
   }, [play]);
 
+  //todays lesson
   useFocusEffect(
     useCallback(() => {
       const getData = async () => {
         try {
           const data = await fetchTodaysLesson();
           if (!data) return;
+          console.log("data----",data, "data")
           const sectionData: Chapter[] = data.map((item: Todays) => ({
             id: item.chapter_id,
-            name: item.name,
-            description: item.topic_id.toString(),
+            name: item.chapter_name,
+            description: item.topic_name,
             step: item.step
           }));
           setTodays([]);
