@@ -47,7 +47,7 @@ const MainPage = ({ navigation, route }) => {
           "userId": userId,
           "password": userPassword,
         });
-        if (!result) {
+        if (typeof result === 'string' && result === "Invalid username or password")  {
           setAlertMessage('아이디 혹은 비밀번호를 올바르게 입력해주세요.');
           setIsAlert(true);
         } else {

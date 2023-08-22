@@ -218,8 +218,7 @@ export default function LessonThird({ navigation, route }: LessonThirdProps) {
     dispatch({ type: 'SET_SHOW_CHECK_ALERT', payload: false });
   };
 
-  const hasInputText = messages.length > 0 ? messages[messages.length - 1].speaker.trim().toLowerCase() === 'nurse' &&
-    messages[messages.length - 1].second_step : false;
+  const hasInputText = messages.length > 0 && messages[messages.length - 1].speaker.trim().toLowerCase() === 'nurse' && messages[messages.length - 1].dialogue;
 
   const [buttonTranslateY] = useState(new Animated.Value(140));
   useEffect(() => {
@@ -232,7 +231,7 @@ export default function LessonThird({ navigation, route }: LessonThirdProps) {
 
   return (
     <KeyboardAvoidingView
-      style={[styles.container, { paddingBottom: keyboardHeight}]}
+      style={[styles.container, { paddingBottom: keyboardHeight }]}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       keyboardVerticalOffset={Platform.OS === 'ios' ? StatusBarManager.HEIGHT + 44 : undefined}
     >
