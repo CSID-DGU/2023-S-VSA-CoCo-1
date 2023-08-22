@@ -6,16 +6,16 @@ import { HomeStackNavigationProp } from '../utilities/NavigationTypes';
 import { useNavigation } from '@react-navigation/core';
 
 export default function LaunchFirstScreen() {
-    const navigation = useNavigation<HomeStackNavigationProp>();
+  const navigation = useNavigation<HomeStackNavigationProp>();
 
-    useEffect(() => {
-        setTimeout(() => {
-            navigation.navigate('MainPage');
-        }, 1000);
-    }, []);
+  useEffect(() => {
+    setTimeout(() => {
+      navigation.navigate('MainPage');
+    }, 500);
+  }, []);
   return (
     <View style={styles.container}>
-      <Image source={require('../assets/images/Logo_icon_nobg.png')} style={styles.image} resizeMode='contain'/>
+      <Image source={require('../assets/images/Logo_icon_nobg.png')} style={styles.image} resizeMode='contain' />
     </View>
   );
 }
@@ -28,6 +28,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   image: {
-    width: (screenWidth/3)*1.5
+    width: 150
   },
 });
