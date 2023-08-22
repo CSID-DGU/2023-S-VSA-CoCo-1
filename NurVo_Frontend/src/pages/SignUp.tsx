@@ -165,22 +165,26 @@ const SignUp = ({ navigation }) => {
             onText={value => setId(value)}
             onClickAction={onClick}
             isButtonDisable={checkId}
+            isFocused={true}
           />
           <SignUpCell
             title="비밀번호"
             initialText="비밀번호"
             onText={value => setPassword(value)}
             subText='영어 소문자, 숫자, 특수 기호(!@#$%^&*)을 포함한 8자 이상'
+            isFocused={false}
           />
           <SignUpCell
             title="비밀번호 확인"
             initialText="비밀번호 확인"
             onText={value => setConfirmPassword(value)}
+            isFocused={false}
           />
           <SignUpCell
             title="이름"
             initialText="이름을 입력하세요"
             onText={value => setName(value)}
+            isFocused={false}
           />
           <SignUpCell
             title="휴대폰 번호"
@@ -190,15 +194,17 @@ const SignUp = ({ navigation }) => {
             onText={(value) => setPhoneNumber(value)}
             onClickAction={onClick}
             isButtonDisable={identify}
+            isFocused={false}
           />
           <SignUpCell
             title="닉네임"
             initialText="닉네임을 입력하세요"
             onText={value => setNickname(value)}
+            isFocused={false}
           />
         </KeyboardAvoidingView>
 
-        <TouchableOpacity style={styles.buttonContainer} onPress={handleSignUp}>
+        <TouchableOpacity style={[styles.buttonContainer,{marginTop: 70}]} onPress={handleSignUp}>
           <Body011 text='NurVo 시작하기' color={Colors.WHITE} style={{ textAlign: 'center' }} />
         </TouchableOpacity>
       </ScrollView>

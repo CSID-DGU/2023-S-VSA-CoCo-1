@@ -95,11 +95,13 @@ const MainPage = ({ navigation, route }) => {
           title='아이디'
           initialText='아이디'
           onText={setUserId}
+          isFocused={true}
         />
         <SignUpCell
           title='비밀번호'
           initialText='비밀번호'
           onText={setUserPassword}
+          isFocused={false}
         />
       </View>
 

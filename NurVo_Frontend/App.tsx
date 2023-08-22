@@ -69,7 +69,7 @@ const HomeStackScreen = ({ navigation, route }: any) => {
     const routeName = getFocusedRouteNameFromRoute(route);
     if (routeName === 'FirstStepInfoScreen' || routeName === 'SelectStepScreen' || routeName === 'LessonFirstScreen' || 
     routeName === 'LessonSecondScreen' || routeName === 'LessonThirdScreen' || routeName === 'LaunchFirstScreen' || 
-    routeName === 'MainPage' || routeName === 'Login' || routeName === 'SignUp') {
+    routeName === 'MainPage' || routeName === 'Login' || routeName === 'SignUp' || routeName === 'MemberDetails' || routeName === 'SetUserGoal') {
       navigation.setOptions({ tabBarStyle: { display: 'none' } });
     } else {
       navigation.setOptions({ tabBarStyle: { display: undefined } });

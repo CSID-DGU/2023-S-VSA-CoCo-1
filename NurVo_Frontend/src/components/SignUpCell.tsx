@@ -10,12 +10,13 @@ interface SignUpCellrProps {
   isConfirmButton?: boolean;
   buttonText?: string;
   isButtonDisable?: boolean;
+  isFocused: boolean;
 
   onText: (value: string) => void;
   onClickAction: (value: string) => void;
 }
 
-const SignUpCell = ({ title, initialText, subText, isConfirmButton, buttonText, isButtonDisable, onText, onClickAction }: SignUpCellrProps) => {
+const SignUpCell = ({ title, initialText, subText, isConfirmButton, buttonText, isButtonDisable, isFocused, onText, onClickAction }: SignUpCellrProps) => {
   const isConfirm = isConfirmButton ? isConfirmButton : false;
   const isSubText = subText ? true : false;
   const [text, onChangeText] = useState('');
@@ -41,7 +42,7 @@ const SignUpCell = ({ title, initialText, subText, isConfirmButton, buttonText, 
               placeholder={`${initialText}`}
               placeholderTextColor={Colors.GRAY07}
               secureTextEntry={title.includes('비밀번호') ? true : false}
-              autoFocus
+              autoFocus={isFocused}
             />
           </View>
           <TouchableOpacity style={[styles.buttonContainer, isButtonDisable ? {borderColor: Colors.GRAY05} : null]} onPress={onClick} disabled={isButtonDisable}>
@@ -56,7 +57,7 @@ const SignUpCell = ({ title, initialText, subText, isConfirmButton, buttonText, 
           placeholderTextColor={Colors.GRAY07}
           secureTextEntry={title.includes('비밀번호') ? true : false}
           keyboardType={title.includes('휴대전화 번호') ? "numeric" : "default"}
-          autoFocus
+          autoFocus={isFocused}
         />
       )}
 
