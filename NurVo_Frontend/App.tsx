@@ -80,8 +80,9 @@ const HomeStackScreen = ({ navigation, route }: any) => {
     const checkLogin = async () => {
       try {
         const value = await retrieveUserSession();
-        if (value !== null) {
+        if (value) {
           setIsLogged(true);
+          console.log("token not null", value);
         } else {
           console.log("token", value);
         }

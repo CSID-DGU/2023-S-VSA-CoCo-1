@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, Image, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Restart from 'react-native-restart';
@@ -12,10 +12,12 @@ import MemberDetailCell from '../components/MemberDetailCell';
 import CustomAlert from '../components/Alert';
 
 import img1 from '../assets/images/기본이미지.png';
+import UserContext from '../utilities/UserContext';
 
 const MenberDetails = ({ navigation, route }) => {
   const [userdata, setUserdate] = useState({});
   const [alertOpen, setAlertOpen] = useState('');
+  const { isLogged, setIsLogged } = useContext(UserContext);
 
   useEffect(() => {
     async function getUserData() {
@@ -61,7 +63,7 @@ const MenberDetails = ({ navigation, route }) => {
   const handleNext = () => {
     setAlertOpen('');
     removeUserSession();
-    Restart.Restart();
+    setIsLogged(false);
   }
 
   return (

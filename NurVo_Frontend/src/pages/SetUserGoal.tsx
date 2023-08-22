@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 
 import Colors from '../utilities/Color';
-import { Body011, Title01, Title02 } from '../utilities/Fonts';
+import { Body011, Subtitle011, Title01, Title02 } from '../utilities/Fonts';
 import { screenHeight } from '../utilities/Layout';
 import { updateUserInfo } from '../utilities/ServerFunc';
 import Sliders from '../components/Sliders';
@@ -103,7 +103,7 @@ const SetUserGoal = ({ navigation, route }: any) => {
 
         <View style={containerStyles.buttonContainer}>
           <TouchableOpacity style={buttonStyles.button} onPress={dataSave}>
-            <Body011 text='save' color={Colors.BLACK} style={{ fontSize: 20, }} />
+            <Subtitle011 text='save' color={Colors.BLACK} />
           </TouchableOpacity>
         </View>
 
