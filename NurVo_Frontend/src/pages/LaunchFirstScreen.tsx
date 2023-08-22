@@ -28,6 +28,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   image: {
-    width: (screenWidth/3)*2
+    width: (screenWidth/3)*1.5
   },
 });

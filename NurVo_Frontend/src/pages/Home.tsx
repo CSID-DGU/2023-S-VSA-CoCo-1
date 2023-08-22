@@ -46,6 +46,19 @@ interface UserInfo {
   obj_date: string;
 }
 
+async function isFirstLogin(userId: string): Promise<boolean> {
+  try {
+    const value = await AsyncStorage.getItem(`firstLogin:${userId}`);
+    if (value === null) {
+      await AsyncStorage.setItem(`firstLogin:${userId}`, 'false');
+      return true;
+    }
+    return false;
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
+}
 function UserInfoHeader({ numOfReview }: { numOfReview: number }) {
   const navigation = useNavigation();
 
@@ -53,20 +66,6 @@ function UserInfoHeader({ numOfReview }: { numOfReview: number }) {
   const [progress, setProgress] = useState(0);
   const [dueDate, setDueDate] = useState(0);
   const [attendance, setAttendance] = useState<boolean[]>([]);
-
-
-  //첫 로그인인지 검사
-  useEffect(() => {
-    const checkFirstLogin = async () => {
-      const value = await AsyncStorage.getItem('firstLogin');
-      if (value === null) {
-        await AsyncStorage.setItem('firstLogin', 'false');
-        navigation.navigate('SetUserGoal', { data: { obj: userdata.obj, obj_date: userdata.obj_date } });
-      }
-    };
-    checkFirstLogin();
-  }, []);
-
 
   useFocusEffect(
     useCallback(() => {
@@ -84,7 +83,15 @@ function UserInfoHeader({ numOfReview }: { numOfReview: number }) {
   );
 
   useEffect(() => {
-    console.log("unserInfoHeader",numOfReview);
+    async function checkFirstLogin() {
+      const firstLogin = await isFirstLogin(userdata.id);
+      if (firstLogin) {
+        navigation.navigate('SetUserGoalInital', { data: { obj: 1, obj_date: formatDate(Date.now()) }, prevScreen: 'HomeScreen' });
+      }
+    }
+    checkFirstLogin();
+  }, [userdata.id])
+  useEffect(() => {
     setProgress((numOfReview / 24) * 100);
   }, [numOfReview]);
 
@@ -209,7 +216,6 @@ export default function Home({ navigation, route }: HomeScreenProps) {
         try {
           const data = await fetchTodaysLesson();
           if (!data) return;
-          console.log("data----",data, "data")
           const sectionData: Chapter[] = data.map((item: Todays) => ({
             id: item.chapter_id,
             name: item.chapter_name,
@@ -248,13 +254,8 @@ export default function Home({ navigation, route }: HomeScreenProps) {
   }, []);
 
   useEffect(() => {
-    console.log(reviews.length);
     setNumOfReview(reviews.length);
   }, [reviews]);
-
-  useEffect(() => {
-    console.log(numOfReview);
-  }, [numOfReview]);
 
   const handleUserPage = () => {
     navigation.navigate('MemberDetails');

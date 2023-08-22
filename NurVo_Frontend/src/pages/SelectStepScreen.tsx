@@ -20,7 +20,6 @@ export default function SelectStepScreen({ navigation, route }: SelectStepProp) 
           navigation.navigate("LessonFirstScreen", { chapterId: item.id, chapter_name: item.name, step: item.step });
           return;
         case 2:
-          console.log(item.id, item.name, item.step);
           navigation.navigate("LessonSecondScreen", { chapterId: item.id, chapter_name: item.name, step: item.step });
           return;
         case 3:

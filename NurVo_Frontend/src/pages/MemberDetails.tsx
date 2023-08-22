@@ -13,6 +13,7 @@ import CustomAlert from '../components/Alert';
 
 import img1 from '../assets/images/기본이미지.png';
 import UserContext from '../utilities/UserContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const MenberDetails = ({ navigation, route }) => {
   const [userdata, setUserdate] = useState({});

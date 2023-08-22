@@ -4,7 +4,7 @@ import { Section } from "../pages/LessonsList";
 import { Platform } from "react-native";
 import { retrieveUserSession } from "./EncryptedStorage";
 
-const HOST_URL = (Platform.OS === 'ios') ? RN_IOS_HOST_URL : RN_HOST_URL;
+const HOST_URL = RN_HOST_URL;
 
 export interface ResponseProps {
     [x: string]: any;
@@ -29,7 +29,7 @@ export async function fetchAllTopic(): Promise<Section[] | undefined> {
     }
 }
 
-//아이디로 챕터에 대한 설명 요청
+//아이디로 챕터에 대한 설명 요청ㄱ
 export async function fetchChapterDescriptionById(chapterId: string): Promise<ResponseProps | undefined> {
     const url = `${HOST_URL}/api/dialogues/${chapterId}`;
     const USER_TOKEN = await retrieveUserSession();
@@ -125,7 +125,6 @@ export async function calculateThirdStepAccuracyWithSentenceId(chapterId: number
     const headers = { 'Authorization': `Bearer ${USER_TOKEN}` };
     try {
         const response = await axios.post<ResponseProps>(url, data, { headers });
-        console.log(response.data);
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
