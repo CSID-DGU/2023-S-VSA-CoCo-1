@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { View, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Alert, KeyboardAvoidingView } from 'react-native';
 
 import Colors from '../utilities/Color';
 import { Body011, Title01 } from '../utilities/Fonts';
@@ -9,16 +9,6 @@ import { fetchLogin, fetchMypage } from '../utilities/ServerFunc';
 import SignUpCell from '../components/SignUpCell';
 import CustomAlert from '../components/Alert';
 import UserContext from '../utilities/UserContext';
-
-function formatDate(date: string) {
-  const dateObject = new Date(date);
-  const year = dateObject.getFullYear();
-  const month = (dateObject.getMonth() + 1).toString().padStart(2, "0");
-  const day = dateObject.getDate();
-
-  const formattedDate = `${year}.${month}.${day}`;
-  return formattedDate;
-}
 
 const getUserData = async () => {
   try {
@@ -47,7 +37,7 @@ const MainPage = ({ navigation, route }) => {
           "userId": userId,
           "password": userPassword,
         });
-        if (typeof result === 'string' && result === "Invalid username or password")  {
+        if (typeof result === 'string' && result === "Invalid username or password") {
           setAlertMessage('아이디 혹은 비밀번호를 올바르게 입력해주세요.');
           setIsAlert(true);
         } else {
