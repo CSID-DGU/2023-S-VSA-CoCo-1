@@ -1,8 +1,8 @@
 import { getDialogues, getSentences, getBookmark } from "../db/db.mjs";
 
-export async function FilterDialogues(list_id) {
+export async function FilterDialogues(list_id, user_id) {
   const firstStep = await getDialogues(list_id);
-  const bookmark = await getBookmark();
+  const bookmark = await getBookmark(user_id);
   const filterFirstStep = firstStep.map((firstStep) => {
     const isBookmarked = bookmark.some((bookmark) => bookmark.conversation_id === firstStep.id);
     return {
