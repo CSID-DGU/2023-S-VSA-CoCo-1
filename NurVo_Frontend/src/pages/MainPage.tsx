@@ -7,7 +7,7 @@ import { screenWidth } from '../utilities/Layout';
 
 import logo from '../assets/images/logo2.png';
 
-const MainPage = ({navigation}: {navigation: any}) => {
+const MainPage = ({ navigation }: { navigation: any }) => {
 
   const goLogin = () => {
     navigation.navigate('Login');
@@ -21,7 +21,12 @@ const MainPage = ({navigation}: {navigation: any}) => {
     <View style={styles.container}>
 
       <View style={styles.textContainer}>
-        <Title01 text='NURse VOice' color={Colors.BLACK} />
+        <View style={{display: 'flex', flexDirection: 'row'}}>
+          <Title01 text='NUR' color={Colors.MAINGREEN} />
+          <Title01 text='se ' color={Colors.BLACK} />
+          <Title01 text='VO' color={Colors.MAINGREEN} />
+          <Title01 text='ice' color={Colors.BLACK} />
+        </View>
         <Body011 text='간호 실무 영어 회화 어플' color={Colors.BLACK} />
       </View>
 
@@ -32,7 +37,7 @@ const MainPage = ({navigation}: {navigation: any}) => {
           <Body011 text='로그인' color={Colors.WHITE} style={{ textAlign: 'center' }} />
         </TouchableOpacity>
         <TouchableOpacity style={[styles.btn, styles.signUpBtn]} onPress={goSignUp}>
-          <Body011 text='회원가입' color={Colors.BLACK} style={{ textAlign: 'center' }} />
+          <Body011 text='회원가입' color={Colors.MAINGREEN} style={{ textAlign: 'center' }} />
         </TouchableOpacity>
       </View>
 

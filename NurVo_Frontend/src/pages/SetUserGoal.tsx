@@ -82,7 +82,7 @@ const App = ({ navigation, route }: any) => {
           <Sliders
             initalValue={number}
             minValue={1}
-            maxValue={7}
+            maxValue={50}
             step={1}
             styles={{ marginHorizontal: 10 }}
             numberOfChapter={handleChangeNumber} />

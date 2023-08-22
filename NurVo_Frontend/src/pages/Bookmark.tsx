@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 
 import Colors from '../utilities/Color';
-import { Body011 } from '../utilities/Fonts';
+import { Body011, Title01, Title02 } from '../utilities/Fonts';
 import { screenWidth } from '../utilities/Layout';
 import { deleteLibraryBookmark, fetchBookmark } from '../utilities/ServerFunc';
 import BookMarkList from '../components/BookMarkList';
@@ -49,7 +49,7 @@ const Bookmark = ({ navigation, route }) => {
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <HeaderButton types='delete' isDeleteAction={initialIsDelete} ondelete={(value)=> setInitialIsDelete(value)} />
+        <HeaderButton types='delete' isDeleteAction={initialIsDelete} ondelete={(value) => setInitialIsDelete(value)} />
       ),
     });
   }, [navigation, initialIsDelete]);
@@ -103,30 +103,41 @@ const Bookmark = ({ navigation, route }) => {
   }
 
   return (
-    <View style={styles.container}>
-      <BookMarkList
-        dataArray={libraryData}
-        isDelete={initialIsDelete}
-        seletedBookMarkList={handleSeletedID}
-        trueCount={handleTureCount} />
-      {!initialIsDelete ?
-        <TouchableOpacity style={styles.btn} onPress={studyPageLoad}>
-          <Body011
-            text={`${trueCount === 0 ? '전체 학습하기' : '선택 문장 학습하기'}`}
-            color={Colors.WHITE}
-            style={{ paddingVertical: 10 }}
-          />
-        </TouchableOpacity>
-        :
-        <TouchableOpacity style={styles.btn} onPress={deleteBookmark}>
-          <Body011
-            text={`${trueCount} 개를 삭제합니다`}
-            color={Colors.WHITE}
-            style={{ paddingVertical: 10 }}
-          />
-        </TouchableOpacity>
+    <>
+      {libraryData.length === 0 ? (
+        <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={{ fontSize: 100, color: Colors.GRAY07 }}>?</Text>
+          <Title02 text='저장된 문장이 없습니다.' color={Colors.GRAY07} />
+        </View>
+      ) : (
+        <View style={styles.container} >
+          <BookMarkList
+            dataArray={libraryData}
+            isDelete={initialIsDelete}
+            seletedBookMarkList={handleSeletedID}
+            trueCount={handleTureCount} />
+          {
+            !initialIsDelete ?
+              <TouchableOpacity style={styles.btn} onPress={studyPageLoad}>
+                <Body011
+                  text={`${trueCount === 0 ? '전체 학습하기' : '선택 문장 학습하기'}`}
+                  color={Colors.WHITE}
+                  style={{ paddingVertical: 10 }}
+                />
+              </TouchableOpacity>
+              :
+              <TouchableOpacity style={styles.btn} onPress={deleteBookmark}>
+                <Body011
+                  text={`${trueCount} 개를 삭제합니다`}
+                  color={Colors.WHITE}
+                  style={{ paddingVertical: 10 }}
+                />
+              </TouchableOpacity>
+          }
+        </View >
+      )
       }
-    </View>
+    </>
   );
 }
 
