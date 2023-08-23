@@ -11,10 +11,8 @@ router.post('/delete', deleteBookmarks);
 async function getBookmark(req, res) {
   try {
     const user_id = req.user.id;
-    console.log(user_id);
+      
     const bookmark = await getDialogueOfBookemark(user_id);
-
-    console.log(bookmark);
 
     res.status(200).send(bookmark);
 
@@ -28,7 +26,6 @@ async function addBookmark(req, res) {
   try {
     const user_id = req.user.id;
     const conversation_id = req.body.conversation_id;
-    console.log(conversation_id);
     await saveBookemark(conversation_id, user_id);
     res.status(200).send({"message":"save"});
   } catch (err) {

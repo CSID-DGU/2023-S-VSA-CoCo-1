@@ -1,6 +1,6 @@
 import express from 'express';
 import { ChapterByTopic } from '../services/chapter.mjs';
-import { FilterDialogues, FilterNurse, FilterNurse_ThirdStep, Accuracy } from '../services/dialogue.mjs';
+import { FilterDialogues, FilterNurse, FilterNurse_ThirdStep, AccuracyStep2, AccuracyStep3 } from '../services/dialogue.mjs';
 
 export const router = express.Router();
 router.get('/', getChapters);
@@ -58,7 +58,7 @@ async function getThirdStep (req, res) {
 //step2 
 async function checkAnswerSecondStep(req, res) {  //http://localhost:5000/api/dialogues/1/2/step2?id=1 형식으로 post요청해야함 
   try{  
-    const result = await Accuracy(req.query.id, req.body.reply);  //쿼리문으로 작성된 id값 과 body로 전송된 reply(사용자 응답)
+    const result = await AccuracyStep2(req.query.id, req.body.reply);  //쿼리문으로 작성된 id값 과 body로 전송된 reply(사용자 응답)
     res.status(200).send(result);
   }
   catch(err) {
@@ -69,7 +69,7 @@ async function checkAnswerSecondStep(req, res) {  //http://localhost:5000/api/di
 //step3
 async function checkAnswerThirdStep(req, res) {
   try{
-    const result = await Accuracy(req.query.id, req.body.reply);
+    const result = await AccuracyStep3(req.query.id, req.body.reply);
     res.status(200).send(result);
   }
   catch(err) {
