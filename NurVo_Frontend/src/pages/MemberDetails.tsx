@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { View, Image, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Restart from 'react-native-restart';
@@ -14,25 +14,27 @@ import CustomAlert from '../components/Alert';
 import img1 from '../assets/images/기본이미지.png';
 import UserContext from '../utilities/UserContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/core';
 
 const MenberDetails = ({ navigation, route }) => {
   const [userdata, setUserdate] = useState({});
   const [alertOpen, setAlertOpen] = useState('');
   const { isLogged, setIsLogged } = useContext(UserContext);
 
-  useEffect(() => {
-    async function getUserData() {
-      try {
-        const user = await fetchMypage();
-        console.log(user);
-        setUserdate(user);
-      } catch (error) {
-        console.error('Error fetching user info:', error);
+  useFocusEffect(
+    useCallback(() => {
+      async function getUserData() {
+        try {
+          const user = await fetchMypage();
+          console.log(user);
+          setUserdate(user);
+        } catch (error) {
+          console.error('Error fetching user info:', error);
+        }
       }
-    }
-
-    getUserData();
-  }, []);
+      getUserData();
+    }, [])
+  );
 
   useEffect(() => {
     async function getUserData() {

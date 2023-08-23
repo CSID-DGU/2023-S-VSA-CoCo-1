@@ -231,7 +231,7 @@ export default function LessonThird({ navigation, route }: LessonThirdProps) {
 
   return (
     <KeyboardAvoidingView
-      style={[styles.container, { paddingBottom: keyboardHeight }]}
+      style={[styles.container]}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       keyboardVerticalOffset={Platform.OS === 'ios' ? StatusBarManager.HEIGHT + 44 : undefined}
     >

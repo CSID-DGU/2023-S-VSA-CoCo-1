@@ -241,28 +241,26 @@ export default function Home({ navigation, route }: HomeScreenProps) {
         }
       }
       getData();
+
+      const getReviewData = async () => {
+        try {
+          const data = await fetchReviews();
+          if (!data) return;
+          const sectionData: Chapter[] = data.map((item: Review) => ({
+            id: item.chapter_id,
+            name: item.chapter_name,
+            description: item.topic_name,
+            step: item.step
+          }));
+          setReviews(sectionData);
+  
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      getReviewData();
     }, [])
   );
-  //fetch reviews
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        const data = await fetchReviews();
-        if (!data) return;
-        const sectionData: Chapter[] = data.map((item: Review) => ({
-          id: item.chapter_id,
-          name: item.chapter_name,
-          description: item.topic_name,
-          step: item.step
-        }));
-        setReviews(sectionData);
-
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    getData();
-  }, []);
 
   useEffect(() => {
     setNumOfReview(reviews.length);
