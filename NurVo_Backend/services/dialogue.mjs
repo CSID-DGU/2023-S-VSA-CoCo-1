@@ -1,4 +1,4 @@
-import { getDialogues, getSentences, getBookmark } from "../db/db.mjs";
+import { getDialogues, getSentences, getSecondStep, getBookmark } from "../db/db.mjs";
 
 export async function FilterDialogues(list_id, user_id) {
   const firstStep = await getDialogues(list_id);
@@ -79,8 +79,20 @@ function calculateAccuracy(referenceSentence, userAnswer) {
 }
 
 
-// 대화학습 2,3단계에서 클라이언트에서 보낸 응답을 바탕으로 정확도 계산
-export async function Accuracy(id, reply){ // 문장별 id와 reply(클라이언트에서 받은 사용자의 대답)
+
+// 대화학습 2단계에서 클라이언트에서 보낸 응답을 바탕으로 정확도 계산
+export async function AccuracyStep2(id, reply){ // 문장별 id와 reply(클라이언트에서 받은 사용자의 대답)
+  const answer = await getSecondStep(id);
+  const accuracy = calculateAccuracy(answer, reply);
+  console.log(accuracy)
+  return {    // 응답으로 정확도와 정답 보냄
+    accuracy: accuracy,
+    answer: answer,
+  };
+}
+
+// 대화학습 3단계에서 클라이언트에서 보낸 응답을 바탕으로 정확도 계산
+export async function AccuracyStep3(id, reply){ // 문장별 id와 reply(클라이언트에서 받은 사용자의 대답)
   const answer = await getSentences(id);
   const accuracy = calculateAccuracy(answer, reply);
   console.log(accuracy)

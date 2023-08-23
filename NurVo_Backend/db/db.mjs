@@ -151,6 +151,19 @@ export const getSentences = async(id) => {
   
 }
 
+// 문장의 second_step을 문장의 id로 가지고 오는 함수
+export const getSecondStep = async(id) => {
+  const client = await pool.connect();
+  try{
+    const sentence = await client.query('select second_step from conversation where id = $1', [id]);
+    return sentence.rows[0].second_step;
+  } catch(err) {
+    console.error(err);
+  } finally {
+    client.release();
+  }
+}
+
 //북마크 저장 함수
 export const saveBookemark = async (dialogue_id, user) => {
   const user_id = user || "coco1234"; // test할 때 사용할 계정이 coco1234
