@@ -169,6 +169,7 @@ const SignUp = ({ navigation }) => {
             onClickAction={onClick}
             isButtonDisable={checkId}
             isFocused={true}
+            style={{ marginTop: 60 }}
           />
           <SignUpCell
             title="비밀번호"

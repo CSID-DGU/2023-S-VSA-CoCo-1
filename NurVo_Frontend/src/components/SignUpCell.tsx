@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, TextInput, ViewStyle } from 'react-native';
 import Colors from '../utilities/Color';
 import { Body012, Subtext011, Subtext012 } from '../utilities/Fonts';
 
@@ -11,12 +11,13 @@ interface SignUpCellrProps {
   buttonText?: string;
   isButtonDisable?: boolean;
   isFocused: boolean;
+  style?: ViewStyle;
 
   onText: (value: string) => void;
   onClickAction: (value: string) => void;
 }
 
-const SignUpCell = ({ title, initialText, subText, isConfirmButton, buttonText, isButtonDisable, isFocused, onText, onClickAction }: SignUpCellrProps) => {
+const SignUpCell = ({ title, initialText, subText, isConfirmButton, buttonText, isButtonDisable, isFocused, style, onText, onClickAction }: SignUpCellrProps) => {
   const isConfirm = isConfirmButton ? isConfirmButton : false;
   const isSubText = subText ? true : false;
   const [text, onChangeText] = useState('');
@@ -30,7 +31,7 @@ const SignUpCell = ({ title, initialText, subText, isConfirmButton, buttonText, 
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]}>
       <Body012 text={title} color={Colors.GRAY03} />
 
       {isConfirm ? (
