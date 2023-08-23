@@ -6,8 +6,6 @@ export async function getDialogueOfBookemark (user_id) {
   const dialogues = await getDialogues();
   const chapter = await getChapter();
 
-  console.log(bookmark);
-
   const bookmarkDialogues = bookmark.map((bm) => {
     const dialogueInfo = dialogues.find((dialogue) => dialogue.id === bm.conversation_id);
     
