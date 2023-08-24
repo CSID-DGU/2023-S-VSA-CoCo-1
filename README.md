@@ -7,7 +7,8 @@
 ## Introduction
 
 ### 추진 배경
-<img width="420" alt="image" src="https://github.com/CSID-DGU/2023-S-VSA-CoCo-1/assets/41153398/137c4062-949c-4ed8-ad6b-ecf0f58bfa15"> <img width="412" alt="image" src="https://github.com/CSID-DGU/2023-S-VSA-CoCo-1/assets/41153398/ab4c9f07-6c8d-48f3-b7d3-419ab0225eea">
+|![image](https://github.com/CSID-DGU/2023-S-VSA-CoCo-1/assets/41153398/137c4062-949c-4ed8-ad6b-ecf0f58bfa15) |![image](https://github.com/CSID-DGU/2023-S-VSA-CoCo-1/assets/41153398/ab4c9f07-6c8d-48f3-b7d3-419ab0225eea) |
+:---|:---|
 
 ### 과제 목표
 - Target
