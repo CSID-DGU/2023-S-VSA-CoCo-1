@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 
 import Colors from '../utilities/Color';
@@ -7,6 +7,7 @@ import { screenWidth } from '../utilities/Layout';
 import { deleteLibraryBookmark, fetchBookmark } from '../utilities/ServerFunc';
 import BookMarkList from '../components/BookMarkList';
 import HeaderButton from '../components/HeaderButton';
+import { useFocusEffect } from '@react-navigation/core';
 
 const Bookmark = ({ navigation, route }) => {
   const [libraryData, setLibraryData] = useState([]); // 실제 북마크 표현 데이터
@@ -17,10 +18,13 @@ const Bookmark = ({ navigation, route }) => {
   const [isDisable, setIsDisable] = useState(false); // 삭제 버튼 클릭 시 백엔드에 전달
 
   // 데이터 불러오기
-  useEffect(() => {
-    getBookmark();
-    setFixed(libraryData);
-  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      getBookmark();
+      setFixed(libraryData);
+    }, [])
+  );
 
   useEffect(() => {
     if (!compareArrays(libraryData, fixed)) {

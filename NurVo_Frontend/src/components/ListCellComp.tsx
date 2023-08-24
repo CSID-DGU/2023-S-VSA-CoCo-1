@@ -9,32 +9,52 @@ import { useNavigation } from '@react-navigation/native';
 import Colors from '../utilities/Color';
 import { Body023, Subtitle011 } from '../utilities/Fonts';
 import { layoutStyles } from '../utilities/Layout';
-import { HomeScreenNavigationProp } from '../utilities/NavigationTypes';
+import { HomeStackNavigationProp } from '../utilities/NavigationTypes';
 
 interface ListCellProps {
-    item: {
-        title: string;
-        subtitle: string;
-        chapterId: number;
-    };
-    checked?: boolean;
+    item: Chapter;
     style: ViewStyle;
 }
 
-export function ListCell({ item, checked, style }: ListCellProps) {
+export interface Chapter {
+    id: number;
+    name: string;
+    description?: string;
+    topic_id?: number;
+    topic_name?: string;
+    step: number;
+    date?: string;
+}
 
-    const navigation = useNavigation<HomeScreenNavigationProp>();
+export function ListCell({ item, style }: ListCellProps) {
+    const navigation = useNavigation<HomeStackNavigationProp>();
 
     return (
         <TouchableOpacity style={[listStyles.listCell, style]} onPress={() => {
-            navigation.navigate('LessonFirstScreen', {chapterId: item.chapterId});
-
+            
+            switch (item.step) {
+                case 1:
+                    navigation.navigate("LessonSecondScreen", { chapterId: item.id, chapter_name: item.name, step: item.step });
+                    return;
+                case 2:
+                    navigation.navigate("LessonThirdScreen", { chapterId: item.id, chapter_name: item.name, step: item.step });
+                    return;
+                case 3:
+                    navigation.navigate("SelectStepScreen", { chapter: item });
+                    return;
+                default:
+                    navigation.navigate('FirstStepInfoScreen', {chapter: item});
+                    return;
+            }
+            
         }}>
             <View style={[layoutStyles.VStackContainer, style, { paddingHorizontal: 20, paddingVertical: 12, marginTop: 28 }]}>
-                <Subtitle011 text={item.title} color={Colors.GRAY03} numberOfLines={1} ellipsizeMode={'tail'} />
-                <Body023 text={item.subtitle} color={Colors.GRAY05} numberOfLines={1} ellipsizeMode={'tail'} />
+                <Subtitle011 text={item.name} color={Colors.GRAY03} numberOfLines={1} ellipsizeMode={'tail'} />
+                {item.description && (<Body023 text={item.description} color={Colors.GRAY05} numberOfLines={1} ellipsizeMode={'tail'} />)}
             </View>
-            {checked && <View style={[listStyles.checkedListCell]} />}
+            {(item.step && (item.step === 1)) && <View style={[listStyles.checkedStep1]} />}
+            {(item.step && (item.step === 2)) && <View style={[listStyles.checkedStep2]} />}
+            {(item.step && (item.step === 3)) && <View style={[listStyles.checkedStep3]} />}
         </TouchableOpacity>
     );
 };
@@ -49,7 +69,33 @@ const listStyles = StyleSheet.create({
         shadowRadius: 4,
         height: 100,
     },
-    checkedListCell: {
+    checkedStep1: {
+        backgroundColor: Colors.BEIGE,
+        width: 8,
+        height: 100,
+
+        borderTopLeftRadius: 12,
+        borderBottomLeftRadius: 12,
+
+
+        position: 'absolute',
+        left: 0,
+        top: 0,
+    },
+    checkedStep2: {
+        backgroundColor: Colors.LIGHTGREEN,
+        width: 8,
+        height: 100,
+
+        borderTopLeftRadius: 12,
+        borderBottomLeftRadius: 12,
+
+
+        position: 'absolute',
+        left: 0,
+        top: 0,
+    },
+    checkedStep3: {
         backgroundColor: Colors.MAINGREEN,
         width: 8,
         height: 100,

@@ -47,7 +47,7 @@ export const playSound = (path: string, onDone: () => void): Sound => {
     })
     return speech;
 }
-let play: Sound | null = null;
+export let play: Sound | null = null;
 //speech('hello world')와 같은 형식으로 사용하면 됩니다.
 export const speech = async (text: string, chapterID: number, isNurse: boolean, onDone: () => void) => {
     const speech_key = SPEECH_KEY;

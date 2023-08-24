@@ -5,11 +5,10 @@
  * @format
  */
 
-import React, { useLayoutEffect, useState, useEffect } from 'react';
+import React, { useLayoutEffect, useState, useEffect, createContext, useContext } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer, getFocusedRouteNameFromRoute, useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import EncryptedStorage from 'react-native-encrypted-storage';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import Colors from './src/utilities/Color';
@@ -28,6 +27,12 @@ import Login from './src/pages/Login';
 import SignUp from './src/pages/SignUp';
 import HeaderButton from './src/components/HeaderButton';
 import { ChapterStackParamList, HomeStackParamList, MainStackParamList, RootStackParamList } from './src/utilities/NavigationTypes';
+import AllLessonsList from './src/pages/AllLessonsList';
+import UserContext, { UserProvider } from './src/utilities/UserContext';
+import SelectStepScreen from './src/pages/SelectStepScreen';
+import { retrieveUserSession } from './src/utilities/EncryptedStorage';
+import LaunchFirstScreen from './src/pages/LaunchFirstScreen';
+import FirstStepInfo from './src/pages/ChapterStudy/FirstStepInfo';
 
 const Tab = createBottomTabNavigator<RootStackParamList>();
 function BottomTabs() {
@@ -62,12 +67,34 @@ const HomeStack = createNativeStackNavigator<HomeStackParamList>();
 const HomeStackScreen = ({ navigation, route }: any) => {
   useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route);
-    if (routeName === 'LessonFirstScreen' || routeName === 'LessonSecondScreen' || routeName === 'LessonThirdScreen') {
+    if (routeName === 'FirstStepInfoScreen' || routeName === 'SelectStepScreen' || routeName === 'LessonFirstScreen' || 
+    routeName === 'LessonSecondScreen' || routeName === 'LessonThirdScreen' || routeName === 'LaunchFirstScreen' || 
+    routeName === 'MainPage' || routeName === 'Login' || routeName === 'SignUp' || routeName === 'MemberDetails' || routeName === 'SetUserGoal') {
       navigation.setOptions({ tabBarStyle: { display: 'none' } });
     } else {
       navigation.setOptions({ tabBarStyle: { display: undefined } });
     }
   })
+
+  const { isLogged, setIsLogged } = useContext(UserContext);
+
+  useEffect(() => {
+    const checkLogin = async () => {
+      try {
+        const value = await retrieveUserSession();
+        if (value) {
+          setIsLogged(true);
+          console.log("token not null", value);
+        } else {
+          console.log("token", value);
+        }
+      } catch (error) {
+        console.log("token", error);
+      }
+    }
+    checkLogin();
+  }, [isLogged]);
+
   return (
     <HomeStack.Navigator
       screenOptions={{
@@ -75,13 +102,30 @@ const HomeStackScreen = ({ navigation, route }: any) => {
         headerBackTitleVisible: false,
       }}
     >
-      <HomeStack.Screen name="HomeScreen" component={Home} options={{ headerShown: false }} />
-      <HomeStack.Screen name="LessonList" component={LessonsList} />
-      <HomeStack.Screen name="LessonFirstScreen" component={LessonFirst} />
-      <HomeStack.Screen name="LessonSecondScreen" component={LessonSecond} />
-      <HomeStack.Screen name="LessonThirdScreen" component={LessonThird} />
-      <HomeStack.Screen name="MemberDetails" component={MemberDetails} />
-      <HomeStack.Screen name="SetUserGoal" component={SetUserGoal} />
+      {
+        isLogged ? (
+          <>
+            <HomeStack.Screen name="HomeScreen" component={Home} options={{ headerShown: false }} />
+            <HomeStack.Screen name="LessonList" component={LessonsList} />
+            <HomeStack.Screen name="SelectStepScreen" component={SelectStepScreen} options={{title:""}}/>
+            <HomeStack.Screen name="FirstStepInfoScreen" component={FirstStepInfo} options={{title:""}}/>
+            <HomeStack.Screen name="LessonFirstScreen" component={LessonFirst} />
+            <HomeStack.Screen name="LessonSecondScreen" component={LessonSecond} />
+            <HomeStack.Screen name="LessonThirdScreen" component={LessonThird} />
+            <HomeStack.Screen name="MemberDetails" component={MemberDetails} />
+            <HomeStack.Screen name="SetUserGoal" component={SetUserGoal} />
+          </>
+        ) : (
+          <>
+            <HomeStack.Screen name="LaunchFirstScreen" component={LaunchFirstScreen} options={{ headerShown: false }} />
+            <HomeStack.Screen name="MainPage" component={MainPage} options={{ headerShown: false }} />
+            <HomeStack.Screen name="Login" component={Login} />
+            <HomeStack.Screen name="SignUp" component={SignUp} />
+
+          </>
+        )
+      }
+
     </HomeStack.Navigator>
   );
 }
@@ -119,7 +163,8 @@ const ChapterStack = createNativeStackNavigator<ChapterStackParamList>();
 const ChapterStackScreen = ({ navigation, route }: any) => {
   useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route);
-    if (routeName === 'LessonFirstScreen' || routeName === 'LessonSecondScreen' || routeName === 'LessonThirdScreen') {
+    if (routeName === 'FirstStepInfoScreen' || routeName === 'SelectStepScreen' || routeName === 'LessonFirstScreen' || 
+    routeName === 'LessonSecondScreen' || routeName === 'LessonThirdScreen') {
       navigation.setOptions({ tabBarStyle: { display: 'none' } });
     } else {
       navigation.setOptions({ tabBarStyle: { display: undefined } });
@@ -132,7 +177,9 @@ const ChapterStackScreen = ({ navigation, route }: any) => {
         headerBackTitleVisible: false,
       }}
     >
-      <ChapterStack.Screen name="LessonList" component={LessonsList} />
+      <ChapterStack.Screen name="AllLessonsList" component={AllLessonsList} />
+      <ChapterStack.Screen name="SelectStepScreen" component={SelectStepScreen} options={{title:""}}/>
+      <ChapterStack.Screen name="FirstStepInfoScreen" component={FirstStepInfo} options={{title:""}}/>
       <ChapterStack.Screen name="LessonFirstScreen" component={LessonFirst} />
       <ChapterStack.Screen name="LessonSecondScreen" component={LessonSecond} />
       <ChapterStack.Screen name="LessonThirdScreen" component={LessonThird} />
@@ -140,104 +187,14 @@ const ChapterStackScreen = ({ navigation, route }: any) => {
   );
 }
 
-function AutoBottomTabs() {
-  return (
-    <Tab.Navigator
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ color, size }) => {
-          let iconName: string = route.name.toLowerCase();
-
-          if (route.name === 'Home') {
-            iconName = 'home';
-          } else if (route.name === 'Chapter') {
-            iconName = 'book';
-          } else if (route.name === 'Library') {
-            iconName = 'folder';
-          } else if (route.name === 'Main') {
-            return null; // MainStack 탭의 아이콘을 만들지 않음
-          }
-
-          // You can return any component that you like here!
-          return <Ionicons name={iconName} size={size} color={color} />;
-        },
-        tabBarActiveTintColor: Colors.MAINGREEN,
-        tabBarInactiveTintColor: 'gray',
-      })}
-    >
-      <Tab.Screen name="Main" component={MainStackScreen} options={{ headerShown: false }} />
-      <Tab.Screen name="Home" component={HomeStackScreen} options={{ headerShown: false }} />
-      <Tab.Screen name="Chapter" component={ChapterStackScreen} options={{ headerShown: false }} />
-      <Tab.Screen name="Library" component={LibraryStackScreen} options={{ headerShown: false }} />
-    </Tab.Navigator>
-  );
-}
-
-const MainStack = createNativeStackNavigator<MainStackParamList>();
-const MainStackScreen = ({ navigation, route }: any) => {
-  useLayoutEffect(() => {
-    const routeName = getFocusedRouteNameFromRoute(route);
-    const shouldHideTabBar =
-      routeName === 'MainPage' ||
-      routeName === 'Login' ||
-      routeName === 'SignUp' ||
-      routeName === 'SetUserGoalinital';
-
-    navigation.setOptions({ tabBarStyle: { display: shouldHideTabBar ? 'none' : undefined } });
-
-    // 컴포넌트가 언마운트될 때 탭바를 다시 보이도록 설정
-    return () => {
-      navigation.setOptions({ tabBarStyle: { display: undefined } });
-    };
-  });
-
-  return (
-    <MainStack.Navigator
-      screenOptions={{
-        headerTintColor: Colors.BLACK,
-        headerBackTitleVisible: false,
-      }}
-    >
-      <MainStack.Screen name="MainPage" component={MainPage} options={{ headerShown: false }} />
-      <MainStack.Screen name="Login" component={Login} options={{ headerShown: false }} />
-      <MainStack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }} />
-      <MainStack.Screen name="SetUserGoalinital" component={SetUserGoal} />
-      <MainStack.Screen name="HomeScreen" component={Home} options={{ headerShown: false }} />
-      <MainStack.Screen name="LessonList" component={LessonsList} />
-      <MainStack.Screen name="LessonFirstScreen" component={LessonFirst} />
-      <MainStack.Screen name="LessonSecondScreen" component={LessonSecond} />
-      <MainStack.Screen name="LessonThirdScreen" component={LessonThird} />
-      <MainStack.Screen name="MemberDetails" component={MemberDetails} />
-      <MainStack.Screen name="SetUserGoal" component={SetUserGoal} />
-    </MainStack.Navigator>
-  );
-}
-
-
 function App(): JSX.Element {
-  const [initialRoute, setInitialRoute] = useState('MainStackScreen');
-
-  useLayoutEffect(() => {
-    const checkTokenAndSetInitialRoute = async () => {
-      const accessToken = await retrieveUserSession('ACCESS_SECRET');
-      console.log("시작: ", accessToken)
-
-      if (accessToken) {
-        setInitialRoute('Home');
-        console.log("시작: ", initialRoute)
-      }
-    };
-    checkTokenAndSetInitialRoute();
-  });
-
   return (
-    <NavigationContainer>
-      {initialRoute === "MainStackScreen" ?
-        <AutoBottomTabs />
-        :
+    <UserProvider>
+      <NavigationContainer>
         <BottomTabs />
-      }
-    </NavigationContainer>
-  ); s
+      </NavigationContainer>
+    </UserProvider>
+  );
 };
 
 export default App;

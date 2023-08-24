@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Platform, StyleSheet, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import { Platform, StyleSheet, TouchableOpacity, KeyboardAvoidingView, ScrollView, NativeModules } from 'react-native';
 import * as yup from 'yup';
 import axios from 'axios';
 
@@ -34,6 +34,8 @@ const SignUp = ({ navigation }) => {
   const [isIdentifyModal, setIsIdentifyModal] = useState(false); // 인증번호 확인 모달창
   const [isAlretAction, setIsAlretAction] = useState(false); // 회원가입 가능 여부 확인 Alert창
   const [alretMessages, setAlretMessages] = useState(''); // Alert창에 들어갈 메세지
+
+  const { StatusBarManager } = NativeModules;
 
   // 유효성 검사를 위한 스키마 정의
   const validationSchema = yup.object().shape({
@@ -126,7 +128,7 @@ const SignUp = ({ navigation }) => {
       const errorMessages = e.inner[0]?.message; // 에러메시지가 뜰 것임 그러면 그에 맞게 사용자에게 다시 입력해달라고 하면 됨
       setAlretMessages(errorMessages);
       setIsAlretAction(true);
-    } 
+    }
   };
 
   useEffect(() => {
@@ -153,54 +155,62 @@ const SignUp = ({ navigation }) => {
   return (
     <>
       <KeyboardAvoidingView
-        behavior={Platform.select({ ios: 'padding', android: 'padding' })}
-        style={styles.container}
-      >
-        <SignUpCell
-          title="아이디"
-          initialText="아이디"
-          isConfirmButton={true}
-          buttonText="중복확인"
-          onText={value => setId(value)}
-          onClickAction={onClick}
-          isButtonDisable={checkId}
-        />
-        <SignUpCell
-          title="비밀번호"
-          initialText="비밀번호"
-          onText={value => setPassword(value)}
-          subText='영어 소문자, 숫자, 특수 기호(!@#$%^&*)을 포함한 8자 이상'
-        />
-        <SignUpCell
-          title="비밀번호 확인"
-          initialText="비밀번호 확인"
-          onText={value => setConfirmPassword(value)}
-        />
-        <SignUpCell
-          title="이름"
-          initialText="이름을 입력하세요"
-          onText={value => setName(value)}
-        />
-        <SignUpCell
-          title="휴대폰 번호"
-          initialText="'-' 구분없이 입력"
-          isConfirmButton={true}
-          buttonText="인증번호 전송"
-          onText={(value) => setPhoneNumber(value)}
-          onClickAction={onClick}
-          isButtonDisable={identify}
-        />
-        <SignUpCell
-          title="닉네임"
-          initialText="닉네임을 입력하세요"
-          onText={value => setNickname(value)}
-        />
+        style={[styles.container]}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? StatusBarManager.HEIGHT + 44 : undefined}>
+        <ScrollView>
+
+          <SignUpCell
+            title="아이디"
+            initialText="아이디"
+            isConfirmButton={true}
+            buttonText="중복확인"
+            onText={value => setId(value)}
+            onClickAction={onClick}
+            isButtonDisable={checkId}
+            isFocused={true}
+            style={{ marginTop: 60 }}
+          />
+          <SignUpCell
+            title="비밀번호"
+            initialText="비밀번호"
+            onText={value => setPassword(value)}
+            subText='영어 소문자, 숫자, 특수 기호(!@#$%^&*)을 포함한 8자 이상'
+            isFocused={false}
+          />
+          <SignUpCell
+            title="비밀번호 확인"
+            initialText="비밀번호 확인"
+            onText={value => setConfirmPassword(value)}
+            isFocused={false}
+          />
+          <SignUpCell
+            title="이름"
+            initialText="이름을 입력하세요"
+            onText={value => setName(value)}
+            isFocused={false}
+          />
+          <SignUpCell
+            title="휴대폰 번호"
+            initialText="'-' 구분없이 입력"
+            isConfirmButton={true}
+            buttonText="인증번호 전송"
+            onText={(value) => setPhoneNumber(value)}
+            onClickAction={onClick}
+            isButtonDisable={identify}
+            isFocused={false}
+          />
+          <SignUpCell
+            title="닉네임"
+            initialText="닉네임을 입력하세요"
+            onText={value => setNickname(value)}
+            isFocused={false}
+          />
+          <TouchableOpacity style={[styles.buttonContainer, { marginTop: 70 }]} onPress={handleSignUp}>
+            <Body011 text='NurVo 시작하기' color={Colors.WHITE} style={{ textAlign: 'center' }} />
+          </TouchableOpacity>
+        </ScrollView>
       </KeyboardAvoidingView>
-
-      <TouchableOpacity style={styles.buttonContainer} onPress={handleSignUp}>
-        <Body011 text='NurVo 시작하기' color={Colors.WHITE} style={{ textAlign: 'center' }} />
-      </TouchableOpacity>
-
       <IndentifyModal
         isAction={isIdentifyModal}
         onText={(value: string) => setCheckIdentifyNumber(value)}

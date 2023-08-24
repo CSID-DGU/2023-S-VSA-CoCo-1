@@ -1,9 +1,9 @@
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text, ViewStyle } from 'react-native';
 
 interface FontProps {
     text: string;
     color?: string;
-    style?: {};
+    style?: ViewStyle;
     numberOfLines?: number;
     ellipsizeMode?: 'head' | 'middle' | 'tail' | 'clip';
 }

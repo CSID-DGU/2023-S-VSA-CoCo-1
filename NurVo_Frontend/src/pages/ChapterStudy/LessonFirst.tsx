@@ -13,7 +13,7 @@ import Colors from '../../utilities/Color';
 import ChatBubble from '../../components/ChatBubble';
 import CustomAlert from '../../components/Alert';
 import { speech, stopSpeech } from '../../utilities/TextToSpeech';
-import { fetchChapterDialogueById } from '../../utilities/ServerFunc';
+import { completeChapter, fetchChapterDialogueById } from '../../utilities/ServerFunc';
 import { LessonFirstProps } from '../../utilities/NavigationTypes';
 
 const { StatusBarManager } = NativeModules;
@@ -21,6 +21,8 @@ LogBox.ignoreLogs(['new NativeEventEmitter']);
 
 export default function LessonFirst({ navigation, route }: LessonFirstProps) {
   const flatListRef = useRef<FlatList>(null);
+  const isSoundMode = route.params.isVoiceMode;
+
   const initialState = {
     allMessages: [],
     messages: [],
@@ -58,6 +60,12 @@ export default function LessonFirst({ navigation, route }: LessonFirstProps) {
   }, []);
 
   useEffect(() => {
+    if (route.params && route.params.chapter_name) {
+      navigation.setOptions({ title: route.params.chapter_name });
+    }
+  }, []);
+
+  useEffect(() => {
     const getData = async () => {
       const chapterId = route.params.chapterId;
       const data = await fetchChapterDialogueById(chapterId);
@@ -71,12 +79,15 @@ export default function LessonFirst({ navigation, route }: LessonFirstProps) {
   useEffect(() => {
     if (allMessages.length > 0) {
       dispatch({ type: 'SET_MESSAGES', payload: [allMessages[0]] });
-      setIsSpeakingByIndex(0, true);
-      speech(
-        allMessages[0].dialogue,
-        allMessages[0].id,
-        allMessages[0].speaker.trim().toLowerCase() === 'nurse',
-        () => setIsSpeakingByIndex(0, false));    //speech함수가 끝나면 setIsSpeaking(false)로 바꿔줌
+      
+      if (isSoundMode) {
+        setIsSpeakingByIndex(0, true);
+        speech(
+          allMessages[0].dialogue,
+          allMessages[0].id,
+          allMessages[0].speaker.trim().toLowerCase() === 'nurse',
+          () => setIsSpeakingByIndex(0, false));    //speech함수가 끝나면 setIsSpeaking(false)로 바꿔줌
+      }
     }
   }, [allMessages]);
 
@@ -87,14 +98,15 @@ export default function LessonFirst({ navigation, route }: LessonFirstProps) {
       if (messages.length < allMessages.length) {
         dispatch({ type: 'SET_MESSAGES', payload: allMessages.slice(0, messages.length + 1) });
         setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100);
-
-        setIsSpeakingByIndex(messages.length, true);
-
-        speech(
-          allMessages[messages.length].dialogue,
-          allMessages[messages.length].id,
-          allMessages[messages.length].speaker.trim().toLowerCase() === 'nurse',
-          () => setIsSpeakingByIndex(messages.length, false));    //speech함수가 끝나면 setIsSpeaking(false)로 바꿔줌
+        
+        if (isSoundMode) {
+          setIsSpeakingByIndex(messages.length, true);
+          speech(
+            allMessages[messages.length].dialogue,
+            allMessages[messages.length].id,
+            allMessages[messages.length].speaker.trim().toLowerCase() === 'nurse',
+            () => setIsSpeakingByIndex(messages.length, false));    //speech함수가 끝나면 setIsSpeaking(false)로 바꿔줌
+        }
       } else {
         dispatch({ type: 'SET_SHOW_ALERT', payload: true });
       }
@@ -108,8 +120,9 @@ export default function LessonFirst({ navigation, route }: LessonFirstProps) {
   };
 
   const handleNext = () => {
+    completeChapter(route.params.chapterId, route.params.step > 1 ? route.params.step : 1)
     navigation.pop();
-    navigation.navigate("LessonSecondScreen", { chapterId: route.params.chapterId });
+    navigation.navigate("LessonSecondScreen", { chapterId: route.params.chapterId, chapter_name: route.params.chapter_name, step: 2 });
   };
 
   const handleCancle = () => {
@@ -132,7 +145,6 @@ export default function LessonFirst({ navigation, route }: LessonFirstProps) {
             <ChatBubble
               index={index}
               item={item}
-              isBookmarked={false}
               isSpeaking={isSpeaking[index]}
               speakingList={isSpeaking}
               onIsClickSpeakChange={(isSpeaking) => setIsSpeakingByIndex(index, isSpeaking)} />

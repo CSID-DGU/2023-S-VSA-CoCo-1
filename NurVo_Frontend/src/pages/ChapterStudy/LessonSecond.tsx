@@ -18,7 +18,7 @@ import CustomAlert from '../../components/Alert';
 import VoiceRecordButton from '../../components/VoiceFuncComp';
 import { stopSpeech } from '../../utilities/TextToSpeech';
 import { LessonSecondProps } from '../../utilities/NavigationTypes';
-import { calculateSecondStepAccuracyWithSentenceId, fetchChapterDialogueSecondStepById } from '../../utilities/ServerFunc';
+import { calculateSecondStepAccuracyWithSentenceId, completeChapter, fetchChapterDialogueSecondStepById } from '../../utilities/ServerFunc';
 
 const { StatusBarManager } = NativeModules;
 
@@ -98,6 +98,12 @@ export default function LessonSecond({ navigation, route }: LessonSecondProps) {
     return () => {
       stopSpeech();
     };
+  }, []);
+
+  useEffect(() => {
+    if (route.params && route.params.chapter_name) {
+      navigation.setOptions({ title: route.params.chapter_name });
+    }
   }, []);
 
   useEffect(() => {
@@ -208,8 +214,9 @@ export default function LessonSecond({ navigation, route }: LessonSecondProps) {
   };
 
   const handleNext = () => {
+    completeChapter(route.params.chapterId, route.params.step > 2 ? route.params.step : 2)
     navigation.pop();
-    navigation.navigate("LessonThirdScreen", { chapterId: route.params.chapterId });
+    navigation.navigate("LessonThirdScreen", { chapterId: route.params.chapterId, chapter_name: route.params.chapter_name, step: 3 });
   };
   const handleCancle = () => {
     dispatch({ type: 'SET_SHOW_NEXT_ALERT', payload: false });
@@ -242,7 +249,7 @@ export default function LessonSecond({ navigation, route }: LessonSecondProps) {
 
   return (
     <KeyboardAvoidingView
-      style={[styles.container, { paddingBottom: keyboardHeight}]}
+      style={[styles.container]}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       keyboardVerticalOffset={Platform.OS === 'ios' ? StatusBarManager.HEIGHT + 44 : undefined}
     >
@@ -257,7 +264,6 @@ export default function LessonSecond({ navigation, route }: LessonSecondProps) {
               key={index.toString()}
               index={index}
               item={item}
-              isBookmarked={false}
               onEnterValue={handleSend}
               onChagneText={handleSetInputText}
               inputRef={inputRef}

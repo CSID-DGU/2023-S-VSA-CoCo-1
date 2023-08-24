@@ -21,9 +21,9 @@ const HeaderButton = ({ types, image, isDeleteAction, ondelete }: LibraryHeaderP
   const type = types;
   const [isDelete, setIsDelete] = useState(false);
 
-  useEffect(()=>{
+  useEffect(() => {
     setIsDelete(isDeleteAction);
-  },[isDeleteAction]);
+  }, [isDeleteAction]);
 
   const openDelete = () => {
     setIsDelete(true);
@@ -48,7 +48,7 @@ const HeaderButton = ({ types, image, isDeleteAction, ondelete }: LibraryHeaderP
           </TouchableOpacity >
           :
           <TouchableOpacity onPress={openDelete}>
-            <Text>편집</Text>
+            <Ionicons name='trash-outline' size={25} color={Colors.GRAY07} />
           </TouchableOpacity>
         )
       }

@@ -17,7 +17,7 @@ import CustomAlert from '../../components/Alert';
 import VoiceRecordButton from '../../components/VoiceFuncComp';
 import { stopSpeech } from '../../utilities/TextToSpeech';
 import { LessonThirdProps } from '../../utilities/NavigationTypes';
-import { calculateThirdStepAccuracyWithSentenceId, fetchChapterDialogueThirdStepById } from '../../utilities/ServerFunc';
+import { calculateThirdStepAccuracyWithSentenceId, completeChapter, fetchChapterDialogueThirdStepById } from '../../utilities/ServerFunc';
 
 const { StatusBarManager } = NativeModules;
 
@@ -87,6 +87,12 @@ export default function LessonThird({ navigation, route }: LessonThirdProps) {
   }, []);
 
   useEffect(() => {
+    if (route.params && route.params.chapter_name) {
+      navigation.setOptions({ title: route.params.chapter_name });
+    }
+  }, []);
+
+  useEffect(() => {
     const getData = async () => {
       const chapterId = route.params.chapterId;
       const data = await fetchChapterDialogueThirdStepById(chapterId);
@@ -152,7 +158,7 @@ export default function LessonThird({ navigation, route }: LessonThirdProps) {
   const handlePress = async () => {
     if (!(isSpeaking.some((value: boolean) => value))) {
       if (messages.length < allMessages.length) {
-        if (messages[messages.length - 1].speaker.trim().toLowerCase() === 'nurse' && messages[messages.length - 1].second_step) {
+        if (messages[messages.length - 1].speaker.trim().toLowerCase() === 'nurse' && messages[messages.length - 1].dialogue) {
           if (inputText.trim().length === 0) {
             inputRef.current?.focus();
             return;
@@ -165,7 +171,7 @@ export default function LessonThird({ navigation, route }: LessonThirdProps) {
           setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100);
         }
       } else {
-        if (messages[messages.length - 1].speaker.trim().toLowerCase() === 'nurse' && messages[messages.length - 1].second_step) {
+        if (messages[messages.length - 1].speaker.trim().toLowerCase() === 'nurse' && messages[messages.length - 1].dialogue) {
           await calculateCorrectPercent();
           dispatch({ type: 'SET_SHOW_CHECK_ALERT', payload: true });
         }
@@ -193,6 +199,7 @@ export default function LessonThird({ navigation, route }: LessonThirdProps) {
     flatListRef.current?.scrollToEnd({ animated: true });
   };
   const handleNext = () => {
+    completeChapter(route.params.chapterId, 3)
     navigation.popToTop();
   };
   const handleCancle = () => {
@@ -211,8 +218,7 @@ export default function LessonThird({ navigation, route }: LessonThirdProps) {
     dispatch({ type: 'SET_SHOW_CHECK_ALERT', payload: false });
   };
 
-  const hasInputText = messages.length > 0 ? messages[messages.length - 1].speaker.trim().toLowerCase() === 'nurse' &&
-    messages[messages.length - 1].second_step : false;
+  const hasInputText = messages.length > 0 && messages[messages.length - 1].speaker.trim().toLowerCase() === 'nurse' && messages[messages.length - 1].dialogue;
 
   const [buttonTranslateY] = useState(new Animated.Value(140));
   useEffect(() => {
@@ -225,7 +231,7 @@ export default function LessonThird({ navigation, route }: LessonThirdProps) {
 
   return (
     <KeyboardAvoidingView
-      style={[styles.container, { paddingBottom: keyboardHeight}]}
+      style={[styles.container]}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       keyboardVerticalOffset={Platform.OS === 'ios' ? StatusBarManager.HEIGHT + 44 : undefined}
     >
@@ -239,7 +245,6 @@ export default function LessonThird({ navigation, route }: LessonThirdProps) {
             <ChatBubbleInputAll
               index={index}
               item={item}
-              isBookmarked={false}
               onEnterValue={handleSend}
               onChagneText={handleSetInputText}
               inputRef={inputRef}

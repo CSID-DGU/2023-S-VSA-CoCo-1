@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 
 import Colors from '../utilities/Color';
-import { Body011, Title01, Title02 } from '../utilities/Fonts';
+import { Body011, Subtitle011, Title01, Title02 } from '../utilities/Fonts';
 import { screenHeight } from '../utilities/Layout';
 import { updateUserInfo } from '../utilities/ServerFunc';
 import Sliders from '../components/Sliders';
 import DateTimePickerModalProps from '../components/DateTimePickerModalProps';
 import CustomAlert from '../components/Alert';
 
-const App = ({ navigation, route }: any) => {
+const SetUserGoal = ({ navigation, route }: any) => {
   const goals = route.params.data;
   const prevScreen = route.params?.prevScreen || '';
   const [number, setNumber] = useState(goals.obj);
@@ -26,7 +26,7 @@ const App = ({ navigation, route }: any) => {
         if (prevScreen === 'Login') {
           navigation.navigate('HomeScreen', { data: ipdateUserInfo });
         } else {
-          navigation.navigate(prevScreen, { data: ipdateUserInfo });
+          navigation.pop();
         }
       } catch (error) {
         console.error('Error fetching user info:', error);
@@ -103,7 +103,7 @@ const App = ({ navigation, route }: any) => {
 
         <View style={containerStyles.buttonContainer}>
           <TouchableOpacity style={buttonStyles.button} onPress={dataSave}>
-            <Body011 text='save' color={Colors.BLACK} style={{ fontSize: 20, }} />
+            <Subtitle011 text='save' color={Colors.BLACK} />
           </TouchableOpacity>
         </View>
 
@@ -191,7 +191,7 @@ const buttonStyles = StyleSheet.create({
   },
 });
 
-export default App;
+export default SetUserGoal;
 
 
 // {/*

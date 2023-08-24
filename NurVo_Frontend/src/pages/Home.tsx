@@ -4,38 +4,26 @@ import {
   ScrollView,
   Platform,
   TouchableOpacity,
+  TouchableHighlight,
 } from 'react-native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { differenceInDays } from 'date-fns';
 
 import Colors from '../utilities/Color';
-import { Title01, Title02, Subtitle011, Subtext013, Body022, Body023, Body024 } from '../utilities/Fonts';
+import { Title01, Title02, Subtitle011, Subtext013, Body022, Body023, Body024, Body013 } from '../utilities/Fonts';
 import { layoutStyles, screenWidth } from '../utilities/Layout';
 import { CarouselList } from '../components/CarouselListComp';
 import { ListCell } from '../components/ListCellComp';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useCallback, useEffect, useState } from 'react';
+import { play, stopSpeech } from '../utilities/TextToSpeech';
+import { HomeScreenProps } from '../utilities/NavigationTypes';
+import { fetchAttendance, fetchMypage, fetchReviews, fetchTodaysLesson } from '../utilities/ServerFunc';
+import { Chapter } from './LessonsList';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-
-const todayLessons = [
-  {
-    title: 'Hospital life guidance',
-    subtitle: 'location of call bell, meal times, shower times, etc.',
-    chapterId: 1,
-  },
-  {
-    title: '1 Hospital life guidance',
-    subtitle: '1 location of call bell, meal times, shower times, etc.',
-    chapterId: 2,
-    checked: true,
-  },
-  {
-    title: '2 Hospital life guidance',
-    subtitle: '2 location of call bell, meal times, shower times, etc.',
-    chapterId: 3,
-    checked: true,
-  }
-]
+const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 const MenuTitle = ({ text, onPress }: { text: string, onPress: () => void }) => {
   return (
@@ -49,20 +37,106 @@ const MenuTitle = ({ text, onPress }: { text: string, onPress: () => void }) => 
   );
 }
 
-function UserInfoHeader() {
+interface UserInfo {
+  id: string;
+  name: string;
+  nickname: string;
+  phone: string;
+  obj: string;
+  obj_date: string;
+}
+
+async function isFirstLogin(userId: string): Promise<boolean> {
+  try {
+    const value = await AsyncStorage.getItem(`firstLogin:${userId}`);
+    if (value === null) {
+      await AsyncStorage.setItem(`firstLogin:${userId}`, 'false');
+      return true;
+    }
+    return false;
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
+}
+function UserInfoHeader({ numOfReview }: { numOfReview: number }) {
   const navigation = useNavigation();
+
+  const [userdata, setUserdata] = useState({});
+  const [progress, setProgress] = useState(0);
+  const [dueDate, setDueDate] = useState(0);
+  const [attendance, setAttendance] = useState<boolean[]>([]);
+
+  useFocusEffect(
+    useCallback(() => {
+      async function getUserData() {
+        try {
+          const user = await fetchMypage();
+          setUserdata(user);
+          setDueDate(getDueDate(user.obj_date));
+        } catch (error) {
+          console.error('Error fetching user info:', error);
+        }
+      }
+      getUserData();
+    }, [])
+  );
+
+  function formatDate(date: string) {
+    const dateObject = new Date(date);
+    const year = dateObject.getFullYear();
+    const month = (dateObject.getMonth() + 1).toString().padStart(2, "0");
+    const day = dateObject.getDate();
   
+    const formattedDate = `${year}.${month}.${day}`;
+    return formattedDate;
+  }
+
+  //최초 로그인 검사 -> 목표가 설정되어 있는지 확인
+  useEffect(() => {
+    async function checkFirstLogin() {
+      if((userdata.obj === null || userdata.obj === "") || (userdata.obj_date === null || userdata.obj_date === "")) {
+        navigation.navigate('SetUserGoal', { data: { obj: 1, obj_date: formatDate(Date.now()) }, prevScreen: 'HomeScreen' });
+      }
+    }
+    checkFirstLogin();
+  }, [userdata])
+
+  useEffect(() => {
+    setProgress((numOfReview / 24) * 100);
+  }, [numOfReview]);
+
+  useEffect(() => {
+    async function getData() {
+      try {
+        const data = await fetchAttendance();
+        setAttendance(convertAttendance(data));
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+      }
+    }
+
+    setProgress((numOfReview / 24) * 100);
+    getData();
+  }, []);
+
+  type Day = { day: string };
+  function convertAttendance(days: Day[]) {
+    return daysOfWeek.map(dayOfWeek => days.some(d => d.day === dayOfWeek));
+  }
+
   interface CircleTextProps {
     text: string;
     backgroundColor?: string;
+    isAttend: boolean;
   }
 
-  
 
-  const CircleText = ({ text, backgroundColor }: CircleTextProps) => {
+
+  const CircleText = ({ text, backgroundColor, isAttend }: CircleTextProps) => {
     return (
       <View style={[styles.circleBackground, { backgroundColor }]}>
-        <Subtext013 text={text} color={Colors.MAINGREEN} />
+        <Subtext013 text={text} color={isAttend ? Colors.WHITE : Colors.MAINGREEN} />
       </View>
     );
   };
@@ -70,16 +144,19 @@ function UserInfoHeader() {
   const DaysRow = () => {
     return (
       <View style={[layoutStyles.HStackContainer, { width: screenWidth - 40, paddingTop: 12 }]}>
-        {days.map(day => (
-          <CircleText key={day} text={day} backgroundColor={Colors.WHITE} />
+        {daysOfWeek.map((day, index) => (
+          <CircleText key={day} text={day} backgroundColor={attendance[index] ? Colors.MAINGREEN : Colors.WHITE} isAttend={attendance[index]} />
         ))}
       </View>
     );
   };
 
-  const userPage = () => {
-    navigation.navigate('MemberDetails');
+  function getDueDate(dateString: string): number {
+    const date = new Date(dateString.replace(/\./g, '-'));
+    const today = new Date();
+    return differenceInDays(date, today);
   }
+
 
   return (
     <View style={styles.headerBackground}>
@@ -88,21 +165,22 @@ function UserInfoHeader() {
           <View style={layoutStyles.VStackContainer}>
             <View style={[styles.headerText]}>
               <Title01 text="Hi," color={Colors.BLACK} />
-              <Title02 text="Jimin" color={Colors.BLACK} />
-              <Ionicons name="settings" size={20} color={Colors.MAINLIGHTGREEN} style={{marginHorizontal: 5}} onPress={userPage}/>
+              <Title02 text={userdata?.nickname} color={Colors.BLACK} />
+              <Ionicons name="settings" size={20} color={Colors.MAINLIGHTGREEN} style={{ marginHorizontal: 5 }} />
             </View>
-            <View style={styles.tagBackground}>
-              <Body023 text="D-100days" color={Colors.WHITE} />
+            <View style={layoutStyles.HStackContainer}>
+              <View style={styles.tagBackground}>
+                <Body023 text={`D-${dueDate}days`} color={Colors.WHITE} />
+              </View>
             </View>
           </View>
           <AnimatedCircularProgress
             size={102}
             width={16}
-            fill={10}
+            fill={progress}
             rotation={0}
             tintColor={Colors.MAINGREEN}
             lineCap='round'
-            onAnimationComplete={() => console.log('onAnimationComplete')}
             backgroundColor={Colors.GRAY09} />
         </View>
         <View style={layoutStyles.VStackContainer}>
@@ -114,33 +192,114 @@ function UserInfoHeader() {
   );
 }
 
+interface Review {
+  chapter_id: number;
+  chapter_name: string;
+  date: string;
+  step: number;
+  topic_name: string;
+}
+
+interface Todays {
+  chapter_id: number;
+  chapter_name: string;
+  date: string;
+  step: number;
+  topic_id: number;
+  topic_name: string;
+}
 
 
-export default function Home({ navigation }: { navigation: any }) {
+export default function Home({ navigation, route }: HomeScreenProps) {
+
+  const [todays, setTodays] = useState<Chapter[]>([]);
+  const [reviews, setReviews] = useState<Chapter[]>([]);
+  const [numOfReview, setNumOfReview] = useState<number>(0);
+
+  useEffect(() => {
+    stopSpeech();
+  }, [play]);
+
+  //todays lesson
+  useFocusEffect(
+    useCallback(() => {
+      const getData = async () => {
+        try {
+          const data = await fetchTodaysLesson();
+          if (!data) return;
+          const sectionData: Chapter[] = data.map((item: Todays) => ({
+            id: item.chapter_id,
+            name: item.chapter_name,
+            description: item.topic_name,
+            step: item.step
+          }));
+          setTodays([]);
+          setTodays(sectionData);
+  
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      getData();
+
+      const getReviewData = async () => {
+        try {
+          const data = await fetchReviews();
+          if (!data) return;
+          const sectionData: Chapter[] = data.map((item: Review) => ({
+            id: item.chapter_id,
+            name: item.chapter_name,
+            description: item.topic_name,
+            step: item.step
+          }));
+          setReviews(sectionData);
+  
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      getReviewData();
+    }, [])
+  );
+
+  useEffect(() => {
+    setNumOfReview(reviews.length);
+  }, [reviews]);
+
+  const handleUserPage = () => {
+    navigation.navigate('MemberDetails');
+  }
 
   return (
     <ScrollView>
       <View style={layoutStyles.VStackContainer}>
-        <UserInfoHeader />
+        <TouchableHighlight onPress={handleUserPage}>
+          <UserInfoHeader numOfReview={numOfReview} />
+        </TouchableHighlight>
         <View style={[layoutStyles.VStackContainer]}>
           <MenuTitle text='Today’s Lesson' onPress={() => {
-            navigation.navigate('LessonList');
+            navigation.navigate('LessonList', { title: "Today’s Lesson", chapters: todays });
           }} />
-          <CarouselList gap={8} offset={12} pages={todayLessons} pageWidth={screenWidth - (8 + 12) * 2} />
+          {todays.length > 0 && (<CarouselList gap={8} offset={12} pages={todays.slice(0, 3)} pageWidth={screenWidth - (8 + 12) * 2} />)}
           <MenuTitle text='Review' onPress={() => {
-            navigation.navigate('LessonList');
+            navigation.navigate('LessonList', { title: "Review", chapters: reviews });
           }} />
           <View style={[layoutStyles.VStackContainer, { marginTop: 4, marginBottom: 28, paddingHorizontal: 20 }]}>
-            {todayLessons.slice(0, 2).map((lesson, index) => (
+            {reviews.length > 0 && reviews.slice(0, 2).map((lesson, index) => (
               <ListCell
                 key={index}
                 item={lesson}
-                checked={true}
                 style={{ width: screenWidth - 20 * 2, marginVertical: 4 }}
               />
             ))}
+            {
+              reviews.length === 0 && (
+                <View style={{ height: 100, justifyContent: 'center', alignItems:'center' }}>
+                  <Body013 text="아직 복습할 내용이 없어요" color={Colors.GRAY05} />
+                </View>
+              )
+            }
           </View>
-
         </View>
       </View>
     </ScrollView>
@@ -177,6 +336,7 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
   },
   tagBackground: {
+    flex: 0,
     backgroundColor: Colors.MAINGREEN,
     borderRadius: 6,
     paddingVertical: 5,

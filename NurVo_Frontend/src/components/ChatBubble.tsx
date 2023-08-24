@@ -15,12 +15,12 @@ export interface Message {
     dialogue: string;
     second_step?: string; 
     korean: string;
+    bookmark: boolean;
 }
 
 interface ChatBubbleProps {
   index: number;
   item: Message;
-  isBookmarked: boolean;
   inputRef?: React.RefObject<TextInput>;
   input?: string;
   inputValues?: { [key: number]: string };
@@ -38,19 +38,19 @@ const icon_speak = "volume-high";
 const icon_translation = "language";
 const icon_bookmark = "bookmark";
 
-export default function ChatBubble({ index, item, isBookmarked, isSpeaking, speakingList, onIsClickSpeakChange }: ChatBubbleProps) {
+export default function ChatBubble({ index, item, isSpeaking, speakingList, onIsClickSpeakChange }: ChatBubbleProps) {
   useEffect(() => {
-    setIsBookmark(isBookmarked);
-  }, [isBookmarked]);
+    setIsBookmark(item.bookmark);
+  }, []);
 
   const [isBookmark, setIsBookmark] = useState(false);
   const [isShowTranslation, setIsShowTranslation] = useState(false);
 
   const handleBookmark = async () => {
     if (isBookmark) {
-      await deleteSentenceBookmark(item.id, userId);
+      await deleteSentenceBookmark(item.id);
     } else {
-      const response = await addSentenceBookmark(item.id, userId);
+      const response = await addSentenceBookmark(item.id);
     }
     setIsBookmark(!isBookmark);
   }
@@ -97,19 +97,19 @@ export default function ChatBubble({ index, item, isBookmarked, isSpeaking, spea
   );
 }
 
-export function ChatBubbleInputWord({ index, item, isBookmarked, onEnterValue, onChagneText, inputRef, input, inputValues, isVoiceMode, isLastItem, isSpeaking, speakingList, onIsClickSpeakChange,  }: ChatBubbleProps) {
+export function ChatBubbleInputWord({ index, item, onEnterValue, onChagneText, inputRef, input, inputValues, isVoiceMode, isLastItem, isSpeaking, speakingList, onIsClickSpeakChange,  }: ChatBubbleProps) {
   useEffect(() => {
-    setIsBookmark(isBookmarked);
-  }, [isBookmarked]);
+    setIsBookmark(item.bookmark);
+  }, []);
 
   const [isBookmark, setIsBookmark] = useState(false);
   const [isShowTranslation, setIsShowTranslation] = useState(false);
 
   const handleBookmark = async() => { 
     if (isBookmark) {
-      await deleteSentenceBookmark(item.id, userId);
+      await deleteSentenceBookmark(item.id);
     } else {
-      const response = await addSentenceBookmark(item.id, userId);
+      const response = await addSentenceBookmark(item.id);
     }
     setIsBookmark(!isBookmark) 
   }
@@ -189,19 +189,19 @@ export function ChatBubbleInputWord({ index, item, isBookmarked, onEnterValue, o
   );
 }
 
-export function ChatBubbleInputAll({ index, item, isBookmarked, onEnterValue, onChagneText, inputRef, input, inputValues, isVoiceMode, isLastItem, isSpeaking, speakingList, onIsClickSpeakChange }: ChatBubbleProps) {
+export function ChatBubbleInputAll({ index, item, onEnterValue, onChagneText, inputRef, input, inputValues, isVoiceMode, isLastItem, isSpeaking, speakingList, onIsClickSpeakChange }: ChatBubbleProps) {
   useEffect(() => {
-    setIsBookmark(isBookmarked);
-  }, [isBookmarked]);
-
+    setIsBookmark(item.bookmark);
+  }, []);
+  
   const [isBookmark, setIsBookmark] = useState(false);
   const [isShowTranslation, setIsShowTranslation] = useState(false);
 
   const handleBookmark = async () => {
     if (isBookmark) {
-      await deleteSentenceBookmark(item.id, userId);
+      await deleteSentenceBookmark(item.id);
     } else {
-      const response = await addSentenceBookmark(item.id, userId);
+      const response = await addSentenceBookmark(item.id);
     }
     setIsBookmark(!isBookmark);
   }
@@ -237,7 +237,7 @@ export function ChatBubbleInputAll({ index, item, isBookmarked, onEnterValue, on
                 showSoftInputOnFocus={!isVoiceMode}
                 multiline={true}
               /> :
-              inputValues && checkInputWord(index, inputValues[item.id], item.second_step)
+              inputValues && checkInputWord(index, inputValues[item.id], item.dialogue)
             ) :
             (<Body012 key={index} text={item.dialogue} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.WHITE : Colors.BLACK} />)}
           {isShowTranslation && <Body023 text={item.korean} color={item.speaker.trim().toLowerCase() === 'nurse' ? Colors.GRAY09 : Colors.GRAY03} style={bubbleStyles.translation}/>}
@@ -282,13 +282,13 @@ function replaceWithInput(text: string, textToReplace?: string) {
 }
 
 function checkInputWord(index: number, inputValue: string, second_step?: string) {
-  const jsonValue = JSON.parse(inputValue);
-  return (
-    <View key={index} style={[layoutStyles.VStackContainer, { paddingVertical: 10 }]}>
-      <Body012 text={jsonValue.text} color={Colors.GRAY07} />
-      <Body011 text={`${second_step}`} color={jsonValue.isOver ? Colors.NAVY : Colors.YELLOW} />
-    </View>
-  )
+    const jsonValue = JSON.parse(inputValue);
+    return (
+      <View key={index} style={[layoutStyles.VStackContainer, { paddingVertical: 10 }]}>
+        <Body012 text={jsonValue.text} color={Colors.GRAY07} />
+        <Body011 text={`${second_step}`} color={jsonValue.isOver ? Colors.NAVY : Colors.YELLOW} />
+      </View>
+    )
 }
 
 const bubbleStyles = StyleSheet.create({
