@@ -5,6 +5,16 @@
 # NurVo - 간호영어회화 어플리케이션
 
 ## Introduction
+### 프로젝트 자료 확인
+발표 및 제출 자료 폴더에서 확인 가능
+- 중간 제안서 발표자료
+  - 웹프_중간발표_1팀.pptx
+- 최종 발표 자료
+  - CoCo_최종발표ppt_최종.pptx
+  - CoCo_최종발표ppt_최종.pdf
+  - T1_최종발표영상.mp4
+- 최종 보고서
+  - 산학연계 프로젝트 최종보고서_T1_CoCo
 
 ### 추진 배경
 |![image](https://github.com/CSID-DGU/2023-S-VSA-CoCo-1/assets/41153398/137c4062-949c-4ed8-ad6b-ecf0f58bfa15) |![image](https://github.com/CSID-DGU/2023-S-VSA-CoCo-1/assets/41153398/ab4c9f07-6c8d-48f3-b7d3-419ab0225eea) |
